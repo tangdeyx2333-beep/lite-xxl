@@ -1,0 +1,1 @@
+return {recents={[1]="F:\\dummy12",[2]="D:\\3DMark",[3]="D:\\a_feibo",[4]="F:\\.github",[5]="F:\\3.6.3maven",[6]="F:\\.github-good-projet",[7]="F:\\.a.github\\lite-xxl",[8]="F:\\1_a_claudecode",[9]="F:",[10]="F:",[11]="F:"}, window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}, window_mode="normal", previous_find={}, previous_replace={}}

@@ -1,0 +1,68 @@
+[2026-06-11 16:42:15] ws.read.fail key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state ok=false value_type=string
+[2026-06-11 16:42:16] snapshot.scan.begin dir=F:\.a.github\lite-xxl\user\unsaved_instances target=nil ws_total=11 ws_sample={[1]=".claude-1",[2]="3DMark-1",[3]="D",[4]="a_feibo-1",[5]="instance_0000003782027_32b312_doc_007",[6]="instance_0000003782029_c18a47_doc_005",[7]="instance_0000003782029_c18a47_doc_006",[8]="lite-xxl-1",[9]="sc-1",[10]="tmp-1",[11]="webroot-1"}
+[2026-06-11 16:42:16] snapshot.scan.files count=2 files={[1]="instance_0000003782027_32b312.lua",[2]="instance_0000003782029_c18a47.lua"}
+[2026-06-11 16:42:16] snapshot.load.ok path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000003782027_32b312.lua source=nil docs=3 created_at=1781167109 snapshot_id=nil
+[2026-06-11 16:42:16] snapshot.restore.begin path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000003782027_32b312.lua source=nil docs=3 project_dir=F:\.a.github\lite-xxl
+[2026-06-11 16:42:16] snapshot.restore.item index=1 type=path abs=F:\dummy12\tmp\tslzhgd.sql active=false
+[2026-06-11 16:42:16] snapshot.restore.item index=2 type=path abs=F:\.a.github\lite-xxl\user\init.lua active=false
+[2026-06-11 16:42:16] ws.read.ok key=instance_0000003782027_32b312_doc_007 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000003782027_32b312_doc_007 content_len=6
+[2026-06-11 16:42:16] snapshot.restore.item index=3 type=temp_storage key=instance_0000003782027_32b312_doc_007 name=zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml\zhwiki-latest-pages-articles.xml len=6 active=true
+[2026-06-11 16:42:16] ws.remove key=instance_0000003782027_32b312_doc_007 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000003782027_32b312_doc_007 ok=true err=nil
+[2026-06-11 16:42:16] snapshot.restore.end path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000003782027_32b312.lua source=nil remove_ok=true remove_err=nil restore_treeview=true active_view_restored=true
+[2026-06-11 16:42:16] snapshot.scan.primary path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000003782027_32b312.lua restored=true
+[2026-06-11 16:42:16] snapshot.load.ok path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000003782029_c18a47.lua source=nil docs=2 created_at=1781167109 snapshot_id=nil
+[2026-06-11 16:42:16] snapshot.scan.dispatch index=2 path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000003782029_c18a47.lua source=nil project_dir=F:\.a.github\lite-xxl
+[2026-06-11 16:42:16] snapshot.scan.end dispatched=1 restored_primary=true
+[2026-06-11 16:42:16] ws.read.fail key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state ok=false value_type=string
+[2026-06-11 16:42:16] snapshot.scan.begin dir=F:\.a.github\lite-xxl\user\unsaved_instances target=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000003782029_c18a47.lua ws_total=10 ws_sample={[1]=".claude-1",[2]="3DMark-1",[3]="D",[4]="a_feibo-1",[5]="instance_0000003782029_c18a47_doc_005",[6]="instance_0000003782029_c18a47_doc_006",[7]="lite-xxl-1",[8]="sc-1",[9]="tmp-1",[10]="webroot-1"}
+[2026-06-11 16:42:16] snapshot.load.ok path=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000003782029_c18a47.lua source=nil docs=2 created_at=1781167109 snapshot_id=nil
+[2026-06-11 16:42:16] snapshot.restore.begin path=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000003782029_c18a47.lua source=nil docs=2 project_dir=F:\.a.github\lite-xxl
+[2026-06-11 16:42:16] ws.read.ok key=instance_0000003782029_c18a47_doc_005 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000003782029_c18a47_doc_005 content_len=668
+[2026-06-11 16:42:16] snapshot.restore.item index=1 type=temp_storage key=instance_0000003782029_c18a47_doc_005 name=unsaved len=668 active=true
+[2026-06-11 16:42:16] ws.remove key=instance_0000003782029_c18a47_doc_005 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000003782029_c18a47_doc_005 ok=true err=nil
+[2026-06-11 16:42:16] ws.read.ok key=instance_0000003782029_c18a47_doc_006 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000003782029_c18a47_doc_006 content_len=13
+[2026-06-11 16:42:16] snapshot.restore.item index=2 type=temp_storage key=instance_0000003782029_c18a47_doc_006 name=unsaved len=13 active=false
+[2026-06-11 16:42:16] ws.remove key=instance_0000003782029_c18a47_doc_006 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000003782029_c18a47_doc_006 ok=true err=nil
+[2026-06-11 16:42:16] snapshot.restore.end path=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000003782029_c18a47.lua source=nil remove_ok=true remove_err=nil restore_treeview=false active_view_restored=true
+[2026-06-11 16:42:16] snapshot.scan.target.done target=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000003782029_c18a47.lua restored=false
+[2026-06-11 16:42:47] snapshot.create.begin source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004040499_cdb787.lua project_dir=F:\.a.github\lite-xxl views=7
+[2026-06-11 16:42:47] snapshot.create.skip source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004040499_cdb787.lua reason=no_docs
+[2026-06-11 16:42:49] ws.read.fail key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state ok=false value_type=string
+[2026-06-11 16:42:50] snapshot.scan.begin dir=F:\.a.github\lite-xxl\user\unsaved_instances target=nil ws_total=8 ws_sample={[1]=".claude-1",[2]="3DMark-1",[3]="D",[4]="a_feibo-1",[5]="lite-xxl-1",[6]="sc-1",[7]="tmp-1",[8]="webroot-1"}
+[2026-06-11 16:42:50] snapshot.scan.files count=0 files={}
+[2026-06-11 16:42:50] snapshot.scan.end reason=no_snapshot_files
+[2026-06-11 16:42:51] snapshot.create.begin source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004044123_5750ad.lua project_dir=F:\.a.github\lite-xxl views=7
+[2026-06-11 16:42:51] snapshot.create.skip source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004044123_5750ad.lua reason=no_docs
+[2026-06-11 16:51:53] snapshot.create.begin source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004586036_291e8e.lua project_dir=F:\.a.github\lite-xxl views=9
+[2026-06-11 16:51:53] ws.write.ok key=instance_0000004586036_291e8e_doc_007 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000004586036_291e8e_doc_007 fields=content,name,selection
+[2026-06-11 16:51:53] snapshot.create.done source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004586036_291e8e.lua docs=3 snapshot_id=instance_0000004586036_291e8e
+[2026-06-11 16:52:10] ws.read.fail key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state ok=false value_type=string
+[2026-06-11 16:52:10] snapshot.scan.begin dir=F:\.a.github\lite-xxl\user\unsaved_instances target=nil ws_total=1 ws_sample={[1]="instance_0000004586036_291e8e_doc_007"}
+[2026-06-11 16:52:10] snapshot.scan.files count=1 files={[1]="instance_0000004586036_291e8e.lua"}
+[2026-06-11 16:52:10] snapshot.load.ok path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004586036_291e8e.lua source=quit docs=3 created_at=1781167913 snapshot_id=instance_0000004586036_291e8e
+[2026-06-11 16:52:10] snapshot.restore.begin path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004586036_291e8e.lua source=quit docs=3 project_dir=F:\.a.github\lite-xxl
+[2026-06-11 16:52:10] snapshot.restore.item index=1 type=path abs=F:\dummy12\tmp\tslzhgd.sql active=false
+[2026-06-11 16:52:10] snapshot.restore.item index=2 type=path abs=F:\.a.github\lite-xxl\user\init.lua active=true
+[2026-06-11 16:52:10] ws.read.ok key=instance_0000004586036_291e8e_doc_007 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000004586036_291e8e_doc_007 content_len=7
+[2026-06-11 16:52:10] snapshot.restore.item index=3 type=temp_storage key=instance_0000004586036_291e8e_doc_007 name=zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml\zhwiki-latest-pages-articles.xml len=7 active=false
+[2026-06-11 16:52:10] ws.remove key=instance_0000004586036_291e8e_doc_007 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000004586036_291e8e_doc_007 ok=true err=nil
+[2026-06-11 16:52:10] snapshot.restore.end path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004586036_291e8e.lua source=quit remove_ok=true remove_err=nil restore_treeview=true active_view_restored=true
+[2026-06-11 16:52:10] snapshot.scan.primary path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000004586036_291e8e.lua restored=true
+[2026-06-11 16:52:10] snapshot.scan.end dispatched=0 restored_primary=true
+[2026-06-11 16:57:36] ws.write.ok key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state fields=size,visible
+[2026-06-11 16:57:36] ws.read.ok key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state content_len=0
+[2026-06-11 16:57:36] ws.remove key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state ok=true err=nil
+[2026-06-11 16:57:36] snapshot.scan.begin dir=F:\.a.github\lite-xxl\user\unsaved_instances target=nil ws_total=0 ws_sample={}
+[2026-06-11 16:57:36] snapshot.scan.files count=0 files={}
+[2026-06-11 16:57:36] snapshot.scan.end reason=no_snapshot_files
+[2026-06-11 16:59:17] ws.write.ok key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state fields=size,visible
+[2026-06-11 16:59:17] ws.read.ok key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state content_len=0
+[2026-06-11 16:59:17] ws.remove key=pending_treeview_state path=F:\.a.github\lite-xxl\user\storage\ws\pending_treeview_state ok=true err=nil
+[2026-06-11 16:59:18] snapshot.scan.begin dir=F:\.a.github\lite-xxl\user\unsaved_instances target=nil ws_total=0 ws_sample={}
+[2026-06-11 16:59:18] snapshot.scan.files count=0 files={}
+[2026-06-11 16:59:18] snapshot.scan.end reason=no_snapshot_files
+[2026-06-11 17:01:27] snapshot.create.begin source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000005160586_8b2181.lua project_dir=F:\.a.github\lite-xxl views=10
+[2026-06-11 17:01:27] ws.write.ok key=instance_0000005160586_8b2181_doc_007 path=F:\.a.github\lite-xxl\user\storage\ws\instance_0000005160586_8b2181_doc_007 fields=content,name,selection
+[2026-06-11 17:01:27] snapshot.create.done source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000005160586_8b2181.lua docs=3 snapshot_id=instance_0000005160586_8b2181
+[2026-06-11 17:01:27] snapshot.create.begin source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000005160597_585b90.lua project_dir=F:\dummy12 views=7
+[2026-06-11 17:01:27] snapshot.create.done source=quit path=F:\.a.github\lite-xxl\user\unsaved_instances\instance_0000005160597_585b90.lua docs=1 snapshot_id=instance_0000005160597_585b90

@@ -1,0 +1,59 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key>
+	<string>lite-xxl</string>
+	<key>CFBundleGetInfoString</key>
+	<string>lite-xxl</string>
+	<key>CFBundleIconFile</key>
+	<string>icon.icns</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+			  <string>*</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>NSDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>All Files</string>
+		</dict>
+	</array>
+	<key>LSItemContentTypes</key>
+	<array>
+		<string>public.text</string>
+		<string>public.folder</string>
+	</array>
+	<key>NSExportableTypes</key>
+	<array>
+		<string>public.text</string>
+	</array>
+	<key>CFBundleIdentifier</key>
+	<string>com.lite_xxl.LiteXXL</string>
+	<key>CFBundleName</key>
+	<string>Lite XXL</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.11</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>To access, edit and index your projects.</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>To access, edit and index your projects.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>To access, edit and index your projects.</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@PROJECT_VERSION@</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2020 rxi
+© 2020-2022 Francesco Abbate
+© 2022-@CURRENT_YEAR@ Lite XXL Team</string>
+</dict>
+</plist>
+

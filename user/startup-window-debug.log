@@ -1,0 +1,1209 @@
+[2026-06-09 11:03:27] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:03:27] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:03:27] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:03:27] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:03:27] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:03:27] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:03:28] startup.window.create_result root=D:\3DMark window=RenWindow: 0000028E84C00208
+[2026-06-09 11:03:28] startup.window.done root=D:\3DMark window=RenWindow: 0000028E84C00208
+[2026-06-09 11:03:28] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4}
+[2026-06-09 11:03:28] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:03:28] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:03:28] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-09 11:03:28] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:03:28] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:03:28] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:03:28] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:03:28] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:03:28] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:03:28] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:03:28] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:03:28] startup.window.create_result root=D:\3DMark window=RenWindow: 000002B5BBBBBE18
+[2026-06-09 11:03:28] startup.window.done root=D:\3DMark window=RenWindow: 000002B5BBBBBE18
+[2026-06-09 11:03:28] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4}
+[2026-06-09 11:03:28] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:03:28] startup.restore_snapshots.begin root=D:\3DMark arg=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000006881436_9b7a1b.lua docs_before=0
+[2026-06-09 11:03:28] startup.restore_snapshots.done root=D:\3DMark docs_after=2 active_view=DocView[D:\\AOMEI Partition Assistant\ss.exe] restored_from_file_open=false
+[2026-06-09 11:03:28] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:03:28] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:03:39] startup.load_plugins.begin root=D:\.claude restarted=false project_dir_abs=D:\.claude
+[2026-06-09 11:03:39] startup.load_plugins.done root=D:\.claude success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:03:39] startup.window.begin root=D:\.claude existing_window=nil
+[2026-06-09 11:03:39] startup.window.restore_try root=D:\.claude
+[2026-06-09 11:03:39] startup.window.restore_result root=D:\.claude window=nil
+[2026-06-09 11:03:39] startup.window.create_try root=D:\.claude
+[2026-06-09 11:03:40] startup.window.create_result root=D:\.claude window=RenWindow: 000002CA6D2621B8
+[2026-06-09 11:03:40] startup.window.done root=D:\.claude window=RenWindow: 000002CA6D2621B8
+[2026-06-09 11:03:40] startup.window.restore.begin root=D:\.claude session_mode=normal session_window={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4}
+[2026-06-09 11:03:40] startup.window.restore.done root=D:\.claude mode=normal
+[2026-06-09 11:03:40] startup.restore_snapshots.begin root=D:\.claude arg=nil docs_before=0
+[2026-06-09 11:03:40] startup.restore_snapshots.done root=D:\.claude docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-09 11:03:40] startup.configure_borderless.begin root=D:\.claude
+[2026-06-09 11:03:40] startup.configure_borderless.done root=D:\.claude
+[2026-06-09 11:03:45] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:03:45] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:03:45] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:03:45] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:03:45] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:03:45] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:03:46] startup.window.create_result root=D:\3DMark window=RenWindow: 000001466C375948
+[2026-06-09 11:03:46] startup.window.done root=D:\3DMark window=RenWindow: 000001466C375948
+[2026-06-09 11:03:46] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=983,[3]=4315,[4]=573,["n"]=4}
+[2026-06-09 11:03:46] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:03:46] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:03:46] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[D:\.claude\settings.local.json] restored_from_file_open=true
+[2026-06-09 11:03:46] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:03:46] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:03:53] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:03:53] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:03:53] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:03:53] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:03:53] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:03:53] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:03:53] startup.window.create_result root=D:\3DMark window=RenWindow: 0000024A05FDD6E8
+[2026-06-09 11:03:53] startup.window.done root=D:\3DMark window=RenWindow: 0000024A05FDD6E8
+[2026-06-09 11:03:53] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={["n"]=4,[1]=1952,[2]=983,[3]=4138,[4]=296}
+[2026-06-09 11:03:53] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:03:53] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:03:53] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[D:\.claude\settings.local.json] restored_from_file_open=false
+[2026-06-09 11:03:53] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:03:53] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:06:36] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:06:36] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:06:36] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:06:36] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:06:36] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:06:36] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:06:37] startup.window.create_result root=D:\3DMark window=RenWindow: 0000021C3AA6C228
+[2026-06-09 11:06:37] startup.window.done root=D:\3DMark window=RenWindow: 0000021C3AA6C228
+[2026-06-09 11:06:37] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={["n"]=4,[1]=1952,[2]=983,[3]=4138,[4]=296}
+[2026-06-09 11:06:37] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:06:37] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:06:37] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[D:\.claude\settings.local.json] restored_from_file_open=false
+[2026-06-09 11:06:37] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:06:37] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:06:42] startup.load_plugins.begin root=D:\ restarted=false project_dir_abs=D:\
+[2026-06-09 11:06:42] startup.load_plugins.done root=D:\ success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:06:42] startup.window.begin root=D:\ existing_window=nil
+[2026-06-09 11:06:42] startup.window.restore_try root=D:\
+[2026-06-09 11:06:42] startup.window.restore_result root=D:\ window=nil
+[2026-06-09 11:06:42] startup.window.create_try root=D:\
+[2026-06-09 11:06:42] startup.window.create_result root=D:\ window=RenWindow: 0000015405AE6F98
+[2026-06-09 11:06:42] startup.window.done root=D:\ window=RenWindow: 0000015405AE6F98
+[2026-06-09 11:06:42] startup.window.restore.begin root=D:\ session_mode=normal session_window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4}
+[2026-06-09 11:06:42] startup.window.restore.done root=D:\ mode=normal
+[2026-06-09 11:06:42] startup.restore_snapshots.begin root=D:\ arg=nil docs_before=0
+[2026-06-09 11:06:42] startup.restore_snapshots.done root=D:\ docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-09 11:06:42] startup.configure_borderless.begin root=D:\
+[2026-06-09 11:06:42] startup.configure_borderless.done root=D:\
+[2026-06-09 11:06:46] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:06:46] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:06:46] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:06:46] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:06:46] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:06:46] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:06:47] startup.window.create_result root=D:\3DMark window=RenWindow: 00000238804F6088
+[2026-06-09 11:06:47] startup.window.done root=D:\3DMark window=RenWindow: 00000238804F6088
+[2026-06-09 11:06:47] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4}
+[2026-06-09 11:06:47] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:06:47] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:06:47] startup.restore_snapshots.done root=D:\3DMark docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-09 11:06:47] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:06:47] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:06:49] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:06:49] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:06:49] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:06:49] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:06:49] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:06:49] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:06:50] startup.window.create_result root=D:\3DMark window=RenWindow: 00000272DC1EE958
+[2026-06-09 11:06:50] startup.window.done root=D:\3DMark window=RenWindow: 00000272DC1EE958
+[2026-06-09 11:06:50] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4}
+[2026-06-09 11:06:50] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:06:50] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:06:50] startup.restore_snapshots.done root=D:\3DMark docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-09 11:06:50] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:06:50] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:06:54] startup.load_plugins.begin root=D:\.claude restarted=false project_dir_abs=D:\.claude
+[2026-06-09 11:06:54] startup.load_plugins.done root=D:\.claude success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:06:54] startup.window.begin root=D:\.claude existing_window=nil
+[2026-06-09 11:06:54] startup.window.restore_try root=D:\.claude
+[2026-06-09 11:06:54] startup.window.restore_result root=D:\.claude window=nil
+[2026-06-09 11:06:54] startup.window.create_try root=D:\.claude
+[2026-06-09 11:06:55] startup.window.create_result root=D:\.claude window=RenWindow: 0000020087173808
+[2026-06-09 11:06:55] startup.window.done root=D:\.claude window=RenWindow: 0000020087173808
+[2026-06-09 11:06:55] startup.window.restore.begin root=D:\.claude session_mode=normal session_window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4}
+[2026-06-09 11:06:55] startup.window.restore.done root=D:\.claude mode=normal
+[2026-06-09 11:06:55] startup.restore_snapshots.begin root=D:\.claude arg=nil docs_before=0
+[2026-06-09 11:06:55] startup.restore_snapshots.done root=D:\.claude docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-09 11:06:55] startup.configure_borderless.begin root=D:\.claude
+[2026-06-09 11:06:55] startup.configure_borderless.done root=D:\.claude
+[2026-06-09 11:07:02] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:07:02] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:07:02] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:07:02] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:07:02] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:07:02] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:07:02] startup.window.create_result root=D:\3DMark window=RenWindow: 00000259C0856108
+[2026-06-09 11:07:02] startup.window.done root=D:\3DMark window=RenWindow: 00000259C0856108
+[2026-06-09 11:07:02] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4}
+[2026-06-09 11:07:02] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:07:02] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:07:02] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[D:\.claude\settings.local.json] restored_from_file_open=true
+[2026-06-09 11:07:02] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:07:02] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:07:03] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:07:03] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:07:03] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:07:03] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:07:03] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:07:03] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:07:03] startup.window.create_result root=D:\3DMark window=RenWindow: 000002A1ABBB5718
+[2026-06-09 11:07:03] startup.window.done root=D:\3DMark window=RenWindow: 000002A1ABBB5718
+[2026-06-09 11:07:03] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4}
+[2026-06-09 11:07:03] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:07:03] startup.restore_snapshots.begin root=D:\3DMark arg=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000007646263_137220.lua docs_before=0
+[2026-06-09 11:07:03] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-09 11:07:03] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:07:03] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:07:09] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:07:09] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:07:09] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:07:09] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:07:09] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:07:09] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:07:09] startup.window.create_result root=D:\3DMark window=RenWindow: 0000026B90822638
+[2026-06-09 11:07:09] startup.window.done root=D:\3DMark window=RenWindow: 0000026B90822638
+[2026-06-09 11:07:09] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=982,[3]=4097,[4]=619,["n"]=4}
+[2026-06-09 11:07:09] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:07:09] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:07:09] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[D:\.claude\settings.local.json] restored_from_file_open=true
+[2026-06-09 11:07:09] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:07:09] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:07:09] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:07:09] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:07:09] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:07:09] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:07:09] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:07:09] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:07:09] startup.window.create_result root=D:\3DMark window=RenWindow: 000001115D95AB28
+[2026-06-09 11:07:09] startup.window.done root=D:\3DMark window=RenWindow: 000001115D95AB28
+[2026-06-09 11:07:09] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=982,[3]=4097,[4]=619,["n"]=4}
+[2026-06-09 11:07:09] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:07:09] startup.restore_snapshots.begin root=D:\3DMark arg=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000007652888_ab1ca1.lua docs_before=0
+[2026-06-09 11:07:09] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-09 11:07:09] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:07:09] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:12:34] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:12:34] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:12:34] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:12:34] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:12:34] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:12:34] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:12:35] startup.window.create_result root=D:\3DMark window=RenWindow: 0000021B2657C8B8
+[2026-06-09 11:12:35] startup.window.done root=D:\3DMark window=RenWindow: 0000021B2657C8B8
+[2026-06-09 11:12:35] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4}
+[2026-06-09 11:12:35] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:12:35] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 11:12:35] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-09 11:12:35] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:12:35] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 11:12:35] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 11:12:35] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 11:12:35] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 11:12:35] startup.window.restore_try root=D:\3DMark
+[2026-06-09 11:12:35] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 11:12:35] startup.window.create_try root=D:\3DMark
+[2026-06-09 11:12:35] startup.window.create_result root=D:\3DMark window=RenWindow: 0000019564D8A658
+[2026-06-09 11:12:35] startup.window.done root=D:\3DMark window=RenWindow: 0000019564D8A658
+[2026-06-09 11:12:35] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4}
+[2026-06-09 11:12:35] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 11:12:35] startup.restore_snapshots.begin root=D:\3DMark arg=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000007978738_001577.lua docs_before=0
+[2026-06-09 11:12:35] startup.restore_snapshots.done root=D:\3DMark docs_after=5 active_view=DocView[cpuprofile.3dmdef] restored_from_file_open=true
+[2026-06-09 11:12:35] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 11:12:35] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 13:51:47] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 13:51:48] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 13:51:48] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 13:51:48] startup.window.restore_try root=D:\3DMark
+[2026-06-09 13:51:48] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 13:51:48] startup.window.create_try root=D:\3DMark
+[2026-06-09 13:51:48] startup.window.create_result root=D:\3DMark window=RenWindow: 0000027D193401A8
+[2026-06-09 13:51:48] startup.window.done root=D:\3DMark window=RenWindow: 0000027D193401A8
+[2026-06-09 13:51:48] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4}
+[2026-06-09 13:51:48] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 13:51:48] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-09 13:51:48] startup.restore_snapshots.done root=D:\3DMark docs_after=5 active_view=DocView[custom_firestrike_extreme.3dmdef] restored_from_file_open=true
+[2026-06-09 13:51:48] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 13:51:48] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 13:51:49] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-09 13:51:49] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 13:51:49] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-09 13:51:49] startup.window.restore_try root=D:\3DMark
+[2026-06-09 13:51:49] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-09 13:51:49] startup.window.create_try root=D:\3DMark
+[2026-06-09 13:51:49] startup.window.create_result root=D:\3DMark window=RenWindow: 000001B568C22258
+[2026-06-09 13:51:49] startup.window.done root=D:\3DMark window=RenWindow: 000001B568C22258
+[2026-06-09 13:51:49] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4}
+[2026-06-09 13:51:49] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-09 13:51:49] startup.restore_snapshots.begin root=D:\3DMark arg=F:\\.a.github\\lite-xxl\\user\\unsaved_instances\\instance_0000017530120_5f68f1.lua docs_before=0
+[2026-06-09 13:51:49] startup.restore_snapshots.done root=D:\3DMark docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-09 13:51:49] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-09 13:51:49] startup.configure_borderless.done root=D:\3DMark
+[2026-06-09 19:14:27] startup.load_plugins.begin root=F:\.a.github\lite-xxl restarted=false project_dir_abs=F:\.a.github\lite-xxl
+[2026-06-09 19:14:27] startup.load_plugins.done root=F:\.a.github\lite-xxl success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-09 19:14:27] startup.window.begin root=F:\.a.github\lite-xxl existing_window=nil
+[2026-06-09 19:14:27] startup.window.restore_try root=F:\.a.github\lite-xxl
+[2026-06-09 19:14:27] startup.window.restore_result root=F:\.a.github\lite-xxl window=nil
+[2026-06-09 19:14:27] startup.window.create_try root=F:\.a.github\lite-xxl
+[2026-06-09 19:14:28] startup.window.create_result root=F:\.a.github\lite-xxl window=RenWindow: 000002093FD47728
+[2026-06-09 19:14:28] startup.window.done root=F:\.a.github\lite-xxl window=RenWindow: 000002093FD47728
+[2026-06-09 19:14:28] startup.window.restore.begin root=F:\.a.github\lite-xxl session_mode=normal session_window={[1]=1952,[2]=982,[3]=4155,[4]=591,["n"]=4}
+[2026-06-09 19:14:28] startup.window.restore.done root=F:\.a.github\lite-xxl mode=normal
+[2026-06-09 19:14:28] startup.restore_snapshots.begin root=F:\.a.github\lite-xxl arg=nil docs_before=0
+[2026-06-09 19:14:28] startup.restore_snapshots.done root=F:\.a.github\lite-xxl docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-09 19:14:28] startup.configure_borderless.begin root=F:\.a.github\lite-xxl
+[2026-06-09 19:14:28] startup.configure_borderless.done root=F:\.a.github\lite-xxl
+[2026-06-11 18:39:25] startup.load_plugins.begin root=D:\3DMark restarted=false project_dir_abs=D:\3DMark
+[2026-06-11 18:39:25] startup.load_plugins.done root=D:\3DMark success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-11 18:39:25] startup.window.begin root=D:\3DMark existing_window=nil
+[2026-06-11 18:39:25] startup.window.restore_try root=D:\3DMark
+[2026-06-11 18:39:25] startup.window.restore_result root=D:\3DMark window=nil
+[2026-06-11 18:39:25] startup.window.create_try root=D:\3DMark
+[2026-06-11 18:39:25] startup.window.create_result root=D:\3DMark window=RenWindow: 0000021F1CCCAC58
+[2026-06-11 18:39:25] startup.window.done root=D:\3DMark window=RenWindow: 0000021F1CCCAC58
+[2026-06-11 18:39:25] startup.window.restore.begin root=D:\3DMark session_mode=normal session_window={[1]=1952,[2]=982,[3]=4155,[4]=591,["n"]=4}
+[2026-06-11 18:39:25] startup.window.restore.done root=D:\3DMark mode=normal
+[2026-06-11 18:39:25] startup.restore_snapshots.begin root=D:\3DMark arg=nil docs_before=0
+[2026-06-11 18:39:25] startup.restore_snapshots.done root=D:\3DMark docs_after=2 active_view=DocView[F:\dummy12\tmp\tslzhgd - 副本.sql] restored_from_file_open=true
+[2026-06-11 18:39:25] startup.configure_borderless.begin root=D:\3DMark
+[2026-06-11 18:39:25] startup.configure_borderless.done root=D:\3DMark
+[2026-06-11 18:42:48] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-11 18:42:48] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-11 18:42:48] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-11 18:42:48] startup.window.restore_try root=F:\dummy12
+[2026-06-11 18:42:48] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-11 18:42:48] startup.window.create_try root=F:\dummy12
+[2026-06-11 18:42:49] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002BE57FA95D8
+[2026-06-11 18:42:49] startup.window.done root=F:\dummy12 window=RenWindow: 000002BE57FA95D8
+[2026-06-11 18:42:49] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=1952,[2]=982,[3]=4155,[4]=591}
+[2026-06-11 18:42:49] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-11 18:42:49] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-11 18:42:49] startup.restore_snapshots.done root=F:\dummy12 docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-11 18:42:49] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-11 18:42:49] startup.configure_borderless.done root=F:\dummy12
+[2026-06-11 20:16:43] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-11 20:16:43] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-11 20:16:43] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-11 20:16:43] startup.window.restore_try root=F:\dummy12
+[2026-06-11 20:16:43] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-11 20:16:43] startup.window.create_try root=F:\dummy12
+[2026-06-11 20:16:43] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000243E4B78E78
+[2026-06-11 20:16:43] startup.window.done root=F:\dummy12 window=RenWindow: 00000243E4B78E78
+[2026-06-11 20:16:43] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=1952,[2]=982,[3]=5095,[4]=174}
+[2026-06-11 20:16:43] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-11 20:16:43] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-11 20:16:43] startup.restore_snapshots.done root=F:\dummy12 docs_after=4 active_view=DocView[unsaved] restored_from_file_open=true
+[2026-06-11 20:16:43] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-11 20:16:43] startup.configure_borderless.done root=F:\dummy12
+[2026-06-11 20:18:57] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-11 20:18:57] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-11 20:18:57] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-11 20:18:57] startup.window.restore_try root=F:\dummy12
+[2026-06-11 20:18:57] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-11 20:18:57] startup.window.create_try root=F:\dummy12
+[2026-06-11 20:18:57] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000018805F3D978
+[2026-06-11 20:18:57] startup.window.done root=F:\dummy12 window=RenWindow: 0000018805F3D978
+[2026-06-11 20:18:57] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=1952,[2]=983,[3]=4234,[4]=192,["n"]=4}
+[2026-06-11 20:18:57] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-11 20:18:57] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-11 20:18:57] startup.restore_snapshots.done root=F:\dummy12 docs_after=10 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-11 20:18:57] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-11 20:18:57] startup.configure_borderless.done root=F:\dummy12
+[2026-06-11 20:30:34] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-11 20:30:34] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-11 20:30:34] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-11 20:30:34] startup.window.restore_try root=F:\dummy12
+[2026-06-11 20:30:34] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-11 20:30:34] startup.window.create_try root=F:\dummy12
+[2026-06-11 20:30:34] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000239DFF1D148
+[2026-06-11 20:30:34] startup.window.done root=F:\dummy12 window=RenWindow: 00000239DFF1D148
+[2026-06-11 20:30:34] startup.window.restore.begin root=F:\dummy12 session_mode=minimized session_window={[1]=1952,[2]=983,[3]=4463,[4]=181,["n"]=4}
+[2026-06-11 20:30:34] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-11 20:30:34] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-11 20:30:34] startup.restore_snapshots.done root=F:\dummy12 docs_after=10 active_view=DocView[tmp\tslzhgd.sql] restored_from_file_open=true
+[2026-06-11 20:30:34] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-11 20:30:34] startup.configure_borderless.done root=F:\dummy12
+[2026-06-11 20:45:23] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-11 20:45:23] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-11 20:45:23] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-11 20:45:23] startup.window.restore_try root=F:\dummy12
+[2026-06-11 20:45:23] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-11 20:45:23] startup.window.create_try root=F:\dummy12
+[2026-06-11 20:45:24] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002167C7C5418
+[2026-06-11 20:45:24] startup.window.done root=F:\dummy12 window=RenWindow: 000002167C7C5418
+[2026-06-11 20:45:24] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4238,[4]=340,["n"]=4}
+[2026-06-11 20:45:24] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-11 20:45:24] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-11 20:45:24] startup.restore_snapshots.done root=F:\dummy12 docs_after=10 active_view=DocView[tmp\tslzhgd.sql] restored_from_file_open=true
+[2026-06-11 20:45:24] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-11 20:45:24] startup.configure_borderless.done root=F:\dummy12
+[2026-06-11 21:07:22] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-11 21:07:22] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-11 21:07:22] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-11 21:07:22] startup.window.restore_try root=F:\dummy12
+[2026-06-11 21:07:22] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-11 21:07:22] startup.window.create_try root=F:\dummy12
+[2026-06-11 21:07:23] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001330AF1BFB8
+[2026-06-11 21:07:23] startup.window.done root=F:\dummy12 window=RenWindow: 000001330AF1BFB8
+[2026-06-11 21:07:23] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-11 21:07:23] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-11 21:07:23] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-11 21:07:23] startup.restore_snapshots.done root=F:\dummy12 docs_after=9 active_view=DocView[tmp\tslzhgd.sql] restored_from_file_open=true
+[2026-06-11 21:07:23] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-11 21:07:23] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 09:05:24] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 09:05:24] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:05:24] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 09:05:24] startup.window.restore_try root=F:\dummy12
+[2026-06-12 09:05:24] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 09:05:24] startup.window.create_try root=F:\dummy12
+[2026-06-12 09:05:25] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000116DB457EF8
+[2026-06-12 09:05:25] startup.window.done root=F:\dummy12 window=RenWindow: 00000116DB457EF8
+[2026-06-12 09:05:25] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:05:25] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 09:05:25] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 09:05:25] startup.restore_snapshots.done root=F:\dummy12 docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-12 09:05:25] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 09:05:25] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 09:11:47] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 09:11:47] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:11:47] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 09:11:47] startup.window.restore_try root=F:\dummy12
+[2026-06-12 09:11:47] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 09:11:47] startup.window.create_try root=F:\dummy12
+[2026-06-12 09:11:48] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000207382988D8
+[2026-06-12 09:11:48] startup.window.done root=F:\dummy12 window=RenWindow: 00000207382988D8
+[2026-06-12 09:11:48] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:11:48] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 09:11:48] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 09:11:48] startup.restore_snapshots.done root=F:\dummy12 docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-12 09:11:48] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 09:11:48] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 09:11:54] startup.load_plugins.begin root=F:\ restarted=false project_dir_abs=F:\
+[2026-06-12 09:11:54] startup.load_plugins.done root=F:\ success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:11:54] startup.window.begin root=F:\ existing_window=nil
+[2026-06-12 09:11:54] startup.window.restore_try root=F:\
+[2026-06-12 09:11:54] startup.window.restore_result root=F:\ window=nil
+[2026-06-12 09:11:54] startup.window.create_try root=F:\
+[2026-06-12 09:11:54] startup.window.create_result root=F:\ window=RenWindow: 000002514E5DA158
+[2026-06-12 09:11:54] startup.window.done root=F:\ window=RenWindow: 000002514E5DA158
+[2026-06-12 09:11:54] startup.window.restore.begin root=F:\ session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1152,[3]=4239,[4]=339}
+[2026-06-12 09:11:54] startup.window.restore.done root=F:\ mode=normal
+[2026-06-12 09:11:54] startup.restore_snapshots.begin root=F:\ arg=nil docs_before=0
+[2026-06-12 09:11:54] startup.restore_snapshots.done root=F:\ docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-12 09:11:54] startup.configure_borderless.begin root=F:\
+[2026-06-12 09:11:54] startup.configure_borderless.done root=F:\
+[2026-06-12 09:12:08] startup.load_plugins.begin root=F:\dummy12\tmp restarted=false project_dir_abs=F:\dummy12\tmp
+[2026-06-12 09:12:08] startup.load_plugins.done root=F:\dummy12\tmp success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:12:08] startup.window.begin root=F:\dummy12\tmp existing_window=nil
+[2026-06-12 09:12:08] startup.window.restore_try root=F:\dummy12\tmp
+[2026-06-12 09:12:08] startup.window.restore_result root=F:\dummy12\tmp window=nil
+[2026-06-12 09:12:08] startup.window.create_try root=F:\dummy12\tmp
+[2026-06-12 09:12:09] startup.window.create_result root=F:\dummy12\tmp window=RenWindow: 000002151D46C9A8
+[2026-06-12 09:12:09] startup.window.done root=F:\dummy12\tmp window=RenWindow: 000002151D46C9A8
+[2026-06-12 09:12:09] startup.window.restore.begin root=F:\dummy12\tmp session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:12:09] startup.window.restore.done root=F:\dummy12\tmp mode=normal
+[2026-06-12 09:12:09] startup.restore_snapshots.begin root=F:\dummy12\tmp arg=nil docs_before=0
+[2026-06-12 09:12:09] startup.restore_snapshots.done root=F:\dummy12\tmp docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-12 09:12:09] startup.configure_borderless.begin root=F:\dummy12\tmp
+[2026-06-12 09:12:09] startup.configure_borderless.done root=F:\dummy12\tmp
+[2026-06-12 09:19:54] startup.load_plugins.begin root=F:\dummy12\tmp restarted=false project_dir_abs=F:\dummy12\tmp
+[2026-06-12 09:19:54] startup.load_plugins.done root=F:\dummy12\tmp success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:19:54] startup.window.begin root=F:\dummy12\tmp existing_window=nil
+[2026-06-12 09:19:54] startup.window.restore_try root=F:\dummy12\tmp
+[2026-06-12 09:19:54] startup.window.restore_result root=F:\dummy12\tmp window=nil
+[2026-06-12 09:19:54] startup.window.create_try root=F:\dummy12\tmp
+[2026-06-12 09:19:55] startup.window.create_result root=F:\dummy12\tmp window=RenWindow: 000002480DC45C18
+[2026-06-12 09:19:55] startup.window.done root=F:\dummy12\tmp window=RenWindow: 000002480DC45C18
+[2026-06-12 09:19:55] startup.window.restore.begin root=F:\dummy12\tmp session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:19:55] startup.window.restore.done root=F:\dummy12\tmp mode=normal
+[2026-06-12 09:19:55] startup.restore_snapshots.begin root=F:\dummy12\tmp arg=nil docs_before=0
+[2026-06-12 09:19:55] startup.restore_snapshots.done root=F:\dummy12\tmp docs_after=2 active_view=DocView[zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-12 09:19:55] startup.configure_borderless.begin root=F:\dummy12\tmp
+[2026-06-12 09:19:55] startup.configure_borderless.done root=F:\dummy12\tmp
+[2026-06-12 09:20:01] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 09:20:01] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:20:01] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 09:20:01] startup.window.restore_try root=F:\dummy12
+[2026-06-12 09:20:01] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 09:20:01] startup.window.create_try root=F:\dummy12
+[2026-06-12 09:20:01] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001FCACC99668
+[2026-06-12 09:20:01] startup.window.done root=F:\dummy12 window=RenWindow: 000001FCACC99668
+[2026-06-12 09:20:01] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:20:01] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 09:20:01] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 09:20:01] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-12 09:20:01] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 09:20:01] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 09:20:39] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-12 09:20:39] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:20:39] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 09:20:39] startup.window.restore_try root=F:\dummy12
+[2026-06-12 09:20:39] startup.window.restore_result root=F:\dummy12 window=RenWindow: 000001FCB0FFBEE8
+[2026-06-12 09:20:39] startup.window.done root=F:\dummy12 window=RenWindow: 000001FCB0FFBEE8
+[2026-06-12 09:20:39] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:20:39] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 09:20:39] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 09:20:39] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 09:20:39] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 09:20:39] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 09:20:51] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-12 09:20:51] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:20:51] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 09:20:51] startup.window.restore_try root=F:\dummy12
+[2026-06-12 09:20:51] startup.window.restore_result root=F:\dummy12 window=RenWindow: 000001FCB0FF5E08
+[2026-06-12 09:20:51] startup.window.done root=F:\dummy12 window=RenWindow: 000001FCB0FF5E08
+[2026-06-12 09:20:51] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:20:51] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 09:20:51] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 09:20:51] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 09:20:51] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 09:20:51] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 09:34:32] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 09:34:33] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 09:34:33] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 09:34:33] startup.window.restore_try root=F:\dummy12
+[2026-06-12 09:34:33] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 09:34:33] startup.window.create_try root=F:\dummy12
+[2026-06-12 09:34:33] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000016502637BC8
+[2026-06-12 09:34:33] startup.window.done root=F:\dummy12 window=RenWindow: 0000016502637BC8
+[2026-06-12 09:34:33] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4}
+[2026-06-12 09:34:33] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 09:34:33] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 09:34:33] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[tmp\tslzhgd - 副本.sql] restored_from_file_open=true
+[2026-06-12 09:34:33] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 09:34:33] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 10:53:13] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-12 10:53:13] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 10:53:13] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 10:53:13] startup.window.restore_try root=F:\dummy12
+[2026-06-12 10:53:13] startup.window.restore_result root=F:\dummy12 window=RenWindow: 00000165062E4F38
+[2026-06-12 10:53:13] startup.window.done root=F:\dummy12 window=RenWindow: 00000165062E4F38
+[2026-06-12 10:53:13] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=373,[4]=325,["n"]=4}
+[2026-06-12 10:53:13] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 10:53:13] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 10:53:13] startup.restore_snapshots.done root=F:\dummy12 docs_after=5 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 10:53:13] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 10:53:13] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 11:09:13] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 11:09:13] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 11:09:13] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 11:09:13] startup.window.restore_try root=F:\dummy12
+[2026-06-12 11:09:13] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 11:09:13] startup.window.create_try root=F:\dummy12
+[2026-06-12 11:09:14] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001934B420CD8
+[2026-06-12 11:09:14] startup.window.done root=F:\dummy12 window=RenWindow: 000001934B420CD8
+[2026-06-12 11:09:14] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1152,[3]=323,[4]=142}
+[2026-06-12 11:09:14] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 11:09:14] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 11:09:14] startup.restore_snapshots.done root=F:\dummy12 docs_after=5 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 11:09:14] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 11:09:14] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 11:16:39] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-12 11:16:39] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 11:16:39] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 11:16:39] startup.window.restore_try root=F:\dummy12
+[2026-06-12 11:16:39] startup.window.restore_result root=F:\dummy12 window=RenWindow: 000001934EF87C68
+[2026-06-12 11:16:39] startup.window.done root=F:\dummy12 window=RenWindow: 000001934EF87C68
+[2026-06-12 11:16:39] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4}
+[2026-06-12 11:16:39] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 11:16:39] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 11:16:39] startup.restore_snapshots.done root=F:\dummy12 docs_after=5 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 11:16:39] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 11:16:39] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 11:16:51] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 11:16:51] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 11:16:51] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 11:16:51] startup.window.restore_try root=F:\dummy12
+[2026-06-12 11:16:51] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 11:16:51] startup.window.create_try root=F:\dummy12
+[2026-06-12 11:16:52] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000226091E99C8
+[2026-06-12 11:16:52] startup.window.done root=F:\dummy12 window=RenWindow: 00000226091E99C8
+[2026-06-12 11:16:52] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4}
+[2026-06-12 11:16:52] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 11:16:52] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 11:16:52] startup.restore_snapshots.done root=F:\dummy12 docs_after=5 active_view=DocView[tmp\tslzhgd - 副本.sql] restored_from_file_open=true
+[2026-06-12 11:16:52] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 11:16:52] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 11:17:22] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-12 11:17:22] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 11:17:22] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 11:17:22] startup.window.restore_try root=F:\dummy12
+[2026-06-12 11:17:22] startup.window.restore_result root=F:\dummy12 window=RenWindow: 000002260CC554D8
+[2026-06-12 11:17:22] startup.window.done root=F:\dummy12 window=RenWindow: 000002260CC554D8
+[2026-06-12 11:17:22] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4}
+[2026-06-12 11:17:22] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 11:17:22] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 11:17:22] startup.restore_snapshots.done root=F:\dummy12 docs_after=5 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 11:17:22] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 11:17:22] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 11:19:01] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-12 11:19:01] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 11:19:01] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 11:19:01] startup.window.restore_try root=F:\dummy12
+[2026-06-12 11:19:01] startup.window.restore_result root=F:\dummy12 window=RenWindow: 000002260CC49B88
+[2026-06-12 11:19:01] startup.window.done root=F:\dummy12 window=RenWindow: 000002260CC49B88
+[2026-06-12 11:19:01] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4}
+[2026-06-12 11:19:01] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 11:19:01] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 11:19:01] startup.restore_snapshots.done root=F:\dummy12 docs_after=5 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 11:19:01] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 11:19:01] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 11:21:44] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-12 11:21:44] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 11:21:44] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 11:21:44] startup.window.restore_try root=F:\dummy12
+[2026-06-12 11:21:44] startup.window.restore_result root=F:\dummy12 window=RenWindow: 000002260CFDF8A8
+[2026-06-12 11:21:44] startup.window.done root=F:\dummy12 window=RenWindow: 000002260CFDF8A8
+[2026-06-12 11:21:44] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4}
+[2026-06-12 11:21:44] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 11:21:44] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 11:21:44] startup.restore_snapshots.done root=F:\dummy12 docs_after=5 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 11:21:44] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 11:21:44] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 13:54:02] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 13:54:02] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 13:54:02] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 13:54:02] startup.window.restore_try root=F:\dummy12
+[2026-06-12 13:54:02] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 13:54:02] startup.window.create_try root=F:\dummy12
+[2026-06-12 13:54:02] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000236D7C47598
+[2026-06-12 13:54:02] startup.window.done root=F:\dummy12 window=RenWindow: 00000236D7C47598
+[2026-06-12 13:54:02] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4}
+[2026-06-12 13:54:02] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 13:54:02] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 13:54:02] startup.restore_snapshots.done root=F:\dummy12 docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-12 13:54:02] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 13:54:02] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 14:31:25] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 14:31:25] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 14:31:25] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 14:31:25] startup.window.restore_try root=F:\dummy12
+[2026-06-12 14:31:25] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 14:31:25] startup.window.create_try root=F:\dummy12
+[2026-06-12 14:31:25] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002D05B64C9C8
+[2026-06-12 14:31:25] startup.window.done root=F:\dummy12 window=RenWindow: 000002D05B64C9C8
+[2026-06-12 14:31:25] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1098,[3]=423,[4]=645}
+[2026-06-12 14:31:25] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 14:31:25] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 14:31:25] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-12 14:31:25] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 14:31:25] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 14:31:26] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 14:31:26] startup.load_plugins.begin root=F:\.a.github\lite-xxl restarted=false project_dir_abs=F:\.a.github\lite-xxl
+[2026-06-12 14:31:26] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 14:31:26] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 14:31:26] startup.window.restore_try root=F:\dummy12
+[2026-06-12 14:31:26] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 14:31:26] startup.window.create_try root=F:\dummy12
+[2026-06-12 14:31:26] startup.load_plugins.done root=F:\.a.github\lite-xxl success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 14:31:26] startup.window.begin root=F:\.a.github\lite-xxl existing_window=nil
+[2026-06-12 14:31:26] startup.window.restore_try root=F:\.a.github\lite-xxl
+[2026-06-12 14:31:26] startup.window.restore_result root=F:\.a.github\lite-xxl window=nil
+[2026-06-12 14:31:26] startup.window.create_try root=F:\.a.github\lite-xxl
+[2026-06-12 14:31:26] startup.window.create_result root=F:\.a.github\lite-xxl window=RenWindow: 000001D4014CDAE8
+[2026-06-12 14:31:26] startup.window.done root=F:\.a.github\lite-xxl window=RenWindow: 000001D4014CDAE8
+[2026-06-12 14:31:26] startup.window.restore.begin root=F:\.a.github\lite-xxl session_mode=normal session_window={[1]=2048,[2]=1098,[3]=423,[4]=645,["n"]=4}
+[2026-06-12 14:31:26] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001D7113F7358
+[2026-06-12 14:31:26] startup.window.done root=F:\dummy12 window=RenWindow: 000001D7113F7358
+[2026-06-12 14:31:26] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1098,[3]=423,[4]=645,["n"]=4}
+[2026-06-12 14:31:26] startup.window.restore.done root=F:\.a.github\lite-xxl mode=normal
+[2026-06-12 14:31:26] startup.restore_snapshots.begin root=F:\.a.github\lite-xxl arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000022408190_82b0ec.lua docs_before=0
+[2026-06-12 14:31:26] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 14:31:26] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000020292072_9bd391.lua docs_before=0
+[2026-06-12 14:31:26] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-12 14:31:26] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 14:31:26] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 14:31:26] startup.restore_snapshots.done root=F:\.a.github\lite-xxl docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 14:31:26] startup.configure_borderless.begin root=F:\.a.github\lite-xxl
+[2026-06-12 14:31:26] startup.configure_borderless.done root=F:\.a.github\lite-xxl
+[2026-06-12 14:31:44] startup.load_plugins.begin root=D:\5EClient restarted=false project_dir_abs=D:\5EClient
+[2026-06-12 14:31:44] startup.load_plugins.done root=D:\5EClient success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 14:31:44] startup.window.begin root=D:\5EClient existing_window=nil
+[2026-06-12 14:31:44] startup.window.restore_try root=D:\5EClient
+[2026-06-12 14:31:44] startup.window.restore_result root=D:\5EClient window=nil
+[2026-06-12 14:31:44] startup.window.create_try root=D:\5EClient
+[2026-06-12 14:31:44] startup.window.create_result root=D:\5EClient window=RenWindow: 000001C2FE483778
+[2026-06-12 14:31:44] startup.window.done root=D:\5EClient window=RenWindow: 000001C2FE483778
+[2026-06-12 14:31:44] startup.window.restore.begin root=D:\5EClient session_mode=normal session_window={[1]=2048,[2]=1118,[3]=75,[4]=273,["n"]=4}
+[2026-06-12 14:31:44] startup.window.restore.done root=D:\5EClient mode=normal
+[2026-06-12 14:31:44] startup.restore_snapshots.begin root=D:\5EClient arg=nil docs_before=0
+[2026-06-12 14:31:44] startup.restore_snapshots.done root=D:\5EClient docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 14:31:44] startup.configure_borderless.begin root=D:\5EClient
+[2026-06-12 14:31:44] startup.configure_borderless.done root=D:\5EClient
+[2026-06-12 14:31:44] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 14:31:44] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 14:31:44] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 14:31:44] startup.window.restore_try root=F:\dummy12
+[2026-06-12 14:31:44] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 14:31:44] startup.window.create_try root=F:\dummy12
+[2026-06-12 14:31:45] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000253057EE038
+[2026-06-12 14:31:45] startup.window.done root=F:\dummy12 window=RenWindow: 00000253057EE038
+[2026-06-12 14:31:45] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1118,[3]=75,[4]=273,["n"]=4}
+[2026-06-12 14:31:45] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 14:31:45] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000020445775_eac0ae.lua docs_before=0
+[2026-06-12 14:31:45] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-12 14:31:45] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 14:31:45] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 17:45:42] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 17:45:43] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 17:45:43] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 17:45:43] startup.window.restore_try root=F:\dummy12
+[2026-06-12 17:45:43] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 17:45:43] startup.window.create_try root=F:\dummy12
+[2026-06-12 17:45:43] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000029FE1610548
+[2026-06-12 17:45:43] startup.window.done root=F:\dummy12 window=RenWindow: 0000029FE1610548
+[2026-06-12 17:45:43] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4}
+[2026-06-12 17:45:43] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 17:45:43] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 17:45:43] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-12 17:45:43] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 17:45:43] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 17:45:43] startup.load_plugins.begin root=D:\5EClient restarted=false project_dir_abs=D:\5EClient
+[2026-06-12 17:45:43] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 17:45:43] startup.load_plugins.done root=D:\5EClient success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 17:45:43] startup.window.begin root=D:\5EClient existing_window=nil
+[2026-06-12 17:45:43] startup.window.restore_try root=D:\5EClient
+[2026-06-12 17:45:43] startup.window.restore_result root=D:\5EClient window=nil
+[2026-06-12 17:45:43] startup.window.create_try root=D:\5EClient
+[2026-06-12 17:45:43] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 17:45:43] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 17:45:43] startup.window.restore_try root=F:\dummy12
+[2026-06-12 17:45:43] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 17:45:43] startup.window.create_try root=F:\dummy12
+[2026-06-12 17:45:44] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000236F9A6CFE8
+[2026-06-12 17:45:44] startup.window.done root=F:\dummy12 window=RenWindow: 00000236F9A6CFE8
+[2026-06-12 17:45:44] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4}
+[2026-06-12 17:45:44] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 17:45:44] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000020462299_dd14c9.lua docs_before=0
+[2026-06-12 17:45:44] startup.window.create_result root=D:\5EClient window=RenWindow: 0000013BDCCE48F8
+[2026-06-12 17:45:44] startup.window.done root=D:\5EClient window=RenWindow: 0000013BDCCE48F8
+[2026-06-12 17:45:44] startup.window.restore.begin root=D:\5EClient session_mode=normal session_window={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4}
+[2026-06-12 17:45:44] startup.window.restore.done root=D:\5EClient mode=normal
+[2026-06-12 17:45:44] startup.restore_snapshots.begin root=D:\5EClient arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000020460515_1e8735.lua docs_before=0
+[2026-06-12 17:45:44] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-12 17:45:44] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 17:45:44] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 17:45:44] startup.restore_snapshots.done root=D:\5EClient docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 17:45:44] startup.configure_borderless.begin root=D:\5EClient
+[2026-06-12 17:45:44] startup.configure_borderless.done root=D:\5EClient
+[2026-06-12 17:46:36] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 17:46:36] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 17:46:36] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 17:46:36] startup.window.restore_try root=F:\dummy12
+[2026-06-12 17:46:36] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 17:46:36] startup.window.create_try root=F:\dummy12
+[2026-06-12 17:46:36] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001A1067F4CA8
+[2026-06-12 17:46:36] startup.window.done root=F:\dummy12 window=RenWindow: 000001A1067F4CA8
+[2026-06-12 17:46:36] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1052,[3]=187,[4]=336,["n"]=4}
+[2026-06-12 17:46:36] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 17:46:36] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 17:46:36] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 17:46:36] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 17:46:36] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 17:46:36] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 17:46:36] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 17:46:36] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 17:46:36] startup.window.restore_try root=F:\dummy12
+[2026-06-12 17:46:36] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 17:46:36] startup.window.create_try root=F:\dummy12
+[2026-06-12 17:46:37] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002AC15B80768
+[2026-06-12 17:46:37] startup.window.done root=F:\dummy12 window=RenWindow: 000002AC15B80768
+[2026-06-12 17:46:37] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1052,[3]=187,[4]=336,["n"]=4}
+[2026-06-12 17:46:37] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 17:46:37] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000032101614_3a526e.lua docs_before=0
+[2026-06-12 17:46:37] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-12 17:46:37] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 17:46:37] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 19:11:50] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 19:11:51] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 19:11:51] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 19:11:51] startup.window.restore_try root=F:\dummy12
+[2026-06-12 19:11:51] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 19:11:51] startup.window.create_try root=F:\dummy12
+[2026-06-12 19:11:51] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001EFC9590BD8
+[2026-06-12 19:11:51] startup.window.done root=F:\dummy12 window=RenWindow: 000001EFC9590BD8
+[2026-06-12 19:11:51] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4}
+[2026-06-12 19:11:51] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 19:11:51] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 19:11:51] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-12 19:11:51] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 19:11:51] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 19:11:51] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 19:11:51] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 19:11:51] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 19:11:51] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 19:11:51] startup.window.restore_try root=F:\dummy12
+[2026-06-12 19:11:51] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 19:11:51] startup.window.create_try root=F:\dummy12
+[2026-06-12 19:11:51] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 19:11:51] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 19:11:51] startup.window.restore_try root=F:\dummy12
+[2026-06-12 19:11:51] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 19:11:51] startup.window.create_try root=F:\dummy12
+[2026-06-12 19:11:51] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001BBAA41DB38
+[2026-06-12 19:11:51] startup.window.done root=F:\dummy12 window=RenWindow: 000001BBAA41DB38
+[2026-06-12 19:11:51] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4}
+[2026-06-12 19:11:51] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 19:11:51] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000032431574_004b80.lua docs_before=0
+[2026-06-12 19:11:51] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001ECE67EA1A8
+[2026-06-12 19:11:51] startup.window.done root=F:\dummy12 window=RenWindow: 000001ECE67EA1A8
+[2026-06-12 19:11:51] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4}
+[2026-06-12 19:11:51] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 19:11:51] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000033477856_a64b4b.lua docs_before=0
+[2026-06-12 19:11:51] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 19:11:51] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 19:11:51] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 19:11:51] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-12 19:11:51] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 19:11:51] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:00:37] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:00:37] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:00:37] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:00:37] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:00:37] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:00:37] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:00:37] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001D1207610C8
+[2026-06-12 21:00:37] startup.window.done root=F:\dummy12 window=RenWindow: 000001D1207610C8
+[2026-06-12 21:00:37] startup.window.restore.begin root=F:\dummy12 session_mode=minimized session_window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4}
+[2026-06-12 21:00:37] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:00:37] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 21:00:37] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-12 21:00:37] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:00:37] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:00:37] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:00:37] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:00:37] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:00:37] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:00:37] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:00:37] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:00:37] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:00:37] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:00:37] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:00:37] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000014AED82CE68
+[2026-06-12 21:00:37] startup.window.done root=F:\dummy12 window=RenWindow: 0000014AED82CE68
+[2026-06-12 21:00:37] startup.window.restore.begin root=F:\dummy12 session_mode=minimized session_window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4}
+[2026-06-12 21:00:37] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:00:37] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000006549069_3ce67e.lua docs_before=0
+[2026-06-12 21:00:37] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001933F483E38
+[2026-06-12 21:00:37] startup.window.done root=F:\dummy12 window=RenWindow: 000001933F483E38
+[2026-06-12 21:00:37] startup.window.restore.begin root=F:\dummy12 session_mode=minimized session_window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4}
+[2026-06-12 21:00:37] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:00:37] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000006549068_c45836.lua docs_before=0
+[2026-06-12 21:00:37] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 21:00:37] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:00:37] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:00:37] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-12 21:00:37] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:00:37] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:08:27] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:08:27] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:08:27] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:08:27] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:08:27] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:08:27] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:08:27] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000020BB249F2E8
+[2026-06-12 21:08:27] startup.window.done root=F:\dummy12 window=RenWindow: 0000020BB249F2E8
+[2026-06-12 21:08:27] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4}
+[2026-06-12 21:08:27] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:08:27] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 21:08:27] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 21:08:27] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:08:27] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:08:27] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:08:27] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:08:27] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:08:27] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:08:27] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:08:27] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:08:27] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:08:27] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:08:27] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:08:27] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:08:27] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:08:27] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:08:27] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000267CC4667D8
+[2026-06-12 21:08:27] startup.window.done root=F:\dummy12 window=RenWindow: 00000267CC4667D8
+[2026-06-12 21:08:27] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4}
+[2026-06-12 21:08:27] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:08:27] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000007548726_bd240a.lua docs_before=0
+[2026-06-12 21:08:27] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 21:08:27] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:08:27] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:08:27] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000017DE20AAB78
+[2026-06-12 21:08:27] startup.window.done root=F:\dummy12 window=RenWindow: 0000017DE20AAB78
+[2026-06-12 21:08:27] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4}
+[2026-06-12 21:08:27] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:08:27] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000007550459_900476.lua docs_before=0
+[2026-06-12 21:08:27] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-12 21:08:27] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:08:27] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:12:34] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:12:34] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:12:34] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:12:34] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:12:34] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:12:34] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:12:34] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001C016414A38
+[2026-06-12 21:12:34] startup.window.done root=F:\dummy12 window=RenWindow: 000001C016414A38
+[2026-06-12 21:12:34] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4}
+[2026-06-12 21:12:34] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:12:34] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-12 21:12:34] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-12 21:12:34] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:12:34] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:12:34] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:12:34] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-12 21:12:34] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:12:34] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:12:34] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:12:34] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:12:34] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:12:34] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-12 21:12:34] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-12 21:12:34] startup.window.restore_try root=F:\dummy12
+[2026-06-12 21:12:34] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-12 21:12:34] startup.window.create_try root=F:\dummy12
+[2026-06-12 21:12:34] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000023EA94C1D58
+[2026-06-12 21:12:34] startup.window.done root=F:\dummy12 window=RenWindow: 0000023EA94C1D58
+[2026-06-12 21:12:34] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4}
+[2026-06-12 21:12:34] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:12:34] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000007797485_a00ca2.lua docs_before=0
+[2026-06-12 21:12:34] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000228F9139CA8
+[2026-06-12 21:12:34] startup.window.done root=F:\dummy12 window=RenWindow: 00000228F9139CA8
+[2026-06-12 21:12:34] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4}
+[2026-06-12 21:12:34] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-12 21:12:34] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000007797486_94fdc2.lua docs_before=0
+[2026-06-12 21:12:34] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-12 21:12:34] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:12:34] startup.configure_borderless.done root=F:\dummy12
+[2026-06-12 21:12:34] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[F:\.a.github\lite-xxl\user\init.lua] restored_from_file_open=true
+[2026-06-12 21:12:34] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-12 21:12:34] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:21:35] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 00:21:35] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:21:35] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:21:35] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:21:35] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 00:21:35] startup.window.create_try root=F:\dummy12
+[2026-06-13 00:21:35] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000182E4DFAE58
+[2026-06-13 00:21:35] startup.window.done root=F:\dummy12 window=RenWindow: 00000182E4DFAE58
+[2026-06-13 00:21:35] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4}
+[2026-06-13 00:21:35] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:21:35] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 00:21:35] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-13 00:21:35] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:21:35] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:21:35] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 00:21:35] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 00:21:35] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:21:35] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:21:35] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:21:35] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 00:21:35] startup.window.create_try root=F:\dummy12
+[2026-06-13 00:21:35] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:21:35] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:21:35] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:21:35] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 00:21:35] startup.window.create_try root=F:\dummy12
+[2026-06-13 00:21:35] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000020045E090C8
+[2026-06-13 00:21:35] startup.window.done root=F:\dummy12 window=RenWindow: 0000020045E090C8
+[2026-06-13 00:21:35] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4}
+[2026-06-13 00:21:35] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:21:35] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000007929091_117b3f.lua docs_before=0
+[2026-06-13 00:21:35] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000021CACF9EB38
+[2026-06-13 00:21:35] startup.window.done root=F:\dummy12 window=RenWindow: 0000021CACF9EB38
+[2026-06-13 00:21:35] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4}
+[2026-06-13 00:21:35] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:21:35] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000007933681_726994.lua docs_before=0
+[2026-06-13 00:21:35] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-13 00:21:35] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:21:35] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:21:35] startup.restore_snapshots.done root=F:\dummy12 docs_after=3 active_view=DocView[tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml] restored_from_file_open=true
+[2026-06-13 00:21:35] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:21:35] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:21:50] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-13 00:21:50] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:21:50] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:21:50] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:21:50] startup.window.restore_result root=F:\dummy12 window=RenWindow: 0000020047622DC8
+[2026-06-13 00:21:50] startup.window.done root=F:\dummy12 window=RenWindow: 0000020047622DC8
+[2026-06-13 00:21:50] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 00:21:50] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:21:50] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 00:21:51] startup.restore_snapshots.done root=F:\dummy12 docs_after=4 active_view=DocView[F:\.a.github\final\user\init.lua] restored_from_file_open=true
+[2026-06-13 00:21:51] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:21:51] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:22:01] startup.load_plugins.begin root=F:\dummy12 restarted=true project_dir_abs=F:\dummy12
+[2026-06-13 00:22:01] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:22:01] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:22:01] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:22:01] startup.window.restore_result root=F:\dummy12 window=RenWindow: 00000200476C0168
+[2026-06-13 00:22:01] startup.window.done root=F:\dummy12 window=RenWindow: 00000200476C0168
+[2026-06-13 00:22:01] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 00:22:01] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:22:01] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 00:22:01] startup.restore_snapshots.done root=F:\dummy12 docs_after=4 active_view=DocView[F:\.a.github\final\user\init.lua] restored_from_file_open=true
+[2026-06-13 00:22:01] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:22:01] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:25:24] startup.load_plugins.begin root=F:\.a.github\lite-xxl restarted=false project_dir_abs=F:\.a.github\lite-xxl
+[2026-06-13 00:25:24] startup.load_plugins.done root=F:\.a.github\lite-xxl success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:25:24] startup.window.begin root=F:\.a.github\lite-xxl existing_window=nil
+[2026-06-13 00:25:24] startup.window.restore_try root=F:\.a.github\lite-xxl
+[2026-06-13 00:25:24] startup.window.restore_result root=F:\.a.github\lite-xxl window=nil
+[2026-06-13 00:25:24] startup.window.create_try root=F:\.a.github\lite-xxl
+[2026-06-13 00:25:24] startup.window.create_result root=F:\.a.github\lite-xxl window=RenWindow: 00000288B2534AF8
+[2026-06-13 00:25:24] startup.window.done root=F:\.a.github\lite-xxl window=RenWindow: 00000288B2534AF8
+[2026-06-13 00:25:24] startup.window.restore.begin root=F:\.a.github\lite-xxl session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142}
+[2026-06-13 00:25:24] startup.window.restore.done root=F:\.a.github\lite-xxl mode=normal
+[2026-06-13 00:25:24] startup.restore_snapshots.begin root=F:\.a.github\lite-xxl arg=nil docs_before=0
+[2026-06-13 00:25:24] startup.restore_snapshots.done root=F:\.a.github\lite-xxl docs_after=0 active_view=EmptyView restored_from_file_open=false
+[2026-06-13 00:25:24] startup.configure_borderless.begin root=F:\.a.github\lite-xxl
+[2026-06-13 00:25:24] startup.configure_borderless.done root=F:\.a.github\lite-xxl
+[2026-06-13 00:59:53] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 00:59:53] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:59:53] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:59:53] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 00:59:53] startup.window.create_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001D8A3EA6D48
+[2026-06-13 00:59:53] startup.window.done root=F:\dummy12 window=RenWindow: 000001D8A3EA6D48
+[2026-06-13 00:59:53] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 00:59:53] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:59:53] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 00:59:53] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[README.md] restored_from_file_open=true
+[2026-06-13 00:59:53] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:59:53] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:59:53] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 00:59:53] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 00:59:53] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:59:53] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:59:53] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 00:59:53] startup.window.create_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 00:59:53] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:59:53] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:59:53] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 00:59:53] startup.window.create_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 00:59:53] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 00:59:53] startup.window.restore_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 00:59:53] startup.window.create_try root=F:\dummy12
+[2026-06-13 00:59:53] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001A41FBBB4B8
+[2026-06-13 00:59:53] startup.window.done root=F:\dummy12 window=RenWindow: 000001A41FBBB4B8
+[2026-06-13 00:59:53] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 00:59:53] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:59:53] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000021430914_33b08e.lua docs_before=0
+[2026-06-13 00:59:53] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[F:\.a.github\final\new-ico\app-name.txt] restored_from_file_open=false
+[2026-06-13 00:59:53] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:59:53] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:59:53] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000024BF8746928
+[2026-06-13 00:59:53] startup.window.done root=F:\dummy12 window=RenWindow: 0000024BF8746928
+[2026-06-13 00:59:53] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 00:59:53] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:59:53] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000021430914_9a31e6.lua docs_before=0
+[2026-06-13 00:59:53] startup.restore_snapshots.done root=F:\dummy12 docs_after=1 active_view=DocView[unsaved] restored_from_file_open=false
+[2026-06-13 00:59:53] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:59:53] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 00:59:54] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001F2FDBF69C8
+[2026-06-13 00:59:54] startup.window.done root=F:\dummy12 window=RenWindow: 000001F2FDBF69C8
+[2026-06-13 00:59:54] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 00:59:54] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 00:59:54] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000021430921_4dace5.lua docs_before=0
+[2026-06-13 00:59:54] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[F:\.a.github\final\user\init.lua] restored_from_file_open=true
+[2026-06-13 00:59:54] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 00:59:54] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:43:55] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:43:56] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:43:56] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:43:56] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:43:56] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:43:56] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:43:56] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:43:56] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:43:56] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:43:56] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:43:56] startup.window.create_result root=F:\dummy12 window=RenWindow: 00000168DEC04B48
+[2026-06-13 13:43:56] startup.window.done root=F:\dummy12 window=RenWindow: 00000168DEC04B48
+[2026-06-13 13:43:56] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142}
+[2026-06-13 13:43:56] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:43:56] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 13:43:56] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000014A8B9D2DA8
+[2026-06-13 13:43:56] startup.window.done root=F:\dummy12 window=RenWindow: 0000014A8B9D2DA8
+[2026-06-13 13:43:56] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:43:56] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:43:56] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 13:43:57] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[tmp\10m.txt] restored_from_file_open=true
+[2026-06-13 13:43:57] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[tmp\10m.txt] restored_from_file_open=true
+[2026-06-13 13:43:57] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:43:57] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:43:57] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:43:57] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:43:57] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:43:57] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:43:57] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:43:57] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:43:57] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:43:57] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:43:57] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:43:57] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:43:57] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:43:57] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:43:57] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:43:57] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:43:57] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000014C9DBC8438
+[2026-06-13 13:43:57] startup.window.done root=F:\dummy12 window=RenWindow: 0000014C9DBC8438
+[2026-06-13 13:43:57] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142}
+[2026-06-13 13:43:57] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:43:57] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000021628118_79079d.lua docs_before=0
+[2026-06-13 13:43:57] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002ADDC90E028
+[2026-06-13 13:43:57] startup.window.done root=F:\dummy12 window=RenWindow: 000002ADDC90E028
+[2026-06-13 13:43:57] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:43:57] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:43:57] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000021628118_79079d.lua docs_before=0
+[2026-06-13 13:43:57] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[F:\.a.github\lite-xxl\README.md] restored_from_file_open=true
+[2026-06-13 13:43:57] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[F:\.a.github\lite-xxl\README.md] restored_from_file_open=true
+[2026-06-13 13:43:57] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:43:57] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:43:57] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:43:57] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:44:08] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:44:08] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:44:08] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:44:08] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:44:08] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000014963D48448
+[2026-06-13 13:44:08] startup.window.done root=F:\dummy12 window=RenWindow: 0000014963D48448
+[2026-06-13 13:44:08] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:44:08] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:44:08] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 13:44:08] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[tmp\10m.txt] restored_from_file_open=true
+[2026-06-13 13:44:08] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:44:08] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:44:08] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:44:08] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:44:08] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:44:08] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:44:08] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:44:08] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:44:08] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:44:08] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:44:08] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:44:08] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:44:08] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:44:08] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:44:08] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:44:09] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000023BD88AB418
+[2026-06-13 13:44:09] startup.window.done root=F:\dummy12 window=RenWindow: 0000023BD88AB418
+[2026-06-13 13:44:09] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:44:09] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:44:09] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000000233101_82f6c5.lua docs_before=0
+[2026-06-13 13:44:09] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001FB3C1A81B8
+[2026-06-13 13:44:09] startup.window.done root=F:\dummy12 window=RenWindow: 000001FB3C1A81B8
+[2026-06-13 13:44:09] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:44:09] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:44:09] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000000230965_23d365.lua docs_before=0
+[2026-06-13 13:44:09] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000022DB0FD6F18
+[2026-06-13 13:44:09] startup.window.done root=F:\dummy12 window=RenWindow: 0000022DB0FD6F18
+[2026-06-13 13:44:09] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:44:09] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:44:09] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000000230194_a14dc5.lua docs_before=0
+[2026-06-13 13:44:09] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[tmp\10m.txt] restored_from_file_open=true
+[2026-06-13 13:44:09] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:44:09] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:44:09] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[F:\.a.github\lite-xxl\README.md] restored_from_file_open=true
+[2026-06-13 13:44:09] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[F:\.a.github\lite-xxl\README.md] restored_from_file_open=true
+[2026-06-13 13:44:09] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:44:09] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:44:09] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:44:09] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:49:20] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:49:20] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:49:20] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002EF4287AF78
+[2026-06-13 13:49:20] startup.window.done root=F:\dummy12 window=RenWindow: 000002EF4287AF78
+[2026-06-13 13:49:20] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:49:20] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:49:20] startup.restore_snapshots.begin root=F:\dummy12 arg=nil docs_before=0
+[2026-06-13 13:49:20] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[tmp\10m.txt] restored_from_file_open=true
+[2026-06-13 13:49:20] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:49:20] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.begin root=F:\dummy12 restarted=false project_dir_abs=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:49:20] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:49:20] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:49:20] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:49:20] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:49:20] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:49:20] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:49:20] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:49:20] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:49:20] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.load_plugins.done root=F:\dummy12 success=true user_refused=0 data_refused=0 active_view=EmptyView
+[2026-06-13 13:49:20] startup.window.begin root=F:\dummy12 existing_window=nil
+[2026-06-13 13:49:20] startup.window.restore_try root=F:\dummy12
+[2026-06-13 13:49:20] startup.window.restore_result root=F:\dummy12 window=nil
+[2026-06-13 13:49:20] startup.window.create_try root=F:\dummy12
+[2026-06-13 13:49:21] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002EE898FF148
+[2026-06-13 13:49:21] startup.window.done root=F:\dummy12 window=RenWindow: 000002EE898FF148
+[2026-06-13 13:49:21] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142}
+[2026-06-13 13:49:21] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:49:21] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000000251000_8cc470.lua docs_before=0
+[2026-06-13 13:49:21] startup.window.create_result root=F:\dummy12 window=RenWindow: 0000021C98FBED18
+[2026-06-13 13:49:21] startup.window.done root=F:\dummy12 window=RenWindow: 0000021C98FBED18
+[2026-06-13 13:49:21] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:49:21] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:49:21] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000000251002_8b3e86.lua docs_before=0
+[2026-06-13 13:49:21] startup.window.create_result root=F:\dummy12 window=RenWindow: 000002CC4FBDE2C8
+[2026-06-13 13:49:21] startup.window.done root=F:\dummy12 window=RenWindow: 000002CC4FBDE2C8
+[2026-06-13 13:49:21] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142}
+[2026-06-13 13:49:21] startup.window.create_result root=F:\dummy12 window=RenWindow: 000001C91C20FB18
+[2026-06-13 13:49:21] startup.window.done root=F:\dummy12 window=RenWindow: 000001C91C20FB18
+[2026-06-13 13:49:21] startup.window.restore.begin root=F:\dummy12 session_mode=normal session_window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4}
+[2026-06-13 13:49:21] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:49:21] startup.window.restore.done root=F:\dummy12 mode=normal
+[2026-06-13 13:49:21] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000000251002_a38626.lua docs_before=0
+[2026-06-13 13:49:21] startup.restore_snapshots.begin root=F:\dummy12 arg=F:\\.a.github\\final\\user\\unsaved_instances\\instance_0000000249054_daf046.lua docs_before=0
+[2026-06-13 13:49:21] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[F:\.a.github\lite-xxl\README.md] restored_from_file_open=true
+[2026-06-13 13:49:21] startup.restore_snapshots.done root=F:\dummy12 docs_after=2 active_view=DocView[F:\.a.github\lite-xxl\README.md] restored_from_file_open=true
+[2026-06-13 13:49:21] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:49:21] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:49:21] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:49:21] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:49:21] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[tmp\10m.txt] restored_from_file_open=true
+[2026-06-13 13:49:21] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:49:21] startup.configure_borderless.done root=F:\dummy12
+[2026-06-13 13:49:21] startup.restore_snapshots.done root=F:\dummy12 docs_after=7 active_view=DocView[tmp\10m.txt] restored_from_file_open=true
+[2026-06-13 13:49:21] startup.configure_borderless.begin root=F:\dummy12
+[2026-06-13 13:49:21] startup.configure_borderless.done root=F:\dummy12

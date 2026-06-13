@@ -1,0 +1,347 @@
+[2026-06-09 11:03:27] session.loaded window_mode=normal window={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:03:28] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:03:28] window.restore.apply mode=normal target={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:03:28] window.restore.after_apply size=1952,870 pos=4284,502 mode=normal
+[2026-06-09 11:03:28] session.loaded window_mode=normal window={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:03:28] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:03:28] window.restore.apply mode=normal target={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:03:28] window.restore.after_apply size=1952,870 pos=4284,502 mode=normal
+[2026-06-09 11:03:39] session.loaded window_mode=normal window={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:03:40] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:03:40] window.restore.apply mode=normal target={[1]=1952,[2]=870,[3]=4284,[4]=502,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:03:40] window.restore.after_apply size=1952,870 pos=4284,502 mode=normal
+[2026-06-09 11:03:45] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4315,[4]=573,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:03:46] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:03:46] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4315,[4]=573,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:03:46] window.restore.after_apply size=1952,983 pos=4315,573 mode=normal
+[2026-06-09 11:03:53] session.loaded window_mode=normal window={["n"]=4,[1]=1952,[2]=983,[3]=4138,[4]=296} recent0=D:\3DMark
+[2026-06-09 11:03:53] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:03:53] window.restore.apply mode=normal target={["n"]=4,[1]=1952,[2]=983,[3]=4138,[4]=296} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:03:53] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:06:36] session.loaded window_mode=normal window={["n"]=4,[1]=1952,[2]=983,[3]=4138,[4]=296} recent0=D:\3DMark
+[2026-06-09 11:06:37] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:06:37] window.restore.apply mode=normal target={["n"]=4,[1]=1952,[2]=983,[3]=4138,[4]=296} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:06:37] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:06:42] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:06:42] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:06:42] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:06:42] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:06:46] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:06:47] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:06:47] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:06:47] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:06:49] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:06:50] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:06:50] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:06:50] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:06:54] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:06:55] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:06:55] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:06:55] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:07:02] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:07:02] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:07:02] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:07:02] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:07:03] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:07:03] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:07:03] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4138,[4]=296,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:07:03] window.restore.after_apply size=1952,983 pos=4138,296 mode=normal
+[2026-06-09 11:07:09] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4097,[4]=619,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:07:09] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:07:09] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4097,[4]=619,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:07:09] window.restore.after_apply size=1952,982 pos=4097,619 mode=normal
+[2026-06-09 11:07:09] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4097,[4]=619,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:07:09] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:07:09] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4097,[4]=619,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:07:09] window.restore.after_apply size=1952,982 pos=4097,619 mode=normal
+[2026-06-09 11:12:34] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:12:35] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:12:35] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:12:35] window.restore.after_apply size=1952,982 pos=4042,238 mode=normal
+[2026-06-09 11:12:35] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} recent0=D:\3DMark
+[2026-06-09 11:12:35] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 11:12:35] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 11:12:35] window.restore.after_apply size=1952,982 pos=4042,238 mode=normal
+[2026-06-09 13:51:47] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} recent0=D:\3DMark
+[2026-06-09 13:51:48] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 13:51:48] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 13:51:48] window.restore.after_apply size=1952,982 pos=4042,238 mode=normal
+[2026-06-09 13:51:48] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} recent0=D:\3DMark
+[2026-06-09 13:51:49] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 13:51:49] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4042,[4]=238,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 13:51:49] window.restore.after_apply size=1952,982 pos=4042,238 mode=normal
+[2026-06-09 19:14:27] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4155,[4]=591,["n"]=4} recent0=D:\3DMark
+[2026-06-09 19:14:28] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-09 19:14:28] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4155,[4]=591,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-09 19:14:28] window.restore.after_apply size=1952,982 pos=4155,591 mode=normal
+[2026-06-11 18:39:25] session.loaded window_mode=normal window={[1]=1952,[2]=982,[3]=4155,[4]=591,["n"]=4} recent0=D:\3DMark
+[2026-06-11 18:39:25] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-11 18:39:25] window.restore.apply mode=normal target={[1]=1952,[2]=982,[3]=4155,[4]=591,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-11 18:39:25] window.restore.after_apply size=1952,982 pos=4155,591 mode=normal
+[2026-06-11 18:42:48] session.loaded window_mode=normal window={["n"]=4,[1]=1952,[2]=982,[3]=4155,[4]=591} recent0=D:\3DMark
+[2026-06-11 18:42:49] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-11 18:42:49] window.restore.apply mode=normal target={["n"]=4,[1]=1952,[2]=982,[3]=4155,[4]=591} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-11 18:42:49] window.restore.after_apply size=1952,982 pos=4155,591 mode=normal
+[2026-06-11 20:16:43] session.loaded window_mode=normal window={["n"]=4,[1]=1952,[2]=982,[3]=5095,[4]=174} recent0=F:\dummy12
+[2026-06-11 20:16:43] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-11 20:16:43] window.restore.apply mode=normal target={["n"]=4,[1]=1952,[2]=982,[3]=5095,[4]=174} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-11 20:16:43] window.restore.after_apply size=1952,982 pos=5095,174 mode=normal
+[2026-06-11 20:18:57] session.loaded window_mode=normal window={[1]=1952,[2]=983,[3]=4234,[4]=192,["n"]=4} recent0=F:\dummy12
+[2026-06-11 20:18:57] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-11 20:18:57] window.restore.apply mode=normal target={[1]=1952,[2]=983,[3]=4234,[4]=192,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-11 20:18:57] window.restore.after_apply size=1952,983 pos=4234,192 mode=normal
+[2026-06-11 20:30:33] session.loaded window_mode=minimized window={[1]=1952,[2]=983,[3]=4463,[4]=181,["n"]=4} recent0=F:\dummy12
+[2026-06-11 20:30:34] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-11 20:30:34] window.restore.skip mode=minimized reason=no-session-window-mode-match
+[2026-06-11 20:45:23] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4238,[4]=340,["n"]=4} recent0=F:\dummy12
+[2026-06-11 20:45:24] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-11 20:45:24] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4238,[4]=340,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-11 20:45:24] window.restore.after_apply size=2048,1152 pos=4238,340 mode=normal
+[2026-06-11 21:07:22] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12
+[2026-06-11 21:07:23] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-11 21:07:23] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-11 21:07:23] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:05:24] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12
+[2026-06-12 09:05:25] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 09:05:25] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:05:25] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:11:47] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12
+[2026-06-12 09:11:48] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 09:11:48] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:11:48] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:11:54] session.loaded window_mode=normal window={["n"]=4,[1]=2048,[2]=1152,[3]=4239,[4]=339} recent0=F:\dummy12
+[2026-06-12 09:11:54] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 09:11:54] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1152,[3]=4239,[4]=339} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:11:54] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:12:08] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\
+[2026-06-12 09:12:09] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 09:12:09] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:12:09] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:19:54] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12\tmp
+[2026-06-12 09:19:55] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 09:19:55] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:19:55] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:20:01] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12
+[2026-06-12 09:20:01] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 09:20:01] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:20:01] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:20:39] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12
+[2026-06-12 09:20:39] window.created size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:20:39] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:20:39] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:20:51] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12
+[2026-06-12 09:20:51] window.created size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:20:51] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:20:51] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 09:34:32] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} recent0=F:\dummy12
+[2026-06-12 09:34:33] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 09:34:33] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=4239,[4]=339,["n"]=4} reason=matched-display id=2 bounds=3840,0,2880,1620
+[2026-06-12 09:34:33] window.restore.after_apply size=2048,1152 pos=4239,339 mode=normal
+[2026-06-12 10:53:13] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=373,[4]=325,["n"]=4} recent0=F:\dummy12
+[2026-06-12 10:53:13] window.created size=2048,1152 pos=373,325 mode=normal
+[2026-06-12 10:53:13] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=373,[4]=325,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 10:53:13] window.restore.after_apply size=2048,1152 pos=373,325 mode=normal
+[2026-06-12 11:09:13] session.loaded window_mode=normal window={["n"]=4,[1]=2048,[2]=1152,[3]=323,[4]=142} recent0=F:\dummy12
+[2026-06-12 11:09:14] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 11:09:14] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1152,[3]=323,[4]=142} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 11:09:14] window.restore.after_apply size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:16:39] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-12 11:16:39] window.created size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:16:39] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 11:16:39] window.restore.after_apply size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:16:51] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-12 11:16:52] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 11:16:52] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 11:16:52] window.restore.after_apply size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:17:21] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-12 11:17:22] window.created size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:17:22] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 11:17:22] window.restore.after_apply size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:19:01] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-12 11:19:01] window.created size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:19:01] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 11:19:01] window.restore.after_apply size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:21:44] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-12 11:21:44] window.created size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 11:21:44] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 11:21:44] window.restore.after_apply size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 13:54:02] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-12 13:54:02] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 13:54:02] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=323,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 13:54:02] window.restore.after_apply size=2048,1152 pos=323,142 mode=normal
+[2026-06-12 14:31:25] session.loaded window_mode=normal window={["n"]=4,[1]=2048,[2]=1098,[3]=423,[4]=645} recent0=F:\dummy12
+[2026-06-12 14:31:25] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 14:31:25] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1098,[3]=423,[4]=645} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 14:31:25] window.restore.after_apply size=2048,1098 pos=423,645 mode=normal
+[2026-06-12 14:31:25] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=423,[4]=645,["n"]=4} recent0=F:\dummy12
+[2026-06-12 14:31:26] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=423,[4]=645,["n"]=4} recent0=F:\dummy12
+[2026-06-12 14:31:26] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 14:31:26] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=423,[4]=645,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 14:31:26] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 14:31:26] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=423,[4]=645,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 14:31:26] window.restore.after_apply size=2048,1098 pos=423,645 mode=normal
+[2026-06-12 14:31:26] window.restore.after_apply size=2048,1098 pos=423,645 mode=normal
+[2026-06-12 14:31:44] session.loaded window_mode=normal window={[1]=2048,[2]=1118,[3]=75,[4]=273,["n"]=4} recent0=F:\dummy12
+[2026-06-12 14:31:44] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 14:31:44] window.restore.apply mode=normal target={[1]=2048,[2]=1118,[3]=75,[4]=273,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 14:31:44] window.restore.after_apply size=2048,1118 pos=75,273 mode=normal
+[2026-06-12 14:31:44] session.loaded window_mode=normal window={[1]=2048,[2]=1118,[3]=75,[4]=273,["n"]=4} recent0=F:\dummy12
+[2026-06-12 14:31:45] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 14:31:45] window.restore.apply mode=normal target={[1]=2048,[2]=1118,[3]=75,[4]=273,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 14:31:45] window.restore.after_apply size=2048,1118 pos=75,273 mode=normal
+[2026-06-12 17:45:42] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4} recent0=F:\dummy12
+[2026-06-12 17:45:43] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 17:45:43] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 17:45:43] window.restore.after_apply size=2048,1098 pos=187,290 mode=normal
+[2026-06-12 17:45:43] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4} recent0=F:\dummy12
+[2026-06-12 17:45:43] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4} recent0=F:\dummy12
+[2026-06-12 17:45:44] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 17:45:44] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 17:45:44] window.restore.after_apply size=2048,1098 pos=187,290 mode=normal
+[2026-06-12 17:45:44] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 17:45:44] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=187,[4]=290,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 17:45:44] window.restore.after_apply size=2048,1098 pos=187,290 mode=normal
+[2026-06-12 17:46:36] session.loaded window_mode=normal window={[1]=2048,[2]=1052,[3]=187,[4]=336,["n"]=4} recent0=F:\dummy12
+[2026-06-12 17:46:36] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 17:46:36] window.restore.apply mode=normal target={[1]=2048,[2]=1052,[3]=187,[4]=336,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 17:46:36] window.restore.after_apply size=2048,1052 pos=187,336 mode=normal
+[2026-06-12 17:46:36] session.loaded window_mode=normal window={[1]=2048,[2]=1052,[3]=187,[4]=336,["n"]=4} recent0=F:\dummy12
+[2026-06-12 17:46:37] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 17:46:37] window.restore.apply mode=normal target={[1]=2048,[2]=1052,[3]=187,[4]=336,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 17:46:37] window.restore.after_apply size=2048,1052 pos=187,336 mode=normal
+[2026-06-12 19:11:50] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} recent0=F:\dummy12
+[2026-06-12 19:11:51] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 19:11:51] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 19:11:51] window.restore.after_apply size=2048,1098 pos=389,480 mode=normal
+[2026-06-12 19:11:51] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} recent0=F:\dummy12
+[2026-06-12 19:11:51] session.loaded window_mode=normal window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} recent0=F:\dummy12
+[2026-06-12 19:11:51] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 19:11:51] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 19:11:51] window.restore.after_apply size=2048,1098 pos=389,480 mode=normal
+[2026-06-12 19:11:51] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 19:11:51] window.restore.apply mode=normal target={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 19:11:51] window.restore.after_apply size=2048,1098 pos=389,480 mode=normal
+[2026-06-12 21:00:37] session.loaded window_mode=minimized window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:00:37] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:00:37] window.restore.skip mode=minimized reason=no-session-window-mode-match
+[2026-06-12 21:00:37] session.loaded window_mode=minimized window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:00:37] session.loaded window_mode=minimized window={[1]=2048,[2]=1098,[3]=389,[4]=480,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:00:37] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:00:37] window.restore.skip mode=minimized reason=no-session-window-mode-match
+[2026-06-12 21:00:37] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:00:37] window.restore.skip mode=minimized reason=no-session-window-mode-match
+[2026-06-12 21:08:27] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:08:27] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:08:27] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 21:08:27] window.restore.after_apply size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:08:27] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:08:27] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:08:27] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:08:27] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 21:08:27] window.restore.after_apply size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:08:27] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:08:27] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 21:08:27] window.restore.after_apply size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:12:34] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:12:34] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:12:34] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 21:12:34] window.restore.after_apply size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:12:34] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:12:34] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} recent0=F:\dummy12
+[2026-06-12 21:12:34] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:12:34] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 21:12:34] window.restore.after_apply size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:12:34] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-12 21:12:34] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-12 21:12:34] window.restore.after_apply size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:21:35] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:21:35] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:21:35] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:21:35] window.restore.after_apply size=2048,1152 pos=441,460 mode=normal
+[2026-06-13 00:21:35] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:21:35] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:21:35] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:21:35] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:21:35] window.restore.after_apply size=2048,1152 pos=441,460 mode=normal
+[2026-06-13 00:21:35] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:21:35] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=441,[4]=460,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:21:35] window.restore.after_apply size=2048,1152 pos=441,460 mode=normal
+[2026-06-13 00:21:50] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:21:50] window.created size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:21:50] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:21:50] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:22:01] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:22:01] window.created size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:22:01] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:22:01] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:25:24] session.loaded window_mode=normal window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} recent0=F:\dummy12
+[2026-06-13 00:25:24] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:25:24] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:25:24] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:59:53] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:59:53] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:59:53] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:59:53] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:59:53] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:59:53] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:59:53] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 00:59:53] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:59:53] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:59:53] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:59:53] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:59:53] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:59:53] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 00:59:54] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 00:59:54] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 00:59:54] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:43:55] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:43:56] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:43:56] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:43:56] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:43:56] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:43:56] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:43:56] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:43:57] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:43:57] session.loaded window_mode=normal window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} recent0=F:\dummy12
+[2026-06-13 13:43:57] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:43:57] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:43:57] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:43:57] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:43:57] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:43:57] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:44:08] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:44:08] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:44:08] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:44:08] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:44:08] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:44:08] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:44:08] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:44:09] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:44:09] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:44:09] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:44:09] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:44:09] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:44:09] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:44:09] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:44:09] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:44:09] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:49:20] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:49:20] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:49:20] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:49:20] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:49:20] session.loaded window_mode=normal window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} recent0=F:\dummy12
+[2026-06-13 13:49:20] session.loaded window_mode=normal window={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} recent0=F:\dummy12
+[2026-06-13 13:49:20] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:49:20] session.loaded window_mode=normal window={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} recent0=F:\dummy12
+[2026-06-13 13:49:21] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:49:21] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:49:21] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:49:21] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:49:21] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:49:21] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:49:21] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:49:21] window.restore.apply mode=normal target={["n"]=4,[1]=2048,[2]=1152,[3]=248,[4]=142} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:49:21] window.created size=2048,1152 pos=256,144 mode=normal
+[2026-06-13 13:49:21] window.restore.apply mode=normal target={[1]=2048,[2]=1152,[3]=248,[4]=142,["n"]=4} reason=matched-display id=1 bounds=0,0,2560,1440
+[2026-06-13 13:49:21] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal
+[2026-06-13 13:49:21] window.restore.after_apply size=2048,1152 pos=248,142 mode=normal

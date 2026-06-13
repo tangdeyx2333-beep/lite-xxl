@@ -1,0 +1,799 @@
+[2026-06-12 14:28:52] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=0
+[2026-06-12 14:28:52] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 14:31:25] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 14:31:25] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 14:31:25] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:25] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:25] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:25] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:25] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 14:31:25] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:25] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-12 14:31:25] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 14:31:25] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3256
+[2026-06-12 14:31:25] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 14:31:25] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 14:31:25] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-12 14:31:25] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-12 14:31:25] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 14:31:25] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-12 14:31:25] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-12 14:31:26] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 14:31:26] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 14:31:26] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:26] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:26] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:26] core.init before load_plugins root=F:\.a.github\lite-xxl config_visible=false config_size=0 restarted=false
+[2026-06-12 14:31:26] core.load_plugins before plugin=User Module root=F:\.a.github\lite-xxl config_visible=false config_size=0
+[2026-06-12 14:31:26] core.load_plugins after plugin=User Module ok=true root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-12 14:31:26] core.load_plugins before plugin=Project Module root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-12 14:31:26] core.load_plugins after plugin=Project Module ok=true root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-12 14:31:26] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:26] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 14:31:26] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:26] core.load_plugins before plugin=treeview root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-12 14:31:26] treeview:new root=F:\.a.github\lite-xxl config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 14:31:26] core.load_plugins after plugin=treeview ok=true root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-12 14:31:26] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-12 14:31:26] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 14:31:26] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 14:31:26] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 14:31:26] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 14:31:26] treeview:update init_size root=F:\.a.github\lite-xxl visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 14:31:26] treeview:update init_size applied root=F:\.a.github\lite-xxl size_x_after=0 target_size=0 init_size=false
+[2026-06-12 14:31:26] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 14:31:26] treeview:update animate root=F:\.a.github\lite-xxl visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 14:31:44] core.init before load_plugins root=D:\5EClient config_visible=false config_size=0 restarted=false
+[2026-06-12 14:31:44] core.load_plugins before plugin=User Module root=D:\5EClient config_visible=false config_size=0
+[2026-06-12 14:31:44] core.load_plugins after plugin=User Module ok=true root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 14:31:44] core.load_plugins before plugin=Project Module root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 14:31:44] core.load_plugins after plugin=Project Module ok=true root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 14:31:44] core.load_plugins apply pending treeview root=D:\5EClient visible=true size=256
+[2026-06-12 14:31:44] core.load_plugins before plugin=treeview root=D:\5EClient config_visible=true config_size=256
+[2026-06-12 14:31:44] treeview:new root=D:\5EClient config_visible=true config_size=256 visible=true target_size=256 init_size=true
+[2026-06-12 14:31:44] core.load_plugins after plugin=treeview ok=true root=D:\5EClient config_visible=true config_size=256
+[2026-06-12 14:31:44] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 14:31:44] treeview:update init_size root=D:\5EClient visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 14:31:44] treeview:update init_size applied root=D:\5EClient size_x_after=256 target_size=256 init_size=false
+[2026-06-12 14:31:44] treeview:update animate root=D:\5EClient visible=true size_x=256 target_size=256 dest=256
+[2026-06-12 14:31:44] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 14:31:44] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 14:31:44] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:44] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:44] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:44] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:44] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 14:31:44] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 14:31:45] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-12 14:31:45] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 14:31:45] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 14:31:45] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 14:31:45] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 17:45:42] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 17:45:43] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 17:45:43] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 17:45:43] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-12 17:45:43] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 17:45:43] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 17:45:43] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 17:45:43] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 17:45:43] core.init before load_plugins root=D:\5EClient config_visible=false config_size=0 restarted=false
+[2026-06-12 17:45:43] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 17:45:43] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 17:45:43] core.load_plugins before plugin=User Module root=D:\5EClient config_visible=false config_size=0
+[2026-06-12 17:45:43] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins after plugin=User Module ok=true root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins before plugin=Project Module root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins after plugin=Project Module ok=true root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins before plugin=treeview root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 17:45:43] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:43] treeview:new root=D:\5EClient config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 17:45:43] core.load_plugins after plugin=treeview ok=true root=D:\5EClient config_visible=true config_size=0
+[2026-06-12 17:45:43] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 17:45:43] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:45:44] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-12 17:45:44] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 17:45:44] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3256
+[2026-06-12 17:45:44] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 17:45:44] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 17:45:44] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-12 17:45:44] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-12 17:45:44] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 17:45:44] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-12 17:45:44] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 17:45:44] treeview:update init_size root=D:\5EClient visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 17:45:44] treeview:update init_size applied root=D:\5EClient size_x_after=0 target_size=0 init_size=false
+[2026-06-12 17:45:44] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-12 17:45:44] treeview:update animate root=D:\5EClient visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 17:46:36] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 17:46:36] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 17:46:36] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 17:46:36] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 17:46:36] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 17:46:36] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 17:46:36] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 17:46:36] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 17:46:36] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 17:46:36] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:36] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 17:46:36] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 17:46:37] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-12 17:46:37] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 17:46:37] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3256
+[2026-06-12 17:46:37] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 17:46:37] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 17:46:37] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-12 17:46:37] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-12 17:46:37] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 17:46:37] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-12 17:46:37] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-12 19:11:50] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 19:11:51] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 19:11:51] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 19:11:51] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-12 19:11:51] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 19:11:51] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3256
+[2026-06-12 19:11:51] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 19:11:51] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 19:11:51] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-12 19:11:51] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-12 19:11:51] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 19:11:51] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-12 19:11:51] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-12 19:11:51] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 19:11:51] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 19:11:51] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 19:11:51] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 19:11:51] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 19:11:51] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 19:11:51] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 19:11:51] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 19:11:51] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-12 19:11:51] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 19:11:51] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 19:11:51] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 19:11:51] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 19:11:51] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 19:11:51] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 19:11:51] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 21:00:37] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:00:37] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:00:37] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:00:37] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-12 21:00:37] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 21:00:37] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 21:00:37] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 21:00:37] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 21:00:37] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:00:37] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:00:37] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:00:37] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:00:37] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:00:37] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:00:37] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:00:37] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 21:00:37] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-12 21:00:37] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 21:00:37] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 21:00:37] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 21:00:37] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 21:00:37] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3256
+[2026-06-12 21:00:37] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 21:00:37] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 21:00:37] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-12 21:00:37] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-12 21:00:37] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 21:00:37] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-12 21:00:37] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-12 21:06:23] treeview.open_doc filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file selected=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml hovered=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml
+[2026-06-12 21:06:23] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-12 21:06:23] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 21:08:27] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:08:27] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:08:27] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:08:27] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-12 21:08:27] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 21:08:27] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3258
+[2026-06-12 21:08:27] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 21:08:27] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-12 21:08:27] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 21:08:27] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-12 21:08:27] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-12 21:08:27] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 21:08:27] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-12 21:08:27] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-12 21:08:27] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:08:27] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:08:27] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:08:27] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:08:27] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:08:27] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:08:27] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:08:27] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 21:08:27] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 21:08:27] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 21:08:27] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-12 21:08:27] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 21:08:27] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 21:08:27] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 21:08:27] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 21:08:27] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 21:12:34] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:12:34] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:12:34] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:12:34] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-12 21:12:34] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 21:12:34] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 21:12:34] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 21:12:34] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 21:12:34] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:12:34] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:12:34] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-12 21:12:34] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:12:34] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-12 21:12:34] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-12 21:12:34] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-12 21:12:34] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-12 21:12:34] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 21:12:34] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3258
+[2026-06-12 21:12:34] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-12 21:12:34] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-12 21:12:34] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-12 21:12:34] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-12 21:12:34] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-12 21:12:34] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-12 21:12:34] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-12 21:12:34] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-12 21:12:34] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-12 21:12:34] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-12 21:12:34] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-12 21:12:34] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 00:21:35] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 00:21:35] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:21:35] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:21:35] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-13 00:21:35] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-13 00:21:35] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-13 00:21:35] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-13 00:21:35] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 00:21:35] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:21:35] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 00:21:35] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:21:35] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:21:35] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:21:35] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:35] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-13 00:21:35] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:21:35] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 00:21:35] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-13 00:21:35] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:21:35] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:21:35] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-13 00:21:35] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-13 00:21:35] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 00:21:35] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:21:35] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 00:21:35] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 00:21:35] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 00:21:35] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 00:21:35] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-13 00:21:35] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 00:21:43] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3256
+[2026-06-13 00:21:43] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:21:50] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=true
+[2026-06-13 00:21:50] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:21:50] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:50] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:50] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:50] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:50] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:21:50] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:21:50] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-13 00:21:50] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:21:50] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 00:21:50] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:21:51] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 00:21:51] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:21:51] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3125
+[2026-06-13 00:21:51] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:21:51] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 00:21:51] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 00:21:51] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 00:21:51] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 00:21:51] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 00:22:01] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=true
+[2026-06-13 00:22:01] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:22:01] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:22:01] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:22:01] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:22:01] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:22:01] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:22:01] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:22:01] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-13 00:22:01] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:22:01] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 00:22:01] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:22:01] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 00:22:01] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:22:01] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 00:22:01] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:22:01] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 00:22:01] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 00:22:01] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 00:22:01] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 00:22:01] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 00:22:47] treeview.open_doc filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file selected=F:\dummy12\License.rtf hovered=F:\dummy12\License.rtf
+[2026-06-13 00:22:47] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 00:22:47] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:22:49] treeview.open_doc filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file selected=F:\dummy12\ReadMe.txt hovered=F:\dummy12\ReadMe.txt
+[2026-06-13 00:22:49] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 00:22:49] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:22:50] treeview.open_doc filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file selected=F:\dummy12\tmp\tslzhgd.sql hovered=F:\dummy12\tmp\tslzhgd.sql
+[2026-06-13 00:22:50] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-13 00:22:50] core.open_doc reuse abs=F:\dummy12\tmp\tslzhgd.sql new_file=false
+[2026-06-13 00:22:51] treeview.open_doc filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file selected=F:\dummy12\tmp\10m.txt hovered=F:\dummy12\tmp\10m.txt
+[2026-06-13 00:22:51] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 00:22:51] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:25:24] core.init before load_plugins root=F:\.a.github\lite-xxl config_visible=false config_size=0 restarted=false
+[2026-06-13 00:25:24] core.load_plugins before plugin=User Module root=F:\.a.github\lite-xxl config_visible=false config_size=0
+[2026-06-13 00:25:24] core.load_plugins after plugin=User Module ok=true root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-13 00:25:24] core.load_plugins before plugin=Project Module root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-13 00:25:24] core.load_plugins after plugin=Project Module ok=true root=F:\.a.github\lite-xxl config_visible=true config_size=0
+[2026-06-13 00:25:24] core.load_plugins apply pending treeview root=F:\.a.github\lite-xxl visible=true size=256
+[2026-06-13 00:25:24] core.load_plugins before plugin=treeview root=F:\.a.github\lite-xxl config_visible=true config_size=256
+[2026-06-13 00:25:24] treeview:new root=F:\.a.github\lite-xxl config_visible=true config_size=256 visible=true target_size=256 init_size=true
+[2026-06-13 00:25:24] core.load_plugins after plugin=treeview ok=true root=F:\.a.github\lite-xxl config_visible=true config_size=256
+[2026-06-13 00:25:24] treeview:update init_size root=F:\.a.github\lite-xxl visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 00:25:24] treeview:update init_size applied root=F:\.a.github\lite-xxl size_x_after=256 target_size=256 init_size=false
+[2026-06-13 00:25:24] treeview:update animate root=F:\.a.github\lite-xxl visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 00:25:28] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-13 00:25:49] treeview.open_doc filename=README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file selected=F:\.a.github\lite-xxl\README.md hovered=F:\.a.github\lite-xxl\README.md
+[2026-06-13 00:25:49] core.open_doc request filename=README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=1166
+[2026-06-13 00:25:49] core.open_doc created filename=README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:31:38] core.open_doc request filename=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 00:31:38] core.open_doc created filename=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:59:53] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 00:59:53] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:59:53] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-13 00:59:53] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 00:59:53] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:59:53] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 00:59:53] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 00:59:53] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 00:59:53] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 00:59:53] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 00:59:53] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 00:59:53] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 00:59:53] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:59:53] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:59:53] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 00:59:53] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:59:53] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 00:59:53] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 00:59:53] core.open_doc request filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt exists=true type=file size=9
+[2026-06-13 00:59:53] core.open_doc created filename=F:\.a.github\final\new-ico\app-name.txt abs=F:\.a.github\final\new-ico\app-name.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:59:53] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-13 00:59:53] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-13 00:59:53] core.open_doc created filename=nil abs=nil new_file=true is_large=nil is_wlpt=nil doc=Doc
+[2026-06-13 00:59:53] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=0 dest=0
+[2026-06-13 00:59:53] treeview:update init_size applied root=F:\dummy12 size_x_after=0 target_size=0 init_size=false
+[2026-06-13 00:59:54] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158383308
+[2026-06-13 00:59:54] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-13 00:59:54] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:59:54] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 00:59:54] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:59:54] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 00:59:54] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:59:54] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 00:59:54] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:59:54] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 00:59:54] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:59:54] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 00:59:54] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 00:59:54] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 00:59:54] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 00:59:54] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 00:59:54] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 00:59:54] treeview:update animate root=F:\dummy12 visible=true size_x=0 target_size=0 dest=0
+[2026-06-13 00:59:54] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 00:59:54] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 00:59:54] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 01:01:47] core.open_doc request filename=F:\.a.github\lite-xxl\resource\lite-xl\README.md abs=F:\.a.github\lite-xxl\resource\lite-xl\README.md exists=true type=file size=11148
+[2026-06-13 01:01:47] core.open_doc created filename=F:\.a.github\lite-xxl\resource\lite-xl\README.md abs=F:\.a.github\lite-xxl\resource\lite-xl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 01:02:08] core.open_doc request filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=1166
+[2026-06-13 01:02:08] core.open_doc created filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:55] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:43:56] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:43:56] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:43:56] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:43:56] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:43:56] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:56] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158380916
+[2026-06-13 13:43:56] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:56] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:43:56] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:56] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158380916
+[2026-06-13 13:43:56] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:43:56] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:56] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:43:56] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:56] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:43:57] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:57] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:57] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:43:57] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:43:57] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:57] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:57] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 13:43:57] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 13:43:57] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:57] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 13:43:57] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 13:43:57] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:57] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:57] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 13:43:57] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 13:43:57] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:57] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:57] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:43:57] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:43:57] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:43:57] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:43:57] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:43:57] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:43:57] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:43:57] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:43:57] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:43:57] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:43:57] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:43:57] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:43:57] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:43:57] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:43:57] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:43:57] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:43:57] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:43:57] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:43:57] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:57] core.open_doc request filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=2525
+[2026-06-13 13:43:57] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:43:57] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:43:57] core.open_doc request filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=2525
+[2026-06-13 13:43:57] core.open_doc created filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:57] core.open_doc created filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:43:57] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:43:57] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:43:57] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:43:57] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:43:57] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:43:57] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:43:57] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:43:57] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:43:58] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:43:58] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:44:08] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:44:08] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:44:08] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158380916
+[2026-06-13 13:44:08] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:08] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:44:08] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:08] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:44:08] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:08] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:44:08] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:08] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 13:44:08] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:08] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 13:44:08] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:08] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 13:44:08] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:08] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:44:08] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:44:08] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:44:08] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:44:08] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:44:08] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:44:08] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:44:08] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:44:08] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:44:08] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:44:08] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:44:08] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:44:09] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158380916
+[2026-06-13 13:44:09] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:09] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:44:09] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:09] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:44:09] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:44:09] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:44:09] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:09] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:09] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:44:09] core.open_doc request filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=2525
+[2026-06-13 13:44:09] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:09] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:09] core.open_doc request filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=2525
+[2026-06-13 13:44:09] core.open_doc created filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:09] core.open_doc created filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:09] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 13:44:09] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:09] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 13:44:09] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:44:09] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 13:44:09] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:44:09] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:44:09] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:44:09] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:44:09] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:44:09] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:44:09] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:44:09] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:44:09] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:44:09] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:44:09] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:44:09] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:44:09] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:44:09] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:44:09] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:44:09] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:49:20] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:49:20] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:49:20] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158380916
+[2026-06-13 13:49:20] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:20] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:49:20] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:20] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:49:20] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:20] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:49:20] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:20] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 13:49:20] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:20] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 13:49:20] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:20] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 13:49:20] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:20] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:49:20] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:49:20] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:49:20] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:49:20] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:49:20] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:49:20] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:49:20] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:49:20] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.init before load_plugins root=F:\dummy12 config_visible=false config_size=0 restarted=false
+[2026-06-13 13:49:20] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=User Module root=F:\dummy12 config_visible=false config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=User Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=Project Module root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins after plugin=Project Module ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:49:20] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:49:20] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] core.load_plugins before plugin=treeview root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:49:20] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] treeview:new root=F:\dummy12 config_visible=true config_size=0 visible=true target_size=0 init_size=true
+[2026-06-13 13:49:20] core.load_plugins after plugin=treeview ok=true root=F:\dummy12 config_visible=true config_size=0
+[2026-06-13 13:49:20] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] core.open_doc request filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=2525
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158380916
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql exists=true type=file size=158380916
+[2026-06-13 13:49:21] core.open_doc request filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md exists=true type=file size=2525
+[2026-06-13 13:49:21] core.open_doc created filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\tslzhgd.sql abs=F:\dummy12\tmp\tslzhgd.sql new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:49:21] core.open_doc created filename=F:\.a.github\lite-xxl\README.md abs=F:\.a.github\lite-xxl\README.md new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc request filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:49:21] core.open_doc created filename=F:\.a.github\lite-xxl\user\init.lua abs=F:\.a.github\lite-xxl\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml exists=true type=file size=14700487077
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml abs=F:\dummy12\tmp\zhwiki-latest-pages-articles\zhwiki-latest-pages-articles.xml new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] core.open_doc request filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua exists=true type=file size=3126
+[2026-06-13 13:49:21] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc created filename=F:\.a.github\final\user\init.lua abs=F:\.a.github\final\user\init.lua new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:49:21] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:49:21] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:49:21] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:49:21] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 13:49:21] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc request filename=License.rtf abs=F:\dummy12\License.rtf exists=true type=file size=5644
+[2026-06-13 13:49:21] core.open_doc created filename=License.rtf abs=F:\dummy12\License.rtf new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 13:49:21] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc request filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt exists=true type=file size=792
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 13:49:21] core.open_doc created filename=ReadMe.txt abs=F:\dummy12\ReadMe.txt new_file=false is_large=false is_wlpt=false doc=Doc
+[2026-06-13 13:49:21] core.open_doc request filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt exists=true type=file size=10526211
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] core.open_doc created filename=tmp\10m.txt abs=F:\dummy12\tmp\10m.txt new_file=false is_large=true is_wlpt=true doc=WlPtDoc
+[2026-06-13 13:49:21] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:49:21] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:49:21] ensure_treeview_visible before visible=true size_x=0 target_size=0 config_visible=true config_size=0 new_target=256
+[2026-06-13 13:49:21] ensure_treeview_visible after visible=true size_x=0 target_size=256
+[2026-06-13 13:49:21] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:49:21] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:49:21] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:49:21] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:49:21] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:49:21] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:49:21] treeview:update init_size root=F:\dummy12 visible=true size_x_before=0 target_size=256 dest=256
+[2026-06-13 13:49:21] treeview:update init_size applied root=F:\dummy12 size_x_after=256 target_size=256 init_size=false
+[2026-06-13 13:49:21] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:49:21] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:49:21] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
+[2026-06-13 13:49:21] treeview:update animate root=F:\dummy12 visible=true size_x=256 target_size=256 dest=256
