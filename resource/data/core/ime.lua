@@ -77,11 +77,18 @@ end
 ---@param w number
 ---@param h number
 function ime.set_location(x, y, w, h)
+  if not core.window then return end
+  -- Round to integers to avoid sub-pixel drift and threshold to
+  -- prevent the IME window from flickering during scroll animations.
+  x = math.floor(x + 0.5)
+  y = math.floor(y + 0.5)
+  w = math.floor(w + 0.5)
+  h = math.floor(h + 0.5)
   if not ime.last_location or
-     ime.last_location.x ~= x or
-     ime.last_location.y ~= y or
-     ime.last_location.w ~= w or
-     ime.last_location.h ~= h
+     math.abs(ime.last_location.x - x) > 1 or
+     math.abs(ime.last_location.y - y) > 1 or
+     math.abs(ime.last_location.w - w) > 1 or
+     math.abs(ime.last_location.h - h) > 1
   then
     ime.last_location.x, ime.last_location.y, ime.last_location.w, ime.last_location.h = x, y, w, h
     system.set_text_input_rect(core.window, x, y, w, h)

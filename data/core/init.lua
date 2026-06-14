@@ -1156,6 +1156,12 @@ function core.confirm_close_docs(docs, close_fn, ...)
     tostring(dirty_name)
   )
   if dirty_count > 0 then
+    for _, doc in ipairs(docs or core.docs) do
+      if doc:is_dirty() then
+        -- 中文说明：全局退出确认会直接进入强制关闭流程，这里标记用户已经选择丢弃未保存修改。
+        doc._close_without_saving_requested = true
+      end
+    end
     local text
     if dirty_count == 1 then
       text = string.format("\"%s\" has unsaved changes. Quit anyway?", dirty_name)
@@ -1837,7 +1843,7 @@ end
 
 
 function core.compose_window_title(title)
-  return (title == "" or title == nil) and "Lite XL" or title .. " - Lite XL"
+  return (title == "" or title == nil) and "lite-xxl" or title .. " - lite-xxl"
 end
 
 

@@ -201,7 +201,7 @@ core.add_thread(function()
     local s = {}
     local syntax_symbols = load_syntax_symbols(doc)
     local max_symbols = config.plugins.autocomplete.max_symbols
-    if doc.disable_symbols then return s end
+    if doc.disable_symbols or doc:is_large_file_mode() or not doc:supports_full_line_array() then return s end
     local i = 1
     local symbols_count = 0
     while i <= #doc.lines do
@@ -843,6 +843,10 @@ command.add(predicate, {
   ["autocomplete:complete"] = function(dv)
     local doc = dv.doc
     local item = suggestions[suggestions_idx]
+    if not item then
+      reset_suggestions()
+      return
+    end
     local inserted = false
     if item.onselect then
       inserted = item.onselect(suggestions_idx, item)
@@ -853,7 +857,7 @@ command.add(predicate, {
 
       for _, line1, col1, line2, _ in doc:get_selections(true) do
         local n = col1 - 1
-        local line = doc.lines[line1]
+        local line = doc.get_line and doc:get_line(line1) or (doc.lines and doc.lines[line1]) or "\n"
         for i = 1, sz + 1 do
           local j = sz - i
           local subline = line:sub(n - j, n)
@@ -906,10 +910,12 @@ command.add(predicate, {
 -- Keymaps
 --
 keymap.add {
-  ["tab"]    = "autocomplete:complete",
-  ["up"]     = "autocomplete:previous",
-  ["down"]   = "autocomplete:next",
-  ["escape"] = "autocomplete:cancel",
+  ["tab"]          = "autocomplete:complete",
+  ["return"]       = "autocomplete:complete",
+  ["keypad enter"] = "autocomplete:complete",
+  ["up"]           = "autocomplete:previous",
+  ["down"]         = "autocomplete:next",
+  ["escape"]       = "autocomplete:cancel",
 }
 
 

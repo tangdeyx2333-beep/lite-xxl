@@ -48,6 +48,9 @@ end
 ---line where the caret is currently positioned.
 ---@param doc core.doc
 function trimwhitespace.trim(doc)
+  if doc.disable_trim_whitespace or doc:is_large_file_mode() or not doc:supports_full_line_array() then
+    return
+  end
   local cline, ccol = doc:get_selection()
   for i = 1, #doc.lines do
     local old_text = doc:get_text(i, 1, i, math.huge)
@@ -69,6 +72,9 @@ end
 ---@param doc core.doc
 ---@param raw_remove? boolean Perform the removal not registering to undo stack
 function trimwhitespace.trim_empty_end_lines(doc, raw_remove)
+  if doc.disable_trim_whitespace or doc:is_large_file_mode() or not doc:supports_full_line_array() then
+    return
+  end
   for _=#doc.lines, 1, -1 do
     local l = #doc.lines
     if l > 1 and doc.lines[l] == "\n" then

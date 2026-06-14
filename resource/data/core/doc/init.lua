@@ -6,6 +6,70 @@ local syntax = require "core.syntax"
 local config = require "core.config"
 local common = require "core.common"
 
+local function has_binary_bytes(text)
+  return type(text) == "string" and text:find("\0", 1, true) ~= nil
+end
+
+local binary_hex = {}
+for i = 0, 255 do
+  binary_hex[i] = string.format("%02X", i)
+end
+
+local function binary_ascii_preview(byte)
+  if byte >= 32 and byte <= 126 then
+    return string.char(byte)
+  end
+  return "."
+end
+
+local function format_binary_hex_line(offset, bytes)
+  local hex_parts = {}
+  local ascii_parts = {}
+  for i = 1, 16 do
+    local byte = bytes:byte(i)
+    if byte then
+      hex_parts[#hex_parts + 1] = binary_hex[byte]
+      ascii_parts[#ascii_parts + 1] = binary_ascii_preview(byte)
+    else
+      hex_parts[#hex_parts + 1] = "  "
+    end
+    if i == 8 then
+      hex_parts[#hex_parts + 1] = ""
+    end
+  end
+  return string.format("%08X  %s  %s\n", offset, table.concat(hex_parts, " "), table.concat(ascii_parts))
+end
+
+local function notify_binary_readonly(self)
+  if not self._binary_readonly_notified or (system.get_time() - self._binary_readonly_notified) > 1.5 then
+    self._binary_readonly_notified = system.get_time()
+    local message = string.format("Binary hex view is read-only: %s", tostring(self:get_name()))
+    core.log("%s", message)
+  end
+end
+
+local function doc_input_trace(fmt, ...)
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then text = tostring(fmt) end
+  local fp = io.open(USERDIR .. PATHSEP .. "wlpt-debug.log", "a")
+  if fp then
+    fp:write(os.date("%Y-%m-%d %H:%M:%S"), " [DEBUG-doc-input] ", text, "\n")
+    fp:close()
+  end
+end
+
+local function syntax_trace(fmt, ...)
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then
+    text = tostring(fmt)
+  end
+  local fp = io.open(USERDIR .. PATHSEP .. "wlpt-syntax-debug.log", "a")
+  if fp then
+    fp:write(os.date("%Y-%m-%d %H:%M:%S"), " ", text, "\n")
+    fp:close()
+  end
+end
+
 ---Show Windows SaveFileDialog and return selected file path
 ---@return string? filename
 local function show_save_dialog(initial_filename)
@@ -82,10 +146,35 @@ function Doc:reset()
   self.loading_error = nil
   self.loading_cancelled = false
   self.disable_undo = false
+  self.binary_mode = false
+  self.binary_bytes_per_line = nil
+  self._binary_readonly_notified = nil
+  self.logical_syntax = nil
   self:reset_syntax()
 end
 
 function Doc:reset_syntax()
+  local header = self:get_text(1, 1, self:position_offset(1, 1, 128))
+  local path = self.abs_filename
+  if not path and self.filename then
+    path = core.project_dir .. PATHSEP .. self.filename
+  end
+  if path then path = common.normalize_path(path) end
+  local logical_syn
+  if self.binary_mode or has_binary_bytes(header) then
+    logical_syn = syntax.plain_text_syntax
+  else
+    logical_syn = syntax.get(path, header)
+  end
+  self.logical_syntax = logical_syn
+  syntax_trace(
+    "doc.reset_syntax file=%s is_large=%s display_before=%s logical=%s disable_highlight=%s",
+    tostring(self.abs_filename or self.filename),
+    tostring(self.is_large_file),
+    tostring(self.syntax and self.syntax.name),
+    tostring(logical_syn and logical_syn.name),
+    tostring(config.large_file_disable_highlight)
+  )
   if self.is_large_file and config.large_file_disable_highlight then
     local syn = syntax.get("plain_text", "")
     if self.syntax ~= syn then
@@ -94,17 +183,33 @@ function Doc:reset_syntax()
     end
     return
   end
-  local header = self:get_text(1, 1, self:position_offset(1, 1, 128))
-  local path = self.abs_filename
-  if not path and self.filename then
-    path = core.project_dir .. PATHSEP .. self.filename
-  end
-  if path then path = common.normalize_path(path) end
-  local syn = syntax.get(path, header)
+  local syn = logical_syn
   if self.syntax ~= syn then
     self.syntax = syn
     self.highlighter:soft_reset()
   end
+end
+
+function Doc:get_command_syntax()
+  local result
+  if self.is_large_file
+    and config.large_file_enable_syntax_features
+    and self.logical_syntax
+  then
+    result = self.logical_syntax
+  else
+    result = self.syntax
+  end
+  syntax_trace(
+    "doc.get_command_syntax file=%s is_large=%s enable_syntax_features=%s display=%s logical=%s result=%s",
+    tostring(self.abs_filename or self.filename),
+    tostring(self.is_large_file),
+    tostring(config.large_file_enable_syntax_features),
+    tostring(self.syntax and self.syntax.name),
+    tostring(self.logical_syntax and self.logical_syntax.name),
+    tostring(result and result.name)
+  )
+  return result
 end
 
 function Doc:set_filename(filename, abs_filename)
@@ -113,15 +218,77 @@ function Doc:set_filename(filename, abs_filename)
   self:reset_syntax()
 end
 
-function Doc:load(filename)
-  local fp, open_err = io.open(filename, "rb")
+function Doc:line_count()
+  return math.max(#self.lines, 1)
+end
+
+function Doc:get_line(line)
+  return self.lines[line] or "\n"
+end
+
+function Doc:get_line_length(line)
+  return #self:get_line(line)
+end
+
+function Doc:get_all_text()
+  return table.concat(self.lines)
+end
+
+function Doc:get_loading_state()
+  return {
+    loading = self.loading,
+    error = self.loading_error,
+    progress = self.loading_progress,
+    progress_lines = self.loading_progress_lines,
+    progress_bytes = self.loading_progress_bytes,
+    total_bytes = self.loading_total_bytes,
+  }
+end
+
+function Doc:is_view_ready(start_line, end_line)
+  return not self.loading and not self.loading_error
+end
+
+function Doc:request_visible_window(start_line, end_line, margin)
+  self.requested_visible_window = {
+    start_line = start_line,
+    end_line = end_line,
+    margin = margin or 0,
+  }
+end
+
+function Doc:poll_ready_window(budget_hint)
+  if self.loading or self.loading_error then
+    return nil
+  end
+  return self.requested_visible_window
+end
+
+function Doc:cancel_noncritical_work()
+  return false
+end
+
+function Doc:supports_full_line_array()
+  return true
+end
+
+function Doc:is_large_file_mode()
+  return self.is_large_file
+end
+
+function Doc:start_loading(filename, file_info)
+  self:load(filename)
+end
+
+function Doc:load(filename, abs_filename)
+  local fp, open_err = io.open(abs_filename or filename, "rb")
   if not fp then
     self.loading = false
     self.loading_error = open_err or "Unable to open file"
     core.redraw = true
     return
   end
-  local file_info = system.get_file_info(filename)
+  local file_info = system.get_file_info(abs_filename or filename)
   local was_loading = self.loading
   local was_large_file = self.is_large_file
   local was_disable_undo = self.disable_undo
@@ -138,6 +305,10 @@ function Doc:load(filename)
   self.loading_error = nil
   self.lines = {}
 
+  local header = fp:read(4096) or ""
+  local binary_mode = has_binary_bytes(header)
+  fp:seek("set", 0)
+
   local chunk_size = math.max(4096, config.large_file_read_chunk_size or (256 * 1024))
   local time_budget = math.max(0.0005, config.large_file_load_time_budget or 0.0025)
   local pending = ""
@@ -145,7 +316,14 @@ function Doc:load(filename)
   local bytes_since_yield = 0
 
   local function maybe_yield(force)
-    if not coroutine.running() then return end
+    local can_yield
+    if coroutine.isyieldable then
+      can_yield = coroutine.isyieldable()
+    else
+      local _, is_main = coroutine.running()
+      can_yield = not is_main
+    end
+    if not can_yield then return end
     if force or bytes_since_yield >= chunk_size or (system.get_time() - core.frame_start) >= time_budget then
       bytes_since_yield = 0
       self.loading_progress = self.loading_progress_lines
@@ -174,6 +352,52 @@ function Doc:load(filename)
     i = i + 1
     self.loading_progress_lines = i - 1
     self.loading_progress = self.loading_progress_lines
+  end
+
+  local function append_binary_line(offset, bytes)
+    self.lines[i] = format_binary_hex_line(offset, bytes)
+    self.highlighter.lines[i] = false
+    i = i + 1
+    self.loading_progress_lines = i - 1
+    self.loading_progress = self.loading_progress_lines
+  end
+
+  if binary_mode then
+    self.binary_mode = true
+    self.binary_bytes_per_line = 16
+    self.disable_undo = true
+    self.syntax = syntax.plain_text_syntax
+    self.logical_syntax = syntax.plain_text_syntax
+    while true do
+      if self.loading_cancelled then
+        fp:close()
+        return
+      end
+
+      local bytes = fp:read(16)
+      if not bytes or #bytes == 0 then
+        break
+      end
+
+      append_binary_line(self.loading_progress_bytes, bytes)
+      self.loading_progress_bytes = self.loading_progress_bytes + #bytes
+      bytes_since_yield = bytes_since_yield + #bytes
+      maybe_yield(false)
+    end
+
+    if #self.lines == 0 then
+      append_binary_line(0, "")
+    end
+    fp:close()
+    self.loading = false
+    self.loading_progress = #self.lines
+    self.loading_progress_lines = #self.lines
+    self.loading_progress_bytes = self.loading_total_bytes
+    self.loading_cancelled = false
+    self:reset_syntax()
+    self:clean()
+    core.redraw = true
+    return
   end
 
   while true do
@@ -231,13 +455,19 @@ end
 function Doc:reload()
   if self.filename then
     local sel = { self:get_selection() }
-    self:load(self.abs_filename)
+    self:load(self.filename, self.abs_filename)
     self:clean()
     self:set_selection(table.unpack(sel))
   end
 end
 
 function Doc:save(filename, abs_filename)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    error("Binary hex view is read-only.")
+    return
+  end
+
   -- If no filename is provided and the doc has no filename, show save dialog on Windows
   if not filename and not self.filename and not self.abs_filename then
     if PLATFORM == "Windows" then
@@ -262,20 +492,45 @@ function Doc:save(filename, abs_filename)
     assert(self.filename or abs_filename, "calling save on unnamed doc without absolute path")
   end
 
+  local file_info = abs_filename and system.get_file_info(abs_filename)
+  if file_info and file_info.type == "file" and file_info.readonly then
+    error("Target file is read-only. Use Save As or clear the read-only attribute.")
+    return
+  end
+
   local fp
   if PLATFORM == "Windows" then
     -- On Windows, opening a hidden file with wb fails with a permission error.
     -- To get around this, we must open the file as r+b and truncate.
     -- Since r+b fails if file doesn't exist, fall back to wb.
-    fp = io.open(abs_filename, "r+b")
+    fp = io.open(abs_filename or filename, "r+b")
     if fp then
       system.ftruncate(fp)
     else
-      -- file probably doesn't exist, create one
-      fp = assert (io.open(abs_filename, "wb"))
+      local fallback_fp = io.open(abs_filename or filename, "wb")
+      if fallback_fp then
+        fp = fallback_fp
+      else
+        local tmp_filename = (abs_filename or filename) .. ".lite-xl-save.tmp"
+        local tmp_fp = assert(io.open(tmp_filename, "wb"))
+        for _, line in ipairs(self.lines) do
+          if self.crlf then line = line:gsub("\n", "\r\n") end
+          tmp_fp:write(line)
+        end
+        tmp_fp:close()
+        local replaced = os.rename(tmp_filename, abs_filename or filename)
+        if not replaced then
+          os.remove(tmp_filename)
+          error("Unable to save file: permission denied")
+        end
+        self:set_filename(filename, abs_filename)
+        self.new_file = false
+        self:clean()
+        return
+      end
     end
   else
-    fp = assert (io.open(abs_filename, "wb"))
+    fp = assert (io.open(abs_filename or filename, "wb"))
   end
 
   for _, line in ipairs(self.lines) do
@@ -451,13 +706,13 @@ end
 -- End of cursor seciton.
 
 function Doc:sanitize_position(line, col)
-  local nlines = #self.lines
+  local nlines = self:line_count()
   if line > nlines then
-    return nlines, #self.lines[nlines]
+    return nlines, self:get_line_length(nlines)
   elseif line < 1 then
     return 1, 1
   end
-  return line, common.clamp(col, 1, #self.lines[line])
+  return line, common.clamp(col, 1, self:get_line_length(line))
 end
 
 local function position_offset_func(self, line, col, fn, ...)
@@ -471,10 +726,10 @@ local function position_offset_byte(self, line, col, offset)
   col = col + offset
   while line > 1 and col < 1 do
     line = line - 1
-    col = col + #self.lines[line]
+    col = col + self:get_line_length(line)
   end
-  while line < #self.lines and col > #self.lines[line] do
-    col = col - #self.lines[line]
+  while line < self:line_count() and col > self:get_line_length(line) do
+    col = col - self:get_line_length(line)
     line = line + 1
   end
   return self:sanitize_position(line, col)
@@ -514,19 +769,19 @@ function Doc:get_text(line1, col1, line2, col2, inclusive)
   line1, col1, line2, col2 = sort_positions(line1, col1, line2, col2)
   local col2_offset = inclusive and 0 or 1
   if line1 == line2 then
-    return self.lines[line1]:sub(col1, col2 - col2_offset)
+    return self:get_line(line1):sub(col1, col2 - col2_offset)
   end
-  local lines = { self.lines[line1]:sub(col1) }
+  local lines = { self:get_line(line1):sub(col1) }
   for i = line1 + 1, line2 - 1 do
-    table.insert(lines, self.lines[i])
+    table.insert(lines, self:get_line(i))
   end
-  table.insert(lines, self.lines[line2]:sub(1, col2 - col2_offset))
+  table.insert(lines, self:get_line(line2):sub(1, col2 - col2_offset))
   return table.concat(lines)
 end
 
 function Doc:get_char(line, col)
   line, col = self:sanitize_position(line, col)
-  return self.lines[line]:sub(col, col)
+  return self:get_line(line):sub(col, col)
 end
 
 local function push_undo(undo_stack, time, type, ...)
@@ -662,6 +917,10 @@ function Doc:raw_remove(line1, col1, line2, col2, undo_stack, time)
 end
 
 function Doc:insert(line, col, text)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   self.redo_stack = { idx = 1 }
   -- Reset the clean id when we're pushing something new before it
@@ -674,6 +933,10 @@ function Doc:insert(line, col, text)
 end
 
 function Doc:remove(line1, col1, line2, col2)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   self.redo_stack = { idx = 1 }
   line1, col1 = self:sanitize_position(line1, col1)
@@ -684,17 +947,39 @@ function Doc:remove(line1, col1, line2, col2)
 end
 
 function Doc:undo()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   pop_undo(self, self.undo_stack, self.redo_stack, false)
 end
 
 function Doc:redo()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   pop_undo(self, self.redo_stack, self.undo_stack, false)
 end
 
 function Doc:text_input(text, idx)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
+  local s1, c1, s2, c2 = self:get_selection(true)
+  doc_input_trace(
+    "text_input.before file=%s text_len=%s sel=%s:%s-%s:%s",
+    tostring(self.abs_filename or self.filename or "<unsaved>"),
+    tostring(#(text or "")),
+    tostring(s1),
+    tostring(c1),
+    tostring(s2),
+    tostring(c2)
+  )
   for sidx, line1, col1, line2, col2 in self:get_selections(true, idx or true) do
     local had_selection = false
     if line1 ~= line2 or col1 ~= col2 then
@@ -712,10 +997,36 @@ function Doc:text_input(text, idx)
     self:insert(line1, col1, text)
     self:move_to_cursor(sidx, #text)
   end
+  s1, c1, s2, c2 = self:get_selection(true)
+  doc_input_trace(
+    "text_input.after file=%s text_len=%s sel=%s:%s-%s:%s",
+    tostring(self.abs_filename or self.filename or "<unsaved>"),
+    tostring(#(text or "")),
+    tostring(s1),
+    tostring(c1),
+    tostring(s2),
+    tostring(c2)
+  )
 end
 
 function Doc:ime_text_editing(text, start, length, idx)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
+  local s1, c1, s2, c2 = self:get_selection(true)
+  doc_input_trace(
+    "ime_text_editing.before file=%s text_len=%s start=%s length=%s sel=%s:%s-%s:%s",
+    tostring(self.abs_filename or self.filename or "<unsaved>"),
+    tostring(#(text or "")),
+    tostring(start),
+    tostring(length),
+    tostring(s1),
+    tostring(c1),
+    tostring(s2),
+    tostring(c2)
+  )
   for sidx, line1, col1, line2, col2 in self:get_selections(true, idx or true) do
     if line1 ~= line2 or col1 ~= col2 then
       self:delete_to_cursor(sidx)
@@ -723,6 +1034,18 @@ function Doc:ime_text_editing(text, start, length, idx)
     self:insert(line1, col1, text)
     self:set_selections(sidx, line1, col1 + #text, line1, col1)
   end
+  s1, c1, s2, c2 = self:get_selection(true)
+  doc_input_trace(
+    "ime_text_editing.after file=%s text_len=%s start=%s length=%s sel=%s:%s-%s:%s",
+    tostring(self.abs_filename or self.filename or "<unsaved>"),
+    tostring(#(text or "")),
+    tostring(start),
+    tostring(length),
+    tostring(s1),
+    tostring(c1),
+    tostring(s2),
+    tostring(c2)
+  )
 end
 
 function Doc:replace_cursor(idx, line1, col1, line2, col2, fn)

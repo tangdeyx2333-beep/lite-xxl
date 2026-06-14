@@ -23,6 +23,7 @@ local function docview_trace(fmt, ...)
     fp:close()
   end
 end
+
 local function get_render_highlighter(doc)
   if doc and doc.is_large_file_mode and doc:is_large_file_mode()
     and not config.large_file_disable_highlight
@@ -193,6 +194,8 @@ function DocView:try_close(do_close)
   and #core.get_views_referencing_doc(self.doc) == 1 then
     if self.close_confirm_pending and is_unsaved_confirm_active then
       self.close_confirm_pending = false
+      -- 中文说明：用户第二次触发关闭确认，等同于明确选择“不保存关闭”。
+      self.doc._close_without_saving_requested = true
       do_close()
       return
     end
@@ -202,8 +205,11 @@ function DocView:try_close(do_close)
       submit = function(_, item)
         self.close_confirm_pending = false
         if item.text:match("^[cC]") then
+          -- 中文说明：记录用户明确选择 Close Without Saving，后续 WLPT 关闭日志会读取这个标记。
+          self.doc._close_without_saving_requested = true
           do_close()
         elseif item.text:match("^[sS]") then
+          self.doc._close_without_saving_requested = false
           self.doc:save()
           do_close()
         end
@@ -220,6 +226,9 @@ function DocView:try_close(do_close)
     })
   else
     self.close_confirm_pending = false
+    if self.doc then
+      self.doc._close_without_saving_requested = false
+    end
     do_close()
   end
 end

@@ -199,6 +199,12 @@ function DocView:draw_line_text(idx, x, y)
   if
     not config.plugins.drawwhitespace.enabled
     or
+    self.doc.disable_draw_whitespace
+    or
+    self.doc:is_large_file_mode()
+    or
+    not self.doc:supports_full_line_array()
+    or
     getmetatable(self) ~= DocView
   then
     return draw_line_text(self, idx, x, y)

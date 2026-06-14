@@ -7,6 +7,14 @@ local system = require "system"
 ---@class core.wlptdoc : core.largefiledoc
 local WlPtDoc = LargeFileDoc:extend()
 
+local function notify_binary_readonly(self)
+  if not self._large_file_readonly_notified or (system.get_time() - self._large_file_readonly_notified) > 1.5 then
+    self._large_file_readonly_notified = system.get_time()
+    local message = string.format("Binary hex view is read-only: %s", tostring(self:get_name()))
+    core.log("%s", message)
+  end
+end
+
 local function localize_save_error(err)
   local raw = tostring(err or "unknown error")
   local lower = raw:lower()
@@ -452,6 +460,11 @@ function WlPtDoc:is_dirty()
 end
 
 function WlPtDoc:save(filename, abs_filename)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    error("Binary hex view is read-only.")
+  end
+
   local session = get_session(self)
   if not session then
     return WlPtDoc.super.save(self, filename, abs_filename)
@@ -491,6 +504,10 @@ function WlPtDoc:save(filename, abs_filename)
 end
 
 function WlPtDoc:insert(line, col, text)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error or self.wlpt_session:is_save_in_progress() then
     return false
   end
@@ -507,6 +524,10 @@ function WlPtDoc:insert(line, col, text)
 end
 
 function WlPtDoc:remove(line1, col1, line2, col2)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error or self.wlpt_session:is_save_in_progress() then
     return false
   end
@@ -523,6 +544,10 @@ function WlPtDoc:remove(line1, col1, line2, col2)
 end
 
 function WlPtDoc:text_input(text, idx)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error or self.wlpt_session:is_save_in_progress() then
     return false
   end
@@ -558,6 +583,10 @@ function WlPtDoc:text_input(text, idx)
 end
 
 function WlPtDoc:ime_text_editing(text, start, length, idx)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error or self.wlpt_session:is_save_in_progress() then
     return false
   end
@@ -593,6 +622,10 @@ function WlPtDoc:ime_text_editing(text, start, length, idx)
 end
 
 function WlPtDoc:undo()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error or self.wlpt_session:is_save_in_progress() then
     return false
   end
@@ -608,6 +641,10 @@ function WlPtDoc:undo()
 end
 
 function WlPtDoc:redo()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error or self.wlpt_session:is_save_in_progress() then
     return false
   end

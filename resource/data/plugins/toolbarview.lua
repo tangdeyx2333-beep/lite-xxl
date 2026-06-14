@@ -18,7 +18,7 @@ function ToolbarView:new()
   self.toolbar_font = style.icon_big_font
   self.toolbar_commands = {
     {symbol = "f", command = "core:new-doc"},
-    {symbol = "D", command = "core:open-file"},
+    {symbol = "D", command = "core:open-project-folder-picker"},
     {symbol = "S", command = "doc:save"},
     {symbol = "L", command = "core:find-file"},
     {symbol = "B", command = "core:find-command"},

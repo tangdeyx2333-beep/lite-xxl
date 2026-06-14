@@ -10,6 +10,44 @@ local function has_binary_bytes(text)
   return type(text) == "string" and text:find("\0", 1, true) ~= nil
 end
 
+local binary_hex = {}
+for i = 0, 255 do
+  binary_hex[i] = string.format("%02X", i)
+end
+
+local function binary_ascii_preview(byte)
+  if byte >= 32 and byte <= 126 then
+    return string.char(byte)
+  end
+  return "."
+end
+
+local function format_binary_hex_line(offset, bytes)
+  local hex_parts = {}
+  local ascii_parts = {}
+  for i = 1, 16 do
+    local byte = bytes:byte(i)
+    if byte then
+      hex_parts[#hex_parts + 1] = binary_hex[byte]
+      ascii_parts[#ascii_parts + 1] = binary_ascii_preview(byte)
+    else
+      hex_parts[#hex_parts + 1] = "  "
+    end
+    if i == 8 then
+      hex_parts[#hex_parts + 1] = ""
+    end
+  end
+  return string.format("%08X  %s  %s\n", offset, table.concat(hex_parts, " "), table.concat(ascii_parts))
+end
+
+local function notify_binary_readonly(self)
+  if not self._binary_readonly_notified or (system.get_time() - self._binary_readonly_notified) > 1.5 then
+    self._binary_readonly_notified = system.get_time()
+    local message = string.format("Binary hex view is read-only: %s", tostring(self:get_name()))
+    core.log("%s", message)
+  end
+end
+
 local function doc_input_trace(fmt, ...)
   local ok, text = pcall(string.format, fmt, ...)
   if not ok then text = tostring(fmt) end
@@ -108,6 +146,9 @@ function Doc:reset()
   self.loading_error = nil
   self.loading_cancelled = false
   self.disable_undo = false
+  self.binary_mode = false
+  self.binary_bytes_per_line = nil
+  self._binary_readonly_notified = nil
   self.logical_syntax = nil
   self:reset_syntax()
 end
@@ -120,7 +161,7 @@ function Doc:reset_syntax()
   end
   if path then path = common.normalize_path(path) end
   local logical_syn
-  if has_binary_bytes(header) then
+  if self.binary_mode or has_binary_bytes(header) then
     logical_syn = syntax.plain_text_syntax
   else
     logical_syn = syntax.get(path, header)
@@ -264,6 +305,10 @@ function Doc:load(filename, abs_filename)
   self.loading_error = nil
   self.lines = {}
 
+  local header = fp:read(4096) or ""
+  local binary_mode = has_binary_bytes(header)
+  fp:seek("set", 0)
+
   local chunk_size = math.max(4096, config.large_file_read_chunk_size or (256 * 1024))
   local time_budget = math.max(0.0005, config.large_file_load_time_budget or 0.0025)
   local pending = ""
@@ -307,6 +352,52 @@ function Doc:load(filename, abs_filename)
     i = i + 1
     self.loading_progress_lines = i - 1
     self.loading_progress = self.loading_progress_lines
+  end
+
+  local function append_binary_line(offset, bytes)
+    self.lines[i] = format_binary_hex_line(offset, bytes)
+    self.highlighter.lines[i] = false
+    i = i + 1
+    self.loading_progress_lines = i - 1
+    self.loading_progress = self.loading_progress_lines
+  end
+
+  if binary_mode then
+    self.binary_mode = true
+    self.binary_bytes_per_line = 16
+    self.disable_undo = true
+    self.syntax = syntax.plain_text_syntax
+    self.logical_syntax = syntax.plain_text_syntax
+    while true do
+      if self.loading_cancelled then
+        fp:close()
+        return
+      end
+
+      local bytes = fp:read(16)
+      if not bytes or #bytes == 0 then
+        break
+      end
+
+      append_binary_line(self.loading_progress_bytes, bytes)
+      self.loading_progress_bytes = self.loading_progress_bytes + #bytes
+      bytes_since_yield = bytes_since_yield + #bytes
+      maybe_yield(false)
+    end
+
+    if #self.lines == 0 then
+      append_binary_line(0, "")
+    end
+    fp:close()
+    self.loading = false
+    self.loading_progress = #self.lines
+    self.loading_progress_lines = #self.lines
+    self.loading_progress_bytes = self.loading_total_bytes
+    self.loading_cancelled = false
+    self:reset_syntax()
+    self:clean()
+    core.redraw = true
+    return
   end
 
   while true do
@@ -371,6 +462,12 @@ function Doc:reload()
 end
 
 function Doc:save(filename, abs_filename)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    error("Binary hex view is read-only.")
+    return
+  end
+
   -- If no filename is provided and the doc has no filename, show save dialog on Windows
   if not filename and not self.filename and not self.abs_filename then
     if PLATFORM == "Windows" then
@@ -820,6 +917,10 @@ function Doc:raw_remove(line1, col1, line2, col2, undo_stack, time)
 end
 
 function Doc:insert(line, col, text)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   self.redo_stack = { idx = 1 }
   -- Reset the clean id when we're pushing something new before it
@@ -832,6 +933,10 @@ function Doc:insert(line, col, text)
 end
 
 function Doc:remove(line1, col1, line2, col2)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   self.redo_stack = { idx = 1 }
   line1, col1 = self:sanitize_position(line1, col1)
@@ -842,16 +947,28 @@ function Doc:remove(line1, col1, line2, col2)
 end
 
 function Doc:undo()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   pop_undo(self, self.undo_stack, self.redo_stack, false)
 end
 
 function Doc:redo()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   pop_undo(self, self.redo_stack, self.undo_stack, false)
 end
 
 function Doc:text_input(text, idx)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   local s1, c1, s2, c2 = self:get_selection(true)
   doc_input_trace(
@@ -893,6 +1010,10 @@ function Doc:text_input(text, idx)
 end
 
 function Doc:ime_text_editing(text, start, length, idx)
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
   if self.loading or self.loading_error then return end
   local s1, c1, s2, c2 = self:get_selection(true)
   doc_input_trace(

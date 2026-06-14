@@ -541,23 +541,15 @@ function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
 end
 
 function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalone)
-  -- Tabs deviders
   local ds = style.divider_size
-  local color = style.dim
-  local padding_y = style.padding.y
-  renderer.draw_rect(x + w, y + padding_y, ds, h - padding_y*2, style.dim)
   if standalone then
     renderer.draw_rect(x-1, y-1, w+2, h+2, style.background2)
   end
-  -- Full border
+  -- Sublime Text style: active tab gets a bottom highlight line
   if is_active then
-    color = style.text
-    renderer.draw_rect(x, y, w, h, style.background)
-    renderer.draw_rect(x, y, w, ds, style.divider)
-    renderer.draw_rect(x + w, y, ds, h, style.divider)
-    renderer.draw_rect(x - ds, y, ds, h, style.divider)
+    renderer.draw_rect(x, y + h - ds, w, ds, style.accent)
   end
-  return x + ds, y, w - ds*2, h
+  return x, y, w, h
 end
 
 function Node:draw_tab(view, is_active, is_hovered, is_close_hovered, x, y, w, h, standalone)

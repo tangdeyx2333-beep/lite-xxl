@@ -16,6 +16,8 @@
 #endif
 
 #define LARGEFILE_INDEX_CHUNK_SIZE (256 * 1024)
+#define LARGEFILE_BINARY_DETECT_BYTES 4096
+#define LARGEFILE_BINARY_BYTES_PER_LINE 16
 
 typedef struct LargeFileSaveLine {
   char *text;
@@ -62,6 +64,9 @@ static bool largefile_backend_try_prepare_window(LargeFileBackend *backend);
 static bool largefile_backend_load_window(LargeFileBackend *backend, size_t start_line, size_t end_line, size_t requested_start_line, size_t requested_end_line, size_t margin, size_t epoch);
 static bool largefile_backend_read_normalized_line(FILE *fp, const LargeFileBackend *backend, size_t line, char **buffer, size_t *len);
 static bool largefile_read_normalized_line_from_index(FILE *fp, const LargeFileIndex *index, size_t line, char **buffer, size_t *len);
+static bool largefile_backend_detect_binary(FILE *fp);
+static size_t largefile_backend_binary_line_count(uint64_t file_size);
+static char *largefile_backend_format_binary_line(FILE *fp, uint64_t offset, uint64_t file_size, size_t *len_out);
 
 static size_t largefile_saturating_add_size(size_t a, size_t b) {
   return a > SIZE_MAX - b ? SIZE_MAX : a + b;
@@ -142,6 +147,81 @@ static uint64_t get_file_size(FILE *fp) {
   if (size == 0 && ferror(fp)) return 0;
   rewind(fp);
   return size;
+}
+
+static bool largefile_backend_detect_binary(FILE *fp) {
+  if (!fp) return false;
+  unsigned char buffer[LARGEFILE_BINARY_DETECT_BYTES];
+  rewind(fp);
+  size_t read = fread(buffer, 1, sizeof(buffer), fp);
+  rewind(fp);
+  for (size_t i = 0; i < read; i++) {
+    if (buffer[i] == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static size_t largefile_backend_binary_line_count(uint64_t file_size) {
+  uint64_t count = (file_size + LARGEFILE_BINARY_BYTES_PER_LINE - 1) / LARGEFILE_BINARY_BYTES_PER_LINE;
+  if (count == 0) count = 1;
+  return count > (uint64_t) SIZE_MAX ? SIZE_MAX : (size_t) count;
+}
+
+static char *largefile_backend_format_binary_line(FILE *fp, uint64_t offset, uint64_t file_size, size_t *len_out) {
+  static const char hex[] = "0123456789ABCDEF";
+  unsigned char bytes[LARGEFILE_BINARY_BYTES_PER_LINE];
+  size_t read_len = 0;
+  char *line = SDL_malloc(96);
+  if (!fp || !line || !len_out) {
+    SDL_free(line);
+    return NULL;
+  }
+
+  if (offset < file_size) {
+    uint64_t remaining = file_size - offset;
+    read_len = (size_t) SDL_min((uint64_t) LARGEFILE_BINARY_BYTES_PER_LINE, remaining);
+    if (largefile_seek_u64(fp, offset) != 0) {
+      SDL_free(line);
+      return NULL;
+    }
+    if (read_len > 0 && fread(bytes, 1, read_len, fp) != read_len) {
+      SDL_free(line);
+      return NULL;
+    }
+  }
+
+  int pos = SDL_snprintf(line, 96, "%08llX  ", (unsigned long long) offset);
+  if (pos < 0 || pos >= 96) {
+    SDL_free(line);
+    return NULL;
+  }
+
+  for (size_t i = 0; i < LARGEFILE_BINARY_BYTES_PER_LINE; i++) {
+    if (i == 8) {
+      line[pos++] = ' ';
+    }
+    if (i < read_len) {
+      unsigned char byte = bytes[i];
+      line[pos++] = hex[byte >> 4];
+      line[pos++] = hex[byte & 0x0F];
+    } else {
+      line[pos++] = ' ';
+      line[pos++] = ' ';
+    }
+    line[pos++] = ' ';
+  }
+
+  line[pos++] = ' ';
+  for (size_t i = 0; i < read_len; i++) {
+    unsigned char byte = bytes[i];
+    line[pos++] = (byte >= 32 && byte <= 126) ? (char) byte : '.';
+  }
+  line[pos++] = '\n';
+  line[pos] = '\0';
+  *len_out = (size_t) pos;
+  return line;
 }
 
 static void largefile_save_add_store_destroy(LargeFileSaveAddStore *store) {
@@ -644,6 +724,7 @@ LargeFileBackend *largefile_backend_new(const char *path, size_t chunk_line_coun
   FILE *fp = largefile_open_utf8(path, "rb");
   if (!fp) return NULL;
   uint64_t file_size = get_file_size(fp);
+  bool binary_mode = largefile_backend_detect_binary(fp);
   fclose(fp);
 
   LargeFileBackend *backend = SDL_calloc(1, sizeof(LargeFileBackend));
@@ -651,6 +732,8 @@ LargeFileBackend *largefile_backend_new(const char *path, size_t chunk_line_coun
 
   backend->path = SDL_strdup(path);
   backend->file_size = file_size;
+  backend->binary_mode = binary_mode;
+  backend->binary_line_count = binary_mode ? largefile_backend_binary_line_count(file_size) : 0;
   backend->chunk_line_count = chunk_line_count > 0 ? chunk_line_count : 256;
   backend->mutex = SDL_CreateMutex();
   largefile_index_init(&backend->index, file_size);
@@ -700,6 +783,7 @@ const char *largefile_backend_kind(const LargeFileBackend *backend) {
 
 size_t largefile_backend_line_count(const LargeFileBackend *backend) {
   if (!backend) return 1;
+  if (backend->binary_mode) return SDL_max((size_t) 1, backend->binary_line_count);
   return SDL_max((size_t) 1, largefile_index_visible_line_count(&backend->index));
 }
 
@@ -741,6 +825,10 @@ bool largefile_backend_poll_window(LargeFileBackend *backend, lua_State *L) {
   lua_setfield(L, -2, "epoch");
   lua_pushinteger(L, (lua_Integer) backend->chunk_line_count);
   lua_setfield(L, -2, "chunk_line_count");
+  lua_pushboolean(L, backend->binary_mode);
+  lua_setfield(L, -2, "binary_mode");
+  lua_pushinteger(L, (lua_Integer) LARGEFILE_BINARY_BYTES_PER_LINE);
+  lua_setfield(L, -2, "binary_bytes_per_line");
 
   lua_createtable(L, (int) backend->snapshot.line_count, 0);
   for (size_t i = 0; i < backend->snapshot.line_count; i++) {
@@ -757,6 +845,7 @@ bool largefile_backend_poll_window(LargeFileBackend *backend, lua_State *L) {
 
 bool largefile_backend_push_range_text(lua_State *L, LargeFileBackend *backend, size_t start_line, size_t start_col, size_t end_line, size_t end_col, bool inclusive) {
   if (!backend || !backend->mutex) return false;
+  if (backend->binary_mode) return false;
   if (start_line == 0 || end_line == 0 || start_col == 0 || end_col == 0) return false;
 
   SDL_LockMutex((SDL_Mutex *) backend->mutex);
@@ -866,12 +955,16 @@ void largefile_backend_push_loading_state(lua_State *L, const LargeFileBackend *
   lua_setfield(L, -2, "progress_bytes");
   lua_pushinteger(L, (lua_Integer) (backend ? backend->file_size : 0));
   lua_setfield(L, -2, "total_bytes");
-  lua_pushinteger(L, (lua_Integer) (backend ? largefile_index_visible_line_count(&backend->index) : 1));
+  lua_pushinteger(L, (lua_Integer) (backend ? largefile_backend_line_count(backend) : 1));
   lua_setfield(L, -2, "progress_lines");
   lua_pushinteger(L, (lua_Integer) (backend ? largefile_backend_line_count(backend) : 1));
   lua_setfield(L, -2, "line_count");
   lua_pushinteger(L, (lua_Integer) (backend ? backend->chunk_line_count : 256));
   lua_setfield(L, -2, "chunk_line_count");
+  lua_pushboolean(L, backend ? backend->binary_mode : false);
+  lua_setfield(L, -2, "binary_mode");
+  lua_pushinteger(L, (lua_Integer) LARGEFILE_BINARY_BYTES_PER_LINE);
+  lua_setfield(L, -2, "binary_bytes_per_line");
   if (backend && backend->job.error_message[0] != '\0') {
     lua_pushstring(L, backend->job.error_message);
     lua_setfield(L, -2, "error");
@@ -1181,6 +1274,10 @@ bool largefile_backend_begin_save(
     if (error_out) *error_out = "invalid backend";
     return false;
   }
+  if (backend->binary_mode) {
+    if (error_out) *error_out = "binary hex view is read-only";
+    return false;
+  }
   if (!snapshot_path || !add_buffer_path || !source_path || !target_path) {
     if (error_out) *error_out = "missing save path";
     return false;
@@ -1292,22 +1389,18 @@ static bool largefile_backend_try_prepare_window(LargeFileBackend *backend) {
     return false;
   }
 
-  size_t visible_count = largefile_index_visible_line_count(&backend->index);
+  size_t visible_count = largefile_backend_line_count(backend);
   size_t request_start = backend->requested_start_line > backend->requested_margin
     ? backend->requested_start_line - backend->requested_margin
     : 1;
   size_t request_end = largefile_saturating_add_size(backend->requested_end_line, backend->requested_margin);
   size_t start_line = largefile_backend_align_chunk_start(backend, request_start);
   size_t end_line = largefile_backend_align_chunk_end(backend, request_end);
-  if (backend->index.complete) {
-    end_line = SDL_min(end_line, visible_count);
-  } else {
-    end_line = SDL_min(end_line, visible_count);
-  }
+  end_line = SDL_min(end_line, visible_count);
   if (end_line < start_line) {
     end_line = start_line;
   }
-  if (!largefile_index_has_line_end(&backend->index, end_line)) {
+  if (!backend->binary_mode && !largefile_index_has_line_end(&backend->index, end_line)) {
     return false;
   }
 
@@ -1357,6 +1450,19 @@ static bool largefile_backend_load_window(
   backend->snapshot.epoch = epoch;
 
   for (size_t line = start_line; line <= end_line; line++) {
+    if (backend->binary_mode) {
+      size_t text_len = 0;
+      uint64_t offset = ((uint64_t) line - 1) * LARGEFILE_BINARY_BYTES_PER_LINE;
+      char *buffer = largefile_backend_format_binary_line(fp, offset, backend->file_size, &text_len);
+      if (!buffer) {
+        fclose(fp);
+        return false;
+      }
+      backend->snapshot.lines[line - start_line].text = buffer;
+      backend->snapshot.lines[line - start_line].len = text_len;
+      continue;
+    }
+
     uint64_t start = largefile_index_line_start(&backend->index, line);
     uint64_t end = largefile_index_line_end(&backend->index, line);
     uint64_t raw_len_u64 = end >= start ? (end - start) : 0;
@@ -1438,6 +1544,19 @@ static int largefile_backend_worker(void *userdata) {
     SDL_LockMutex((SDL_Mutex *) backend->mutex);
     largefile_jobs_fail(&backend->job, strerror(errno));
     SDL_UnlockMutex((SDL_Mutex *) backend->mutex);
+    return 0;
+  }
+
+  if (backend->binary_mode) {
+    SDL_LockMutex((SDL_Mutex *) backend->mutex);
+    backend->index.complete = true;
+    backend->job.bytes_read = backend->file_size;
+    backend->job.lines_indexed = backend->binary_line_count;
+    backend->job.running = false;
+    backend->job.complete = true;
+    largefile_backend_try_prepare_window(backend);
+    SDL_UnlockMutex((SDL_Mutex *) backend->mutex);
+    fclose(fp);
     return 0;
   }
 

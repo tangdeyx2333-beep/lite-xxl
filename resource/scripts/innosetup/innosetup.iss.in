@@ -1,6 +1,6 @@
-#define MyAppName      "Lite XXL"
+#define MyAppName      "lite-xxl"
 #define MyAppVersion   "@PROJECT_VERSION@"
-#define MyAppPublisher "Lite XXL Team"
+#define MyAppPublisher "hadage"
 #define MyAppURL       "https://lite-xl.com"
 #define MyAppExeName   "lite-xxl.exe"
 #define BuildDir       "@PROJECT_BUILD_DIR@"
@@ -57,7 +57,7 @@ PrivilegesRequiredOverridesAllowed=dialog
 UsedUserAreasWarning=no
 
 OutputDir=.
-OutputBaseFilename=LiteXXL-{#MyAppVersion}-{#ArchInternal}-setup
+OutputBaseFilename=lite-xxl-{#MyAppVersion}-{#ArchInternal}-setup
 DisableDirPage=no
 ;DisableProgramGroupPage=yes
 
@@ -70,7 +70,7 @@ UninstallDisplayIcon={app}\{#MyAppExeName}, 0
 #define FinalIconPath ""
 #define FindHandle
 #define FindResult
-#for {FindHandle = FindResult = FindFirst(WizardIconPath + "lite-xl@*.bmp", 0); FindResult; FindResult = FindNext(FindHandle)} \
+#for {FindHandle = FindResult = FindFirst(WizardIconPath + "lite-xxl@*.bmp", 0); FindResult; FindResult = FindNext(FindHandle)} \
   Insert(FinalIconPath, 0, WizardIconPath + FindGetFileName(FindHandle) + ",")
 #if FindHandle
   #expr FindClose(FindHandle)
@@ -79,7 +79,7 @@ WizardSmallImageFile="{#FinalIconPath}"
 
 ; Get a list of banners for different DPIs (FIXME: figure out how to reuse this code?)
 #define FinalBannerPath ""
-#for {FindHandle = FindResult = FindFirst(WizardIconPath + "lite-xl-banner@*.bmp", 0); FindResult; FindResult = FindNext(FindHandle)} \
+#for {FindHandle = FindResult = FindFirst(WizardIconPath + "lite-xxl-banner@*.bmp", 0); FindResult; FindResult = FindNext(FindHandle)} \
   Insert(FinalBannerPath, 0, WizardIconPath + FindGetFileName(FindHandle) + ",")
 #if FindHandle
   #expr FindClose(FindHandle)
@@ -96,10 +96,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.2; Check: not IsAdminInstallMode
 Name: "portablemode"; Description: "Extract only, do not install"; Flags: unchecked
-Name: "envPath"; Description: "Add Lite XXL to PATH"; Flags: unchecked
+Name: "envPath"; Description: "Add lite-xxl to PATH"; Flags: unchecked
 
 [Files]
-Source: "{#BuildDir}/lite-xl/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "{#BuildDir}/lite-xxl/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

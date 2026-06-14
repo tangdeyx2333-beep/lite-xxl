@@ -1827,6 +1827,7 @@ end
 function WlPtSession:close()
   local save_state = self.save_state or {}
   local save_base_path = self:get_save_snapshot_base_path()
+  local discard_requested = self.doc and self.doc._close_without_saving_requested == true
   wlpt_trace(
     "[DEBUG-wlpt-save-cancel] session.close.begin id=%s file=%s dirty=%s save_in_progress=%s progress=%s/%s snapshot=%s add=%s target=%s",
     tostring(self.id),
@@ -1839,7 +1840,15 @@ function WlPtSession:close()
     tostring(save_base_path .. ".add"),
     tostring(self.pending_save_target and self.pending_save_target.abs_filename)
   )
-  if self.dirty then
+  if discard_requested then
+    -- 中文说明：用户明确选择“不保存关闭”时，WLPT 的恢复三件套也必须丢弃，避免留下僵尸恢复文件。
+    self:clear_recovery_state()
+  elseif self.dirty then
+    wlpt_trace(
+      "session.close.persist_recovery id=%s file=%s reason=dirty",
+      tostring(self.id),
+      tostring(self.file)
+    )
     self:persist_recovery_state()
   end
   wlpt_trace(

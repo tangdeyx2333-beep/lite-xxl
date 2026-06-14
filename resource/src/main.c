@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
   signal(SIGPIPE, SIG_IGN);
 #endif
 
-  SDL_SetAppMetadata("Lite XXL", LITE_PROJECT_VERSION_STR, "com.lite_xxl.LiteXXL");
+  SDL_SetAppMetadata("lite-xxl", LITE_PROJECT_VERSION_STR, "com.lite_xxl.LiteXXL");
   if (!SDL_Init(SDL_INIT_EVENTS)) {
     fprintf(stderr, "Error initializing sdl: %s", SDL_GetError());
     exit(1);
@@ -180,7 +180,7 @@ init_lua:
     "  HOME = os.getenv('" LITE_OS_HOME "')\n"
     "  local exedir = match(EXEFILE, '^(.*)" LITE_PATHSEP_PATTERN LITE_NONPATHSEP_PATTERN "$')\n"
     "  local prefix = os.getenv('LITE_PREFIX') or match(exedir, '^(.*)" LITE_PATHSEP_PATTERN "bin$')\n"
-    "  dofile((MACOS_RESOURCES or (prefix and prefix .. '/share/lite-xl' or exedir .. '/data')) .. '/core/start.lua')\n"
+    "  dofile((MACOS_RESOURCES or (prefix and prefix .. '/share/lite-xxl' or exedir .. '/data')) .. '/core/start.lua')\n"
     "  core = require(os.getenv('LITE_XL_RUNTIME') or 'core')\n"
     "  core.init()\n"
     "  core.run()\n"
@@ -198,7 +198,7 @@ init_lua:
     "    fp:close()\n"
     "    error_path = system.absolute_path(error_path)\n"
     "  end\n"
-    "  system.show_fatal_error('Lite XXL internal error',\n"
+    "  system.show_fatal_error('lite-xxl internal error',\n"
     "    'An internal error occurred in a critical part of the application.\\n\\n'..\n"
     "    'Error: '..tostring(err)..'\\n\\n'..\n"
     "    'Details can be found in \\\"'..error_path..'\\\"')\n"

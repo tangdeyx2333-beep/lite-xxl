@@ -1,6 +1,7 @@
 -- mod-version:4
 local core = require "core"
 local common = require "core.common"
+local config = require "core.config"
 local DocView = require "core.docview"
 local LogView = require "core.logview"
 local storage = require "core.storage"
@@ -96,6 +97,24 @@ local function save_view(view)
       crlf = view.doc.crlf,
     }
   end
+
+  -- Support markdown preview wrapper views (e.g. markdown_toggle)
+  -- by serializing their source DocView as a normal doc entry.
+  if view._md_source_view and view._md_source_view.doc then
+    local source = view._md_source_view
+    if not is_restorable_workspace_doc(source.doc) then
+      return nil
+    end
+    return {
+      type = "doc",
+      active = (core.active_view == view),
+      filename = source.doc.filename,
+      selection = { source.doc:get_selection() },
+      scroll = { x = source.scroll.to.x, y = source.scroll.to.y },
+      crlf = source.doc.crlf,
+    }
+  end
+
   if mt == LogView then return end
   for name, mod in pairs(package.loaded) do
     if mod == mt then
@@ -198,9 +217,7 @@ end
 
 local function save_workspace()
   local root_project = core.root_project()
-  if not root_project or is_ephemeral_workspace_path(root_project.path) then
-    return
-  end
+  if not root_project or is_ephemeral_workspace_path(root_project.path) then return end
   local project_dir = common.basename(root_project.path)
   local id_list = {}
   for filename, id in workspace_keys_for(project_dir) do
@@ -211,24 +228,37 @@ local function save_workspace()
     id = id + 1
   end
   local root = get_unlocked_root(core.root_view.root_node)
-  storage.save(STORAGE_MODULE, project_dir .. "-" .. id, { path = root_project.path, documents = save_node(root), directories = save_directories() })
+  local documents = save_node(root)
+  local directories = save_directories()
+  storage.save(STORAGE_MODULE, project_dir .. "-" .. id, {
+    path = root_project.path,
+    documents = documents,
+    directories = directories,
+    restore_treeview_from_file_open = core.restore_treeview_from_file_open == true
+  })
 end
 
 
 local function load_workspace()
-  if is_ephemeral_workspace_path(core.root_project().path) then
-    return
-  end
+  if is_ephemeral_workspace_path(core.root_project().path) then return end
   local workspace = consume_workspace(core.root_project().path)
   if workspace then
+    core.restore_treeview_from_file_open = workspace.restore_treeview_from_file_open == true
     local root = get_unlocked_root(core.root_view.root_node)
     local active_view = load_node(root, workspace.documents)
+    if workspace.restore_treeview_from_file_open == true and #core.docs > 0 and core.ensure_treeview_visible then
+      local restore_treeview_size = tonumber(config.plugins.treeview.open_project_size)
+        or tonumber(config.plugins.treeview.open_file_size)
+      core.ensure_treeview_visible(restore_treeview_size)
+    end
     if active_view then
       core.set_active_view(active_view)
     end
     for i, dir_name in ipairs(workspace.directories) do
       core.add_project(system.absolute_path(dir_name))
     end
+  else
+    core.restore_treeview_from_file_open = false
   end
 end
 

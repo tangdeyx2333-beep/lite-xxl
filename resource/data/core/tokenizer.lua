@@ -266,6 +266,9 @@ function tokenizer.tokenize(incoming_syntax, text, state, resume)
   end
 
   local text_len = text:ulen()
+  if text_len == nil then
+    return { "normal", text }, string.char(0)
+  end
   local start_time = system.get_time()
   local starting_i = i
   while i <= text_len do

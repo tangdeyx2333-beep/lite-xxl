@@ -1,5 +1,6 @@
 local core = require "core"
 local common = require "core.common"
+local core = require "core"
 local config = require "core.config"
 local style = require "core.style"
 local Doc = require "core.doc"
@@ -47,6 +48,7 @@ local default_state = {
   show_suggestions = true,
   typeahead = true,
   wrap = true,
+  buttons = nil,
 }
 
 
@@ -67,6 +69,14 @@ function CommandView:new()
   self.font = "font"
   self.size.y = 0
   self.label = ""
+  self.button_padding_x = style.padding.x * 1.5
+  self.button_gap = style.padding.x
+  self.button_height = 0
+  self.button_hovered = nil
+  self.button_rects = {}
+  self.button_pressed = nil
+  self.button_repeat_start = nil
+  self.button_repeat_last = nil
 end
 
 
@@ -87,6 +97,110 @@ function CommandView:get_line_screen_position(line, col)
   local _, y = self:get_content_offset()
   local lh = self:get_line_height()
   return x, y + (self.size.y - lh) / 2
+end
+
+function CommandView:get_buttons()
+  return self.state.buttons or {}
+end
+
+function CommandView:get_visible_buttons()
+  local resolved = {}
+  for _, button in ipairs(self:get_buttons()) do
+    local visible = button.visible
+    if visible == nil or visible == true or (type(visible) == "function" and visible(self)) then
+      resolved[#resolved + 1] = button
+    end
+  end
+  return resolved
+end
+
+function CommandView:get_button_text(button)
+  if type(button.get_text) == "function" then
+    return button.get_text(self) or ""
+  end
+  return button.text or ""
+end
+
+function CommandView:get_buttons_width()
+  local buttons = self:get_visible_buttons()
+  if #buttons == 0 then
+    return 0
+  end
+  local font = self:get_font()
+  local button_height = math.max(font:get_height(), self:get_line_height())
+  self.button_height = button_height
+  local total = style.padding.x
+  for i, button in ipairs(buttons) do
+    local width = font:get_width(self:get_button_text(button))
+      + self.button_padding_x * 2
+    total = total + width
+    if i < #buttons then
+      total = total + self.button_gap
+    end
+  end
+  return total
+end
+
+function CommandView:update_button_layout()
+  self.button_rects = {}
+  local buttons = self:get_visible_buttons()
+  if #buttons == 0 then
+    self.button_hovered = nil
+    return
+  end
+  local font = self:get_font()
+  local button_height = math.max(font:get_height(), self:get_line_height())
+  self.button_height = button_height
+  local x = self.position.x + self.size.x - self:get_buttons_width()
+  local y = self.position.y + math.floor((self.size.y - button_height) / 2)
+  for i, button in ipairs(buttons) do
+    local width = font:get_width(self:get_button_text(button)) + self.button_padding_x * 2
+    self.button_rects[i] = {
+      button = button,
+      x = x,
+      y = y,
+      w = width,
+      h = button_height,
+    }
+    x = x + width + self.button_gap
+  end
+end
+
+function CommandView:get_button_rect_at(x, y)
+  for i, rect in ipairs(self.button_rects or {}) do
+    if x >= rect.x and x <= rect.x + rect.w
+      and y >= rect.y and y <= rect.y + rect.h then
+      return rect, i
+    end
+  end
+end
+
+function CommandView:clear_button_press()
+  self.button_pressed = nil
+  self.button_repeat_start = nil
+  self.button_repeat_last = nil
+end
+
+function CommandView:trigger_button_action(button)
+  if type(button.action) == "function" then
+    button.action(self)
+  end
+end
+
+function CommandView:get_button_repeat_interval(button, now)
+  local delay = button.repeat_delay or 0.35
+  local base_interval = button.repeat_interval or 0.5
+  local min_interval = button.repeat_min_interval or base_interval
+  local ramp_duration = button.repeat_ramp_duration or 1.5
+  if not self.button_repeat_start then
+    return base_interval
+  end
+  local elapsed = math.max(0, now - (self.button_repeat_start + delay))
+  if ramp_duration <= 0 or base_interval <= min_interval then
+    return min_interval
+  end
+  local progress = math.min(1, elapsed / ramp_duration)
+  return base_interval - (base_interval - min_interval) * progress
 end
 
 
@@ -309,6 +423,18 @@ end
 function CommandView:update()
   CommandView.super.update(self)
 
+  if self.button_pressed and self.button_pressed.repeat_while_pressed then
+    local now = system.get_time()
+    local delay = self.button_pressed.repeat_delay or 0.35
+    if self.button_repeat_start and now - self.button_repeat_start >= delay then
+      local interval = self:get_button_repeat_interval(self.button_pressed, now)
+      if not self.button_repeat_last or now - self.button_repeat_last >= interval then
+        self.button_repeat_last = now
+        self:trigger_button_action(self.button_pressed)
+      end
+    end
+  end
+
   if core.active_view ~= self and self.state ~= default_state then
     self:exit(false, true)
   end
@@ -341,6 +467,7 @@ function CommandView:update()
   else
     self:move_towards("gutter_width", dest, nil, "commandview")
   end
+  self:update_button_layout()
 
   -- update suggestions box height
   local lh = self:get_suggestion_line_height()
@@ -412,10 +539,71 @@ end
 
 
 function CommandView:draw()
-  CommandView.super.draw(self)
+  self:draw_background(style.background2)
+  local lh = self:get_line_height()
+  local minline, maxline = 1, 1
+  local x, y = self:get_line_screen_position(minline)
+  local text_clip_w = math.max(
+    0,
+    self.size.x - self:get_gutter_width() - self:get_buttons_width() - style.padding.x
+  )
+  self:draw_line_gutter(1, self.position.x, y, self:get_gutter_width())
+  core.push_clip_rect(self.position.x + self:get_gutter_width(), self.position.y, text_clip_w, self.size.y)
+  self:draw_line_body(1, x, y)
+  self:draw_overlay()
+  core.pop_clip_rect()
+
+  for i, rect in ipairs(self.button_rects or {}) do
+    local hovered = self.button_hovered == i
+    local bg = hovered and style.line_highlight or style.background3
+    local fg = hovered and (style.accent or style.text) or style.text
+    renderer.draw_rect(rect.x, rect.y, rect.w, rect.h, bg)
+    common.draw_text(self:get_font(), fg, self:get_button_text(rect.button), "center", rect.x, rect.y, rect.w, rect.h)
+  end
   if self.state.show_suggestions then
     core.root_view:defer_draw(draw_suggestions_box, self)
   end
+end
+
+function CommandView:on_mouse_moved(x, y, dx, dy)
+  local rect = self:get_button_rect_at(x, y)
+  self.button_hovered = rect and select(2, self:get_button_rect_at(x, y)) or nil
+  if self.button_pressed and (not rect or rect.button ~= self.button_pressed) then
+    self:clear_button_press()
+  end
+  if self.button_hovered then
+    self.cursor = "hand"
+    return true
+  end
+  return CommandView.super.on_mouse_moved(self, x, y, dx, dy)
+end
+
+function CommandView:on_mouse_left()
+  self.button_hovered = nil
+  self:clear_button_press()
+  return CommandView.super.on_mouse_left(self)
+end
+
+function CommandView:on_mouse_pressed(button, x, y, clicks)
+  if button == "left" then
+    local rect = self:get_button_rect_at(x, y)
+    if rect then
+      self.button_pressed = rect.button
+      self.button_repeat_start = system.get_time()
+      self.button_repeat_last = nil
+      self:trigger_button_action(rect.button)
+      return true
+    end
+  end
+  return CommandView.super.on_mouse_pressed(self, button, x, y, clicks)
+end
+
+function CommandView:on_mouse_released(button, x, y, clicks)
+  if button == "left" and self.button_pressed then
+    self:clear_button_press()
+    return true
+  end
+  return CommandView.super.on_mouse_released(self, button, x, y, clicks)
 end
 
 return CommandView

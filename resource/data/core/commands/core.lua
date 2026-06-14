@@ -4,6 +4,7 @@ local command = require "core.command"
 local config = require "core.config"
 local keymap = require "core.keymap"
 local LogView = require "core.logview"
+local process = require "core.process"
 
 
 local fullscreen = false
@@ -25,11 +26,28 @@ local function check_directory_path(path)
     return abs_path
 end
 
+local function open_project_in_new_window(project_dir, source)
+  local open_project_size = tonumber(config.plugins.treeview and config.plugins.treeview.open_project_size) or 20
+  if core.set_pending_treeview_state then
+    core.set_pending_treeview_state(open_project_size, true)
+  end
+  process.start({
+    EXEFILE,
+    "--project-dir",
+    project_dir,
+  }, {
+    detach = true,
+  })
+end
+
 local function open_file_and_switch_project(filename)
   local abs_filename = system.absolute_path(filename)
   if not abs_filename then
     core.error("Cannot open file %s", tostring(filename))
     return
+  end
+  if core.set_restore_treeview_from_file_open then
+    core.set_restore_treeview_from_file_open(true, "open_file_dialog")
   end
   local project_dir = common.dirname(abs_filename)
   if not project_dir then
@@ -69,6 +87,7 @@ local function open_file(use_dialog)
 
   if use_dialog then
     core.open_file_dialog(core.window, function(status, result)
+      local first_result = type(result) == "table" and result[1] or result
       if status == "accept" then
         local filename = result and result[1]
         if filename then
@@ -81,13 +100,16 @@ local function open_file(use_dialog)
       default_location = default_text,
       allow_many = false,
     })
-  	return
+   	return
   end
 
   core.command_view:enter("Open File", {
     text = default_text,
     submit = function(text)
       local filename = core.project_absolute_path(common.home_expand(text))
+      if core.set_restore_treeview_from_file_open then
+        core.set_restore_treeview_from_file_open(true, "open_file_command")
+      end
       core.root_view:open_doc(core.open_doc(filename))
     end,
     suggest = function (text)
@@ -155,10 +177,13 @@ end
 
 local function change_project_directory(use_dialog)
   open_directory("Change Project Folder", use_dialog, false, function(abs_path)
-    if abs_path[1] == core.root_project().path then return end
-    core.confirm_close_docs(core.docs, function(dirpath)
-      core.open_project(dirpath)
-    end, abs_path[1])
+    if abs_path[1] == core.root_project().path then
+      if core.ensure_treeview_visible then
+        core.ensure_treeview_visible()
+      end
+      return
+    end
+    open_project_in_new_window(abs_path[1], "change_project_directory")
   end)
 end
 
@@ -168,7 +193,7 @@ local function open_project_directory(use_dialog)
       core.error("Directory %q is currently opened", abs_path[1])
       return
     end
-    system.exec(string.format("%q %q", EXEFILE, abs_path[1]))
+    open_project_in_new_window(abs_path[1], "open_project_directory")
   end)
 end
 
@@ -301,7 +326,7 @@ command.add(nil, {
   end,
 
   ["core:open-project-folder"] = function()
-    open_project_directory(config.use_system_file_picker)
+    open_project_directory(true)
   end,
 
   ["core:open-project-folder-picker"] = function()

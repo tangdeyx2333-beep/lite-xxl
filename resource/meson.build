@@ -76,7 +76,7 @@ if get_option('portable') or host_machine.system() == 'windows'
     lpm_install_dir = '/'
     configure_file(
         input: 'resources' / 'windows' / 'lite-xl.exe.manifest.in',
-        output: 'lite-xl.exe.manifest',
+        output: 'lite-xxl.exe.manifest',
         configuration: conf_data
     )
 elif get_option('bundle') and host_machine.system() == 'darwin'
@@ -100,9 +100,9 @@ elif get_option('bundle') and host_machine.system() == 'darwin'
     )
 else
     lite_bindir = 'bin'
-    lite_docdir = get_option('datadir') / 'doc' / 'lite-xl'
-    lite_datadir = get_option('datadir') / 'lite-xl'
-    lpm_userdir = 'lite-xl'
+    lite_docdir = get_option('datadir') / 'doc' / 'lite-xxl'
+    lite_datadir = get_option('datadir') / 'lite-xxl'
+    lpm_userdir = 'lite-xxl'
     lpm_install_dir = get_option('datadir')
     if host_machine.system() == 'linux'
         git_command = find_program('git', required : false)
@@ -145,15 +145,15 @@ else
             conf_data.set('METAINFO_RELEASES', '')
         endif
 
-        install_data('resources' / 'icons' / 'lite-xl.svg',
+        install_data('resources' / 'icons' / 'lite-xxl.svg',
             install_dir : get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps'
         )
-        install_data('resources' / 'linux' / 'com.lite_xl.LiteXL.desktop',
+        install_data('resources' / 'linux' / 'com.lite_xxl.LiteXXL.desktop',
             install_dir : get_option('datadir') / 'applications'
         )
         configure_file(
-            input : 'resources' / 'linux' / 'com.lite_xl.LiteXL.metainfo.xml.in',
-            output : 'com.lite_xl.LiteXL.metainfo.xml',
+            input : 'resources' / 'linux' / 'com.lite_xxl.LiteXXL.metainfo.xml.in',
+            output : 'com.lite_xxl.LiteXXL.metainfo.xml',
             configuration : conf_data,
             install : true,
             install_dir : 'share/metainfo'

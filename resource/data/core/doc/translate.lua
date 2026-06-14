@@ -91,9 +91,11 @@ function translate.previous_block_start(doc, line, col)
     if line <= 1 then
       return 1, 1
     end
-    if doc.lines[line-1]:find("^%s*$")
-    and not doc.lines[line]:find("^%s*$") then
-      return line, (doc.lines[line]:find("%S"))
+    local prev_line = doc:get_line(line - 1)
+    local current_line = doc:get_line(line)
+    if prev_line:find("^%s*$")
+    and not current_line:find("^%s*$") then
+      return line, (current_line:find("%S"))
     end
   end
 end
@@ -101,12 +103,15 @@ end
 
 function translate.next_block_end(doc, line, col)
   while true do
-    if line >= #doc.lines then
-      return #doc.lines, 1
+    local line_count = doc:line_count()
+    if line >= line_count then
+      return line_count, 1
     end
-    if doc.lines[line+1]:find("^%s*$")
-    and not doc.lines[line]:find("^%s*$") then
-      return line+1, #doc.lines[line+1]
+    local next_line = doc:get_line(line + 1)
+    local current_line = doc:get_line(line)
+    if next_line:find("^%s*$")
+    and not current_line:find("^%s*$") then
+      return line + 1, doc:get_line_length(line + 1)
     end
     line = line + 1
   end
@@ -118,7 +123,7 @@ function translate.start_of_line(doc, line, col)
 end
 
 function translate.start_of_indentation(doc, line, col)
-  local s, e = doc.lines[line]:find("^%s*")
+  local s, e = doc:get_line(line):find("^%s*")
   return line, col > e + 1 and e + 1 or 1
 end
 
@@ -133,7 +138,8 @@ end
 
 
 function translate.end_of_doc(doc, line, col)
-  return #doc.lines, #doc.lines[#doc.lines]
+  local line_count = doc:line_count()
+  return line_count, doc:get_line_length(line_count)
 end
 
 

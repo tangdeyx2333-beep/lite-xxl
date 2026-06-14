@@ -8,13 +8,89 @@ local DocView = require "core.docview"
 local tokenizer = require "core.tokenizer"
 local system = require "system"
 
+local function wlpt_command_trace(fmt, ...)
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then
+    text = tostring(fmt)
+  end
+  local fp = io.open(USERDIR .. PATHSEP .. "wlpt-debug.log", "a")
+  if fp then
+    fp:write(os.date("%Y-%m-%d %H:%M:%S"), " [DEBUG-wlpt-move] ", text, "\n")
+    fp:close()
+  end
+end
+
+local function syntax_trace(fmt, ...)
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then
+    text = tostring(fmt)
+  end
+  local fp = io.open(USERDIR .. PATHSEP .. "wlpt-syntax-debug.log", "a")
+  if fp then
+    fp:write(os.date("%Y-%m-%d %H:%M:%S"), " ", text, "\n")
+    fp:close()
+  end
+end
+
+local function wlpt_preview_line(current_doc, line)
+  if not line or line < 1 then
+    return "<out>"
+  end
+  local ok, text = pcall(current_doc.get_line, current_doc, line)
+  if not ok or type(text) ~= "string" then
+    return "<err>"
+  end
+  text = text:gsub("\r", "\\r"):gsub("\n", "\\n")
+  if #text > 80 then
+    text = text:sub(1, 80) .. "..."
+  end
+  return text
+end
+
+local function wlpt_raw_preview_line(current_doc, line)
+  local lines = current_doc and current_doc.lines
+  local text = lines and lines[line]
+  if type(text) ~= "string" then
+    return "<nil>"
+  end
+  text = text:gsub("\r", "\\r"):gsub("\n", "\\n")
+  if #text > 80 then
+    text = text:sub(1, 80) .. "..."
+  end
+  return text
+end
+
+local function trace_wlpt_move_state(command_name, current_doc, stage, line1, col1, line2, col2)
+  if not (current_doc and current_doc.is_wlpt_mode and current_doc:is_wlpt_mode()) then
+    return
+  end
+  wlpt_command_trace(
+    "%s.%s file=%s sel=%s:%s-%s:%s line_count=%s up_get=%s cur_get=%s down_get=%s up_raw=%s cur_raw=%s down_raw=%s",
+    tostring(command_name),
+    tostring(stage),
+    tostring(current_doc.abs_filename or current_doc.filename),
+    tostring(line1),
+    tostring(col1),
+    tostring(line2),
+    tostring(col2),
+    tostring(current_doc:line_count()),
+    wlpt_preview_line(current_doc, line1 - 1),
+    wlpt_preview_line(current_doc, line1),
+    wlpt_preview_line(current_doc, line2 + 1),
+    wlpt_raw_preview_line(current_doc, line1 - 1),
+    wlpt_raw_preview_line(current_doc, line1),
+    wlpt_raw_preview_line(current_doc, line2 + 1)
+  )
+end
+
 local function save_with_io(filename)
   local normalized_filename = core.normalize_to_project_dir(filename)
   local abs_filename = core.project_absolute_path(normalized_filename)
   local current_doc = core.active_view.doc
   local fp = assert(io.open(abs_filename, "wb"))
 
-  for _, line in ipairs(current_doc.lines) do
+  for i = 1, current_doc:line_count() do
+    local line = current_doc:get_line(i)
     if current_doc.crlf then line = line:gsub("\n", "\r\n") end
     fp:write(line)
   end
@@ -30,6 +106,10 @@ local function doc()
   return core.active_view.doc
 end
 
+local function get_doc_line_length(current_doc, line)
+  return current_doc:get_line_length(line)
+end
+
 
 local function doc_multiline_selections(sort)
   local iter, state, idx, line1, col1, line2, col2 = doc():get_selections(sort)
@@ -37,14 +117,14 @@ local function doc_multiline_selections(sort)
     idx, line1, col1, line2, col2 = iter(state, idx)
     if idx and line2 > line1 and col2 == 1 then
       line2 = line2 - 1
-      col2 = #doc().lines[line2]
+      col2 = get_doc_line_length(doc(), line2)
     end
     return idx, line1, col1, line2, col2
   end
 end
 
 local function append_line_if_last_line(line)
-  if line >= #doc().lines then
+  if line >= doc():line_count() then
     doc():insert(line, math.huge, "\n")
   end
 end
@@ -62,7 +142,39 @@ local function save(filename)
     local saved_filename = doc().filename
     core.log("Saved \"%s\"", saved_filename)
   else
-    core.log("Error saving: %s", tostring(err))
+    local err_text = tostring(err)
+    core.log("Error saving: %s", err_text)
+    local info = abs_filename and system.get_file_info(abs_filename)
+    if info and info.readonly and not doc()._confirming_readonly_overwrite then
+      doc()._confirming_readonly_overwrite = true
+      core.command_view:enter("Overwrite write-protected file: " .. abs_filename, {
+        text = "Overwrite",
+        select_text = true,
+        submit = function(_, item)
+          local value = item and item.text or "Overwrite"
+          doc()._confirming_readonly_overwrite = nil
+          if value:match("^[oO]") then
+            local changed, change_err = system.set_file_readonly(abs_filename, false)
+            if not changed then
+              core.error("Failed to clear read-only attribute: %s", tostring(change_err))
+              return
+            end
+            save(filename)
+          end
+        end,
+        cancel = function()
+          doc()._confirming_readonly_overwrite = nil
+        end,
+        suggest = function(text)
+          local items = {}
+          local needle = (text or ""):lower()
+          if ("overwrite"):find(needle, 1, true) == 1 then table.insert(items, "Overwrite") end
+          if ("cancel"):find(needle, 1, true) == 1 then table.insert(items, "Cancel") end
+          return items
+        end,
+      })
+      core.warn("The target file is write-protected. Confirm overwrite to clear the attribute and save.")
+    end
   end
 end
 
@@ -90,35 +202,36 @@ end
 local function cut_or_copy(delete)
   local full_text = ""
   local text = ""
+  local current_doc = doc()
   core.cursor_clipboard = {}
   core.cursor_clipboard_whole_line = {}
-  for idx, line1, col1, line2, col2 in doc():get_selections(true, true) do
+  for idx, line1, col1, line2, col2 in current_doc:get_selections(true, true) do
     if line1 ~= line2 or col1 ~= col2 then
-      text = doc():get_text(line1, col1, line2, col2)
+      text = current_doc:get_text(line1, col1, line2, col2)
       full_text = full_text == "" and text or (text .. " " .. full_text)
       core.cursor_clipboard_whole_line[idx] = false
       if delete then
-        doc():delete_to_cursor(idx, 0)
+        current_doc:delete_to_cursor(idx, 0)
       end
     else -- Cut/copy whole line
       -- Remove newline from the text. It will be added as needed on paste.
-      text = string.sub(doc().lines[line1], 1, -2)
+      text = current_doc:get_text(line1, 1, line1, math.huge)
       full_text = full_text == "" and text .. "\n" or (text .. "\n" .. full_text)
       core.cursor_clipboard_whole_line[idx] = true
       if delete then
-        if line1 < #doc().lines then
-          doc():remove(line1, 1, line1 + 1, 1)
-        elseif #doc().lines == 1 then
-          doc():remove(line1, 1, line1, math.huge)
+        if line1 < current_doc:line_count() then
+          current_doc:remove(line1, 1, line1 + 1, 1)
+        elseif current_doc:line_count() == 1 then
+          current_doc:remove(line1, 1, line1, math.huge)
         else
-          doc():remove(line1 - 1, math.huge, line1, math.huge)
+          current_doc:remove(line1 - 1, math.huge, line1, math.huge)
         end
-        doc():set_selections(idx, line1, col1, line2, col2)
+        current_doc:set_selections(idx, line1, col1, line2, col2)
       end
     end
     core.cursor_clipboard[idx] = text
   end
-  if delete then doc():merge_cursors() end
+  if delete then current_doc:merge_cursors() end
   core.cursor_clipboard["full"] = full_text
   system.set_clipboard(full_text)
 end
@@ -136,7 +249,7 @@ local function split_cursor(dv, direction)
     and DocView.translate.previous_line
     or DocView.translate.next_line
   for _, line1, col1 in dv.doc:get_selections() do
-    if line1 + direction >= 1 and line1 + direction <= #dv.doc.lines then
+    if line1 + direction >= 1 and line1 + direction <= dv.doc:line_count() then
       table.insert(new_cursors, { dv_translate(dv.doc, line1, col1, dv) })
     end
   end
@@ -168,7 +281,7 @@ local function line_comment(comment, line1, col1, line2, col2)
   local uncomment = true
   local start_offset = math.huge
   for line = line1, line2 do
-    local text = doc().lines[line]
+    local text = doc():get_line(line)
     local s = text:find("%S")
     if s then
       local cs, ce = text:find(start_comment, s, true)
@@ -179,9 +292,9 @@ local function line_comment(comment, line1, col1, line2, col2)
     end
   end
 
-  local end_line = col2 == #doc().lines[line2]
+  local end_line = col2 == get_doc_line_length(doc(), line2)
   for line = line1, line2 do
-    local text = doc().lines[line]
+    local text = doc():get_line(line)
     local s = text:find("%S")
     if s and uncomment then
       if end_comment and text:sub(#text - #end_comment, #text - 1) == end_comment then
@@ -194,7 +307,7 @@ local function line_comment(comment, line1, col1, line2, col2)
     elseif s then
       doc():insert(line, start_offset, start_comment)
       if end_comment then
-        doc():insert(line, #doc().lines[line], " " .. comment[2])
+        doc():insert(line, get_doc_line_length(doc(), line), " " .. comment[2])
       end
     end
   end
@@ -348,12 +461,13 @@ local commands = {
 
   ["doc:newline"] = function(dv)
     for idx, line, col in dv.doc:get_selections(false, true) do
-      local indent = dv.doc.lines[line]:match("^[\t ]*")
+      local line_text = dv.doc:get_line(line)
+      local indent = line_text:match("^[\t ]*")
       if col <= #indent then
         indent = indent:sub(#indent + 2 - col)
       end
       -- Remove current line if it contains only whitespace
-      if not config.keep_newline_whitespace and dv.doc.lines[line]:match("^%s+$") then
+      if not config.keep_newline_whitespace and line_text:match("^%s+$") then
         dv.doc:remove(line, 1, line, math.huge)
       end
       dv.doc:text_input("\n" .. indent, idx)
@@ -362,7 +476,7 @@ local commands = {
 
   ["doc:newline-below"] = function(dv)
     for idx, line in dv.doc:get_selections(false, true) do
-      local indent = dv.doc.lines[line]:match("^[\t ]*")
+      local indent = dv.doc:get_line(line):match("^[\t ]*")
       dv.doc:insert(line, math.huge, "\n" .. indent)
       dv.doc:set_selections(idx, line + 1, math.huge)
     end
@@ -370,7 +484,7 @@ local commands = {
 
   ["doc:newline-above"] = function(dv)
     for idx, line in dv.doc:get_selections(false, true) do
-      local indent = dv.doc.lines[line]:match("^[\t ]*")
+      local indent = dv.doc:get_line(line):match("^[\t ]*")
       dv.doc:insert(line, 1, indent .. "\n")
       dv.doc:set_selections(idx, line, math.huge)
     end
@@ -378,7 +492,7 @@ local commands = {
 
   ["doc:delete"] = function(dv)
     for idx, line1, col1, line2, col2 in dv.doc:get_selections(true, true) do
-      if line1 == line2 and col1 == col2 and dv.doc.lines[line1]:find("^%s*$", col1) then
+      if line1 == line2 and col1 == col2 and dv.doc:get_line(line1):find("^%s*$", col1) then
         dv.doc:remove(line1, col1, line1, math.huge)
       end
       dv.doc:delete_to_cursor(idx, translate.next_char)
@@ -406,8 +520,8 @@ local commands = {
     -- avoid triggering DocView:scroll_to_make_visible
     dv.last_line1 = 1
     dv.last_col1 = 1
-    dv.last_line2 = #dv.doc.lines
-    dv.last_col2 = #dv.doc.lines[#dv.doc.lines]
+    dv.last_line2 = dv.doc:line_count()
+    dv.last_col2 = dv.doc:get_line_length(dv.last_line2)
   end,
 
   ["doc:select-lines"] = function(dv)
@@ -480,36 +594,64 @@ local commands = {
 
   ["doc:move-lines-up"] = function(dv)
     for idx, line1, col1, line2, col2 in doc_multiline_selections(true) do
+      trace_wlpt_move_state("move-lines-up", dv.doc, "before", line1, col1, line2, col2)
       append_line_if_last_line(line2)
       if line1 > 1 then
-        local text = doc().lines[line1 - 1]
+        local text = dv.doc:get_line(line1 - 1)
+        wlpt_command_trace(
+          "move-lines-up.payload file=%s idx=%s source_line=%s get_text=%s raw_text=%s",
+          tostring(dv.doc.abs_filename or dv.doc.filename),
+          tostring(idx),
+          tostring(line1 - 1),
+          wlpt_preview_line(dv.doc, line1 - 1),
+          wlpt_raw_preview_line(dv.doc, line1 - 1)
+        )
         dv.doc:insert(line2 + 1, 1, text)
         dv.doc:remove(line1 - 1, 1, line1, 1)
         dv.doc:set_selections(idx, line1 - 1, col1, line2 - 1, col2)
       end
+      trace_wlpt_move_state("move-lines-up", dv.doc, "after", line1, col1, line2, col2)
     end
   end,
 
   ["doc:move-lines-down"] = function(dv)
     for idx, line1, col1, line2, col2 in doc_multiline_selections(true) do
+      trace_wlpt_move_state("move-lines-down", dv.doc, "before", line1, col1, line2, col2)
       append_line_if_last_line(line2 + 1)
-      if line2 < #dv.doc.lines then
-        local text = dv.doc.lines[line2 + 1]
+      if line2 < dv.doc:line_count() then
+        local text = dv.doc:get_line(line2 + 1)
+        wlpt_command_trace(
+          "move-lines-down.payload file=%s idx=%s source_line=%s get_text=%s",
+          tostring(dv.doc.abs_filename or dv.doc.filename),
+          tostring(idx),
+          tostring(line2 + 1),
+          wlpt_preview_line(dv.doc, line2 + 1)
+        )
         dv.doc:remove(line2 + 1, 1, line2 + 2, 1)
         dv.doc:insert(line1, 1, text)
         dv.doc:set_selections(idx, line1 + 1, col1, line2 + 1, col2)
       end
+      trace_wlpt_move_state("move-lines-down", dv.doc, "after", line1, col1, line2, col2)
     end
   end,
 
   ["doc:toggle-block-comments"] = function(dv)
     for idx, line1, col1, line2, col2 in doc_multiline_selections(true) do
-      local current_syntax = dv.doc.syntax
-      if line1 > 1 then
+      local current_syntax = dv.doc.get_command_syntax and dv.doc:get_command_syntax() or dv.doc.syntax
+      syntax_trace(
+        "command.toggle_block_comments file=%s is_large=%s selection=%s:%s-%s:%s syntax=%s display=%s logical=%s",
+        tostring(dv.doc.abs_filename or dv.doc.filename),
+        tostring(dv.doc.is_large_file),
+        tostring(line1), tostring(col1), tostring(line2), tostring(col2),
+        tostring(current_syntax and current_syntax.name),
+        tostring(dv.doc.syntax and dv.doc.syntax.name),
+        tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
+      )
+      if line1 > 1 and not dv.doc:is_large_file_mode() then
         -- Use the previous line state, as it will be the state
         -- of the beginning of the current line
         local state = dv.doc.highlighter:get_line(line1 - 1).state
-        local syntaxes = tokenizer.extract_subsyntaxes(dv.doc.syntax, state)
+        local syntaxes = tokenizer.extract_subsyntaxes(current_syntax, state)
         -- Go through all the syntaxes until the first with `block_comment` defined
         for _, s in pairs(syntaxes) do
           if s.block_comment then
@@ -520,7 +662,7 @@ local commands = {
       end
       local comment = current_syntax.block_comment
       if not comment then
-        if dv.doc.syntax.comment then
+        if current_syntax.comment then
           command.perform "doc:toggle-line-comments"
         end
         return
@@ -528,7 +670,7 @@ local commands = {
       -- if nothing is selected, toggle the whole line
       if line1 == line2 and col1 == col2 then
         col1 = 1
-        col2 = #dv.doc.lines[line2]
+        col2 = dv.doc:get_line_length(line2)
       end
       dv.doc:set_selections(idx, block_comment(comment, line1, col1, line2, col2))
     end
@@ -536,12 +678,21 @@ local commands = {
 
   ["doc:toggle-line-comments"] = function(dv)
     for idx, line1, col1, line2, col2 in doc_multiline_selections(true) do
-      local current_syntax = dv.doc.syntax
-      if line1 > 1 then
+      local current_syntax = dv.doc.get_command_syntax and dv.doc:get_command_syntax() or dv.doc.syntax
+      syntax_trace(
+        "command.toggle_line_comments file=%s is_large=%s selection=%s:%s-%s:%s syntax=%s display=%s logical=%s",
+        tostring(dv.doc.abs_filename or dv.doc.filename),
+        tostring(dv.doc.is_large_file),
+        tostring(line1), tostring(col1), tostring(line2), tostring(col2),
+        tostring(current_syntax and current_syntax.name),
+        tostring(dv.doc.syntax and dv.doc.syntax.name),
+        tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
+      )
+      if line1 > 1 and not dv.doc:is_large_file_mode() then
         -- Use the previous line state, as it will be the state
         -- of the beginning of the current line
         local state = dv.doc.highlighter:get_line(line1 - 1).state
-        local syntaxes = tokenizer.extract_subsyntaxes(dv.doc.syntax, state)
+        local syntaxes = tokenizer.extract_subsyntaxes(current_syntax, state)
         -- Go through all the syntaxes until the first with comments defined
         for _, s in pairs(syntaxes) do
           if s.comment or s.block_comment then
@@ -566,20 +717,9 @@ local commands = {
   end,
 
   ["doc:go-to-line"] = function(dv)
-    local items
-    local function init_items()
-      if items then return end
-      items = {}
-      local mt = { __tostring = function(x) return x.text end }
-      for i, line in ipairs(dv.doc.lines) do
-        local item = { text = line:sub(1, -2), line = i, info = "line: " .. i }
-        table.insert(items, setmetatable(item, mt))
-      end
-    end
-
     core.command_view:enter("Go To Line", {
       submit = function(text, item)
-        local line = item and item.line or tonumber(text)
+        local line = tonumber(text)
         if not line then
           core.error("Invalid line number or unmatched string")
           return
@@ -588,10 +728,10 @@ local commands = {
         dv:scroll_to_line(line, true)
       end,
       suggest = function(text)
-        if not text:find("^%d*$") then
-          init_items()
-          return common.fuzzy_match(items, text)
-        end
+        return nil
+      end,
+      validate = function(text)
+        return text:find("^%d*$") ~= nil
       end
     })
   end,

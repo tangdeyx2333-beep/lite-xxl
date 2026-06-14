@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=lite-xxl
+Comment=A lightweight text editor written in Lua
+Exec=lite-xxl %F
+Icon=lite-xxl
+Terminal=false
+StartupWMClass=com.lite_xxl.LiteXXL
+Categories=Development;IDE;
+MimeType=text/plain;inode/directory;

@@ -260,6 +260,9 @@ end
 
 
 local function detect_indent_stat(doc)
+  if doc.disable_detect_indent or doc:is_large_file_mode() or not doc:supports_full_line_array() then
+    return config.tab_type, config.indent_size, 0
+  end
   local stat = {}
   local tab_count = 0
   local runs = 1

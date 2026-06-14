@@ -15,6 +15,8 @@ local Dirwatch = require "core.dirwatch"
 config.plugins.treeview = common.merge({
   -- Default treeview width
   size = 200 * SCALE,
+  open_file_size = 20,
+  open_project_size = 20,
   highlight_focused_file = true,
   expand_dirs_to_focused_file = false,
   scroll_to_focused_file = false,
@@ -29,6 +31,18 @@ local tooltip_border = 1
 local tooltip_delay = 0.5
 local tooltip_alpha = 255
 local tooltip_alpha_rate = 1
+local function log_filetree_debug(fmt, ...)
+  local ok, message = pcall(string.format, fmt, ...)
+  local line = ok and message or ("format-error: " .. tostring(fmt))
+  local logfile = USERDIR and (USERDIR .. PATHSEP .. "filetree-debug.log")
+  if logfile then
+    local fp = io.open(logfile, "ab")
+    if fp then
+      fp:write(os.date("[%Y-%m-%d %H:%M:%S] "), line, "\n")
+      fp:close()
+    end
+  end
+end
 
 
 local function get_depth(filename)
@@ -67,6 +81,16 @@ function TreeView:new()
   self.item_icon_width = 0
   self.item_text_spacing = 0
   self.watches = { }
+  self._debug_logged_width_update = false
+  log_filetree_debug(
+    "treeview:new root=%s config_visible=%s config_size=%s visible=%s target_size=%s init_size=%s",
+    tostring(core.root_project and core.root_project() and core.root_project().path),
+    tostring(config.plugins.treeview.visible),
+    tostring(config.plugins.treeview.size),
+    tostring(self.visible),
+    tostring(self.target_size),
+    tostring(self.init_size)
+  )
 end
 
 
@@ -81,17 +105,26 @@ end
 
 function TreeView:get_cached(project, path)
   local t = self.cache[path]
+  local info
+  if self.show_ignored then
+    info = system.get_file_info(path)
+  else
+    info = project:get_file_info(path)
+  end
+  if not info then
+    self.cache[path] = nil
+    if self.selected_item and self.selected_item.abs_filename == path then
+      self.selected_item = nil
+    end
+    if self.hovered_item and self.hovered_item.abs_filename == path then
+      self.hovered_item = nil
+    end
+    return nil
+  end
   if not t then
     if not self.watches[project] then self.watches[project] = Dirwatch.new() end
     local truncated = path:sub(#project.path + 2)
     local basename = common.basename(path)
-    local info
-    if self.show_ignored then
-      info = system.get_file_info(path)
-    else
-      info = project:get_file_info(path)
-    end
-    if not info then return nil end
     t = {
       filename = basename,
       depth = get_depth(truncated),
@@ -112,7 +145,16 @@ function TreeView:get_cached(project, path)
   end
   if t.expanded and t.type == "dir" and not t.files then
     t.files = {}
-    for i, file in ipairs(system.list_dir(path)) do
+    local dir_files = system.list_dir(path)
+    if not dir_files then
+      log_filetree_debug(
+        "treeview.get_cached list_dir_failed project=%s path=%s",
+        tostring(project and project.path),
+        tostring(path)
+      )
+      return t
+    end
+    for i, file in ipairs(dir_files) do
       local l = path .. PATHSEP .. file
       local f
       if self.show_ignored then
@@ -146,6 +188,14 @@ end
 
 function TreeView:get_items(project, path, x, y, w, h)
   local dir = self:get_cached(project, path)
+  if not dir then
+    log_filetree_debug(
+      "treeview.get_items missing_dir project=%s path=%s",
+      tostring(project and project.path),
+      tostring(path)
+    )
+    return 0
+  end
   coroutine.yield(dir, x, y, w, h)
   local count_lines = 1
   if dir and dir.files and dir.expanded then
@@ -165,6 +215,13 @@ function TreeView:each_item()
     local ox, oy = self:get_content_offset()
     local h = self:get_item_height()
     for k, project in ipairs(core.projects) do
+      if not project or not project.path then
+        log_filetree_debug(
+          "treeview.each_item bad_project index=%s project=%s",
+          tostring(k),
+          tostring(project)
+        )
+      end
       count_lines = count_lines + self:get_items(project, project.path, ox, oy + style.padding.y + h * count_lines, self.size.x, h)
     end
     self.count_lines = count_lines
@@ -288,10 +345,36 @@ function TreeView:update()
   -- update width
   local dest = self.visible and self.target_size or 0
   if self.init_size then
+    log_filetree_debug(
+      "treeview:update init_size root=%s visible=%s size_x_before=%s target_size=%s dest=%s",
+      tostring(core.root_project and core.root_project() and core.root_project().path),
+      tostring(self.visible),
+      tostring(self.size.x),
+      tostring(self.target_size),
+      tostring(dest)
+    )
     self.size.x = dest
     self.init_size = false
+    log_filetree_debug(
+      "treeview:update init_size applied root=%s size_x_after=%s target_size=%s init_size=%s",
+      tostring(core.root_project and core.root_project() and core.root_project().path),
+      tostring(self.size.x),
+      tostring(self.target_size),
+      tostring(self.init_size)
+    )
   else
     self:move_towards(self.size, "x", dest, nil, "treeview")
+    if not self._debug_logged_width_update then
+      log_filetree_debug(
+        "treeview:update animate root=%s visible=%s size_x=%s target_size=%s dest=%s",
+        tostring(core.root_project and core.root_project() and core.root_project() and core.root_project().path),
+        tostring(self.visible),
+        tostring(self.size.x),
+        tostring(self.target_size),
+        tostring(dest)
+      )
+      self._debug_logged_width_update = true
+    end
   end
 
   if self.size.x == 0 or self.size.y == 0 or not self.visible then return end
@@ -445,6 +528,39 @@ function TreeView:draw()
   local _y, _h = self.position.y, self.size.y
 
   for item, x,y,w,h in self:each_item() do
+    if not item then
+      log_filetree_debug(
+        "treeview.draw nil_item root=%s selected=%s hovered=%s size_x=%s count_lines=%s",
+        tostring(core.root_project() and core.root_project().path),
+        tostring(self.selected_item and self.selected_item.abs_filename),
+        tostring(self.hovered_item and self.hovered_item.abs_filename),
+        tostring(self.size.x),
+        tostring(self.count_lines)
+      )
+    elseif not item.type or not item.name or item.depth == nil then
+      log_filetree_debug(
+        "treeview.draw bad_item root=%s abs=%s type=%s name=%s depth=%s project=%s",
+        tostring(core.root_project() and core.root_project().path),
+        tostring(item.abs_filename),
+        tostring(item.type),
+        tostring(item.name),
+        tostring(item.depth),
+        tostring(item.project and item.project.path)
+      )
+    end
+    if x == nil or y == nil or w == nil or h == nil then
+      log_filetree_debug(
+        "treeview.draw bad_geometry root=%s item=%s x=%s y=%s w=%s h=%s selected=%s hovered=%s",
+        tostring(core.root_project() and core.root_project().path),
+        tostring(item and item.abs_filename),
+        tostring(x),
+        tostring(y),
+        tostring(w),
+        tostring(h),
+        tostring(self.selected_item and self.selected_item.abs_filename),
+        tostring(self.hovered_item and self.hovered_item.abs_filename)
+      )
+    end
     if y + h >= _y and y < _y + _h then
       self:draw_item(item,
         item == self.selected_item,
@@ -522,8 +638,48 @@ function TreeView:toggle_expand(toggle, item)
   end
 end
 
+function TreeView:invalidate_cache_for_path(path)
+  if not path or path == "" then return end
+  self.cache[path] = nil
+  local parent = common.dirname(path)
+  if parent and self.cache[parent] then
+    self.cache[parent].files = nil
+  end
+  if self.selected_item and self.selected_item.abs_filename == path then
+    self.selected_item = nil
+  end
+  if self.hovered_item and self.hovered_item.abs_filename == path then
+    self.hovered_item = nil
+  end
+end
+
 function TreeView:open_doc(filename)
-  core.root_view:open_doc(core.open_doc(filename))
+  local abs_filename = filename
+  if abs_filename and not common.is_absolute_path(abs_filename) then
+    abs_filename = core.project_absolute_path(abs_filename)
+  end
+  local file_info = abs_filename and system.get_file_info(abs_filename)
+  log_filetree_debug(
+    "treeview.open_doc filename=%s abs=%s exists=%s type=%s selected=%s hovered=%s",
+    tostring(filename),
+    tostring(abs_filename),
+    tostring(file_info ~= nil),
+    tostring(file_info and file_info.type),
+    tostring(self.selected_item and self.selected_item.abs_filename),
+    tostring(self.hovered_item and self.hovered_item.abs_filename)
+  )
+  if not file_info or file_info.type ~= "file" then
+    self:invalidate_cache_for_path(abs_filename or filename)
+    core.error("Cannot open file %s: file does not exist", common.home_encode(abs_filename or filename or ""))
+    return
+  end
+  local open_file_size = tonumber(config.plugins.treeview.open_file_size) or 20
+  self.visible = true
+  self:set_target_size("x", open_file_size)
+  if core.set_restore_treeview_from_file_open then
+    core.set_restore_treeview_from_file_open(true, "treeview.open_doc")
+  end
+  core.root_view:open_doc(core.open_doc(abs_filename))
 end
 
 -- init
@@ -531,26 +687,33 @@ local view = TreeView()
 local node = core.root_view:get_active_node()
 view.node = node:split("left", view, {x = true}, true)
 
--- The toolbarview plugin is special because it is plugged inside
--- a treeview pane which is itelf provided in a plugin.
--- We therefore break the usual plugin's logic that would require each
--- plugin to be independent of each other. In addition it is not the
--- plugin module that plug itself in the active node but it is plugged here
--- in the treeview node.
-local toolbar_view = nil
-local toolbar_plugin, ToolbarView = pcall(require, "plugins.toolbarview")
-if config.plugins.toolbarview ~= false and toolbar_plugin then
-  toolbar_view = ToolbarView()
-  view.node:split("down", toolbar_view, {y = true})
-  local min_toolbar_width = toolbar_view:get_min_width()
-  view:set_target_size("x", math.max(config.plugins.treeview.size, min_toolbar_width))
-  command.add(nil, {
-    ["toolbar:toggle"] = function()
-      toolbar_view:toggle_visible()
-    end,
-  })
+function core.ensure_treeview_visible(width)
+  local target_width = width
+  if not target_width or target_width <= 0 then
+    local configured_width = config.plugins.treeview.size or 0
+    target_width = configured_width > 32 and configured_width or (200 * SCALE)
+  end
+  log_filetree_debug(
+    "ensure_treeview_visible before visible=%s size_x=%s target_size=%s config_visible=%s config_size=%s new_target=%s",
+    tostring(view.visible),
+    tostring(view.size.x),
+    tostring(view.target_size),
+    tostring(config.plugins.treeview.visible),
+    tostring(config.plugins.treeview.size),
+    tostring(target_width)
+  )
+  view.visible = true
+  view:set_target_size("x", target_width)
+  log_filetree_debug(
+    "ensure_treeview_visible after visible=%s size_x=%s target_size=%s",
+    tostring(view.visible),
+    tostring(view.size.x),
+    tostring(view.target_size)
+  )
 end
 
+-- The toolbarview is now loaded in core.init and added to the main layout
+-- This file no longer integrates toolbarview with treeview
 
 local old_remove_project = core.remove_project
 function core.remove_project(project, force)
@@ -904,10 +1067,8 @@ config.plugins.treeview.config_spec = {
     description = "Default treeview width.",
     path = "size",
     type = "number",
-    default = toolbar_view and math.ceil(toolbar_view:get_min_width() / SCALE)
-      or 200 * SCALE,
-    min = toolbar_view and toolbar_view:get_min_width() / SCALE
-      or 200 * SCALE,
+    default = 200 * SCALE,
+    min = 200 * SCALE,
     get_value = function(value)
       return value / SCALE
     end,
@@ -915,9 +1076,7 @@ config.plugins.treeview.config_spec = {
       return value * SCALE
     end,
     on_apply = function(value)
-      view:set_target_size("x", math.max(
-        value, toolbar_view and toolbar_view:get_min_width() or 200 * SCALE
-      ))
+      view:set_target_size("x", value)
     end
   },
   {
@@ -929,11 +1088,29 @@ config.plugins.treeview.config_spec = {
     on_apply = function(value)
       view.visible = not value
     end
+  },
+  {
+    label = "Open File Size",
+    description = "Treeview width to use after opening a file from the treeview.",
+    path = "open_file_size",
+    type = "number",
+    default = 20,
+    min = 0,
+    on_apply = function(value)
+      if view and view.visible and tonumber(value) then
+        view:set_target_size("x", value)
+      end
+    end
+  },
+  {
+    label = "Open Project Size",
+    description = "Treeview width to use when opening a project in a new window.",
+    path = "open_project_size",
+    type = "number",
+    default = 20,
+    min = 0
   }
 }
 
--- Return the treeview with toolbar and contextmenu to allow
--- user or plugin modifications
-view.toolbar = toolbar_view
-
+-- Return the treeview
 return view

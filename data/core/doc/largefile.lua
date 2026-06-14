@@ -4,6 +4,7 @@ local config = require "core.config"
 local StubBackend = require "core.doc.largefile_backend"
 local ChunkHighlighter = require "core.doc.chunk_highlighter"
 local system = require "system"
+local syntax = require "core.syntax"
 
 local ok_native, NativeBackend = pcall(require, "core.doc.largefile_backend_native")
 local LargeFileBackend = ok_native and NativeBackend.available() and NativeBackend or StubBackend
@@ -30,6 +31,14 @@ local function wlpt_window_trace(fmt, ...)
   if fp then
     fp:write(os.date("%Y-%m-%d %H:%M:%S"), " [DEBUG-wlpt-window] ", text, "\n")
     fp:close()
+  end
+end
+
+local function notify_binary_readonly(self)
+  if not self._large_file_readonly_notified or (system.get_time() - self._large_file_readonly_notified) > 1.5 then
+    self._large_file_readonly_notified = system.get_time()
+    local message = string.format("Binary hex view is read-only: %s", tostring(self:get_name()))
+    core.log("%s", message)
   end
 end
 
@@ -66,6 +75,8 @@ function LargeFileDoc:new(filename, abs_filename, new_file, skip_load)
   self.chunk_cache = {}
   self.chunk_access_clock = 0
   self.last_requested_window = nil
+  self.binary_mode = false
+  self.binary_bytes_per_line = nil
   self._closed = false
   self._load_thread_key = {}
   self._edit_thread_key = {}
@@ -173,6 +184,8 @@ local function clear_largefile_runtime_state(self)
   self.is_large_file = false
   self.disable_undo = false
   self._edit_confirmation_open = nil
+  self.binary_mode = false
+  self.binary_bytes_per_line = nil
 end
 
 function LargeFileDoc:shutdown_largefile_runtime()
@@ -332,6 +345,8 @@ end
 
 function LargeFileDoc:store_snapshot_chunks(ready)
   local lines = ready.lines or {}
+  self.binary_mode = ready.binary_mode == true
+  self.binary_bytes_per_line = ready.binary_bytes_per_line or self.binary_bytes_per_line
   local start_line = ready.start_line or 1
   local end_line = ready.end_line or start_line + #lines - 1
   local chunk_line_count = math.max(1, ready.chunk_line_count or self.chunk_line_count or 256)
@@ -413,6 +428,18 @@ function LargeFileDoc:store_snapshot_chunks(ready)
 end
 
 function LargeFileDoc:reset_syntax()
+  if self.binary_mode then
+    local syn = syntax.plain_text_syntax
+    self.logical_syntax = syn
+    if self.syntax ~= syn then
+      self.syntax = syn
+      self.highlighter:soft_reset()
+    end
+    if self.chunk_highlighter then
+      self.chunk_highlighter:reset_all_highlight_cache("binary-mode")
+    end
+    return
+  end
   LargeFileDoc.super.reset_syntax(self)
   if self.chunk_highlighter then
     self.chunk_highlighter:reset_all_highlight_cache("syntax-reset")
@@ -426,6 +453,8 @@ function LargeFileDoc:get_loading_state()
     for k, v in pairs(backend_state) do
       state[k] = v
     end
+    self.binary_mode = backend_state.binary_mode == true
+    self.binary_bytes_per_line = backend_state.binary_bytes_per_line or self.binary_bytes_per_line
   end
   return state
 end
@@ -601,6 +630,11 @@ function LargeFileDoc:start_loading(filename, file_info)
 end
 
 function LargeFileDoc:begin_editable_materialization()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
+
   if self._materialize_edit_thread then
     if not self._large_file_readonly_notified or (system.get_time() - self._large_file_readonly_notified) > 1.5 then
       self._large_file_readonly_notified = system.get_time()
@@ -663,6 +697,11 @@ function LargeFileDoc:begin_editable_materialization()
 end
 
 function LargeFileDoc:request_editable_materialization_confirmation()
+  if self.binary_mode then
+    notify_binary_readonly(self)
+    return false
+  end
+
   if self._materialize_edit_thread then
     return false
   end
@@ -777,6 +816,8 @@ function LargeFileDoc:load(filename, abs_filename)
     )
     self.loading = state.loading ~= false
     self.loading_error = state.error
+    self.binary_mode = state.binary_mode == true
+    self.binary_bytes_per_line = state.binary_bytes_per_line or self.binary_bytes_per_line
     self.loading_progress = state.progress_lines or 0
     self.loading_progress_lines = state.progress_lines or 0
     self.loading_progress_bytes = state.progress_bytes or 0
@@ -790,6 +831,8 @@ function LargeFileDoc:load(filename, abs_filename)
       state = handle:get_loading_state()
       self.loading = state.loading ~= false
       self.loading_error = state.error
+      self.binary_mode = state.binary_mode == true
+      self.binary_bytes_per_line = state.binary_bytes_per_line or self.binary_bytes_per_line
       self.loading_progress = state.progress_lines or self.loading_progress
       self.loading_progress_lines = state.progress_lines or self.loading_progress_lines
       self.loading_progress_bytes = state.progress_bytes or self.loading_progress_bytes

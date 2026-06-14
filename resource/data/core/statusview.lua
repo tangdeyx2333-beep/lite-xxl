@@ -8,7 +8,8 @@ local CommandView = require "core.commandview"
 local LogView = require "core.logview"
 local View = require "core.view"
 local Object = require "core.object"
-
+local ContextMenu = require "core.contextmenu"
+local syntax = require "core.syntax"
 
 ---@alias core.statusview.styledtext table<integer, renderer.font|renderer.color|string>
 ---@alias core.statusview.position '"left"' | '"right"'
@@ -33,7 +34,6 @@ local Object = require "core.object"
 ---@field hovered_panel '""' | core.statusview.position
 ---@field hide_messages boolean
 local StatusView = View:extend()
-local MAX_STATUS_POSITION_SCAN = 8 * 1024
 
 function StatusView:__tostring() return "StatusView" end
 
@@ -169,6 +169,81 @@ local function predicate_docview()
 end
 
 
+---动态生成语法列表（从已加载的语法插件中）
+---@return table
+local function get_syntax_list()
+  local list = { { name = "Plain Text", syntax = "plain_text" } }
+  for _, s in ipairs(syntax.items) do
+    table.insert(list, { name = s.name, syntax = s.name:lower() })
+  end
+  return list
+end
+
+local function syntax_trace(fmt, ...)
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then
+    text = tostring(fmt)
+  end
+  local fp = io.open(USERDIR .. PATHSEP .. "wlpt-syntax-debug.log", "a")
+  if fp then
+    fp:write(os.date("%Y-%m-%d %H:%M:%S"), " ", text, "\n")
+    fp:close()
+  end
+end
+
+
+---显示语法选择器
+---@param x number
+---@param y number
+local function show_syntax_selector(x, y)
+  local menu_items = {}
+  local current_syntax = core.active_view.doc.syntax
+  local syntax_list = get_syntax_list()  -- 动态获取语法列表
+
+  for i, syn in ipairs(syntax_list) do
+    table.insert(menu_items, {
+      text = syn.name,
+      checked = current_syntax and current_syntax.name == syn.name,
+      command = function()
+        local dv = core.active_view
+        -- 根据语法名称查找对应的语法定义
+        local target_syntax = nil
+        for _, s in ipairs(syntax.items) do
+          if s.name == syn.name then
+            target_syntax = s
+            break
+          end
+        end
+        -- 如果没找到，使用 plain_text_syntax
+        if not target_syntax then
+          target_syntax = syntax.plain_text_syntax
+        end
+        syntax_trace(
+          "status.syntax_switch file=%s is_large=%s selected=%s display_before=%s logical_before=%s",
+          tostring(dv.doc.abs_filename or dv.doc.filename),
+          tostring(dv.doc.is_large_file),
+          tostring(target_syntax and target_syntax.name),
+          tostring(dv.doc.syntax and dv.doc.syntax.name),
+          tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
+        )
+        dv.doc.syntax = target_syntax
+        dv.doc.highlighter:soft_reset()
+        syntax_trace(
+          "status.syntax_switch.applied file=%s display_after=%s logical_after=%s",
+          tostring(dv.doc.abs_filename or dv.doc.filename),
+          tostring(dv.doc.syntax and dv.doc.syntax.name),
+          tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
+        )
+        core.redraw = true
+      end
+    })
+  end
+
+  -- 使用 ContextMenu 类直接调用 show 方法
+  local context_menu = core.root_view.context_menu
+  context_menu:show(x, y, menu_items)
+end
+
 ---Constructor
 function StatusView:new()
   StatusView.super.new(self)
@@ -227,19 +302,17 @@ function StatusView:register_docview_items()
       -- Calculating tabs when the doc is using the "hard" indent type.
       local ntabs = 0
       local last_idx = 0
-      local line_text = dv.doc.lines[line]
-      if #line_text <= MAX_STATUS_POSITION_SCAN and col <= MAX_STATUS_POSITION_SCAN then
-        while last_idx < col do
-          local s, e = string.find(line_text, "\t", last_idx, true)
-          if s and s < col then
-            ntabs = ntabs + 1
-            last_idx = e + 1
-          else
-            break
-          end
+      local line_text = dv.doc:get_line(line)
+      while last_idx < col do
+        local s, e = string.find(line_text, "\t", last_idx, true)
+        if s and s < col then
+          ntabs = ntabs + 1
+          last_idx = e + 1
+        else
+          break
         end
-        col = col + ntabs * (indent_size - 1)
       end
+      col = col + ntabs * (indent_size - 1)
       return {
         style.text, line, ":",
         col > config.line_limit and style.accent or style.text, col,
@@ -258,10 +331,50 @@ function StatusView:register_docview_items()
       local dv = core.active_view
       local line = dv.doc:get_selection()
       return {
-        string.format("%.f%%", line / #dv.doc.lines * 100)
+        string.format("%.f%%", line / dv.doc:line_count() * 100)
       }
     end,
     tooltip = "caret position"
+  })
+
+  self:add_item({
+    predicate = function()
+      local av = core.active_view
+      local state = core.find_replace_largefile
+      return av
+        and av:is(DocView)
+        and state
+        and state.visible
+        and state.doc == av.doc
+    end,
+    name = "doc:large-file-find-prev",
+    alignment = StatusView.Item.LEFT,
+    get_item = function()
+      return { style.accent, "Prev Chunk" }
+    end,
+    command = "find-replace:large-file-prev-chunk",
+    tooltip = "search previous chunk",
+    separator = self.separator
+  })
+
+  self:add_item({
+    predicate = function()
+      local av = core.active_view
+      local state = core.find_replace_largefile
+      return av
+        and av:is(DocView)
+        and state
+        and state.visible
+        and state.doc == av.doc
+    end,
+    name = "doc:large-file-find-next",
+    alignment = StatusView.Item.LEFT,
+    get_item = function()
+      return { style.accent, "Next Chunk" }
+    end,
+    command = "find-replace:large-file-next-chunk",
+    tooltip = "search next chunk",
+    separator = self.separator2
   })
 
   self:add_item({
@@ -325,13 +438,35 @@ function StatusView:register_docview_items()
   })
 
   self:add_item({
+    predicate = function()
+      local av = core.active_view
+      return av
+        and av:is(DocView)
+        and av.doc
+        and av.doc.is_wlpt_mode
+        and av.doc:is_wlpt_mode()
+    end,
+    name = "doc:wlpt-mode",
+    alignment = StatusView.Item.RIGHT,
+    get_item = function()
+      local dv = core.active_view
+      local label = (dv.doc.get_mode_label and dv.doc:get_mode_label()) or "WL-PT"
+      return {
+        style.accent, label
+      }
+    end,
+    separator = self.separator2,
+    tooltip = "document is using the wlpt path"
+  })
+
+  self:add_item({
     predicate = predicate_docview,
     name = "doc:lines",
     alignment = StatusView.Item.RIGHT,
     get_item = function()
       local dv = core.active_view
       return {
-        style.text, #dv.doc.lines, " lines",
+        style.text, dv.doc:line_count(), " lines",
       }
     end,
     separator = self.separator2
@@ -362,6 +497,45 @@ function StatusView:register_docview_items()
     command = "doc:toggle-overwrite",
     separator = StatusView.separator2
   }
+
+  self:add_item {
+    predicate = predicate_docview,
+    name = "doc:syntax",
+    alignment = StatusView.Item.RIGHT,
+    get_item = function()
+      local dv = core.active_view
+      local syn_name = "TXT"
+      if dv.doc.syntax and dv.doc.syntax.name then
+        syn_name = dv.doc.syntax.name
+        -- 简化显示名称
+        if syn_name == "Plain Text" then syn_name = "TXT" end
+      end
+      return {
+        style.text, syn_name
+      }
+    end,
+    command = function(button, x, y)
+      if button == "left" then
+        show_syntax_selector(x, y)
+      end
+    end,
+    separator = StatusView.separator2
+  }
+
+  -- Markdown preview toggle button
+  self:add_item({
+    predicate = function()
+      local av = core.active_view
+      return (av:is(DocView) or av._md_source_view) and not av:is(CommandView)
+    end,
+    name = "md:toggle-render",
+    alignment = StatusView.Item.RIGHT,
+    get_item = function()
+      return { style.text, "Md" }
+    end,
+    command = "markdown:toggle-render",
+    separator = StatusView.separator2
+  })
 end
 
 

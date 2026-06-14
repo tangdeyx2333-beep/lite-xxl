@@ -23,7 +23,7 @@ static int f_renwin_create(lua_State *L) {
   float height = luaL_optnumber(L, 3, 0);
 
   if (video_init() != 0)
-    return luaL_error(L, "Error creating lite-xxl window: %s", SDL_GetError());
+    return luaL_error(L, "Error creating lite-xl window: %s", SDL_GetError());
 
   if (width < 1 || height < 1) {
     const SDL_DisplayMode* dm = SDL_GetCurrentDisplayMode(SDL_GetPrimaryDisplay());
@@ -41,7 +41,7 @@ static int f_renwin_create(lua_State *L) {
     SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_HIDDEN
   );
   if (!window) {
-    return luaL_error(L, "Error creating lite-xxl window: %s", SDL_GetError());
+    return luaL_error(L, "Error creating lite-xl window: %s", SDL_GetError());
   }
   init_window_icon(window);
 

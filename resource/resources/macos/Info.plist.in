@@ -33,9 +33,9 @@
 		<string>public.text</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.lite_xxl.LiteXXL</string>
+	<string>com.lite-xxl</string>
 	<key>CFBundleName</key>
-	<string>Lite XXL</string>
+	<string>lite-xxl</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>NSHighResolutionCapable</key>
@@ -53,7 +53,7 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2020 rxi
 © 2020-2022 Francesco Abbate
-© 2022-@CURRENT_YEAR@ Lite XXL Team</string>
+© 2022-@CURRENT_YEAR@ Lite XL Team</string>
 </dict>
 </plist>
 

@@ -7,12 +7,123 @@ local translate = require "core.doc.translate"
 local ime = require "core.ime"
 local View = require "core.view"
 local ContextMenu = require "core.contextmenu"
+local DEBUG_LOG_PATH = USERDIR and (USERDIR .. PATHSEP .. "wlpt-debug.log") or nil
+
+local function docview_trace(fmt, ...)
+  if not DEBUG_LOG_PATH then
+    return
+  end
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then
+    text = tostring(fmt)
+  end
+  local fp = io.open(DEBUG_LOG_PATH, "a")
+  if fp then
+    fp:write(os.date("%Y-%m-%d %H:%M:%S"), " [DEBUG-wlpt-hit] ", text, "\n")
+    fp:close()
+  end
+end
+
+local function get_render_highlighter(doc)
+  if doc and doc.is_large_file_mode and doc:is_large_file_mode()
+    and not config.large_file_disable_highlight
+    and doc.chunk_highlighter
+  then
+    return doc.chunk_highlighter
+  end
+  return doc and doc.highlighter or nil
+end
+
+local function get_screen_position_for_selection(self, line, col)
+  -- 这里统一走“带列号的屏幕坐标”，这样软换行后的 IME 就能落到实际显示的那一段行上。
+  return self:get_line_screen_position(line, col)
+end
+
+local function log_hit_test(self, stage, x, y, line, col)
+  if not (self and self.doc and self.doc.is_wlpt_mode and self.doc:is_wlpt_mode()) then
+    return
+  end
+  local chunk = self.doc.get_chunk_for_line and self.doc:get_chunk_for_line(line) or nil
+  local line_text = self.doc.get_line and self.doc:get_line(line) or nil
+  if type(line_text) == "string" then
+    line_text = line_text:gsub("\r", "\\r"):gsub("\n", "\\n"):gsub("\t", "\\t")
+    if #line_text > 80 then
+      line_text = line_text:sub(1, 80) .. "..."
+    end
+  end
+  docview_trace(
+    "hit.%s file=%s xy=%s,%s line=%s col=%s chunk=%s ready=%s dirty=%s anchored=%s cached=%s render=%s scroll=%s,%s text=\"%s\"",
+    tostring(stage),
+    tostring(self.doc.abs_filename or self.doc.filename),
+    tostring(math.floor(x or 0)),
+    tostring(math.floor(y or 0)),
+    tostring(line),
+    tostring(col),
+    tostring(chunk and (tostring(chunk.start_line) .. "-" .. tostring(chunk.end_line)) or "nil"),
+    tostring(chunk and chunk.highlight_ready or nil),
+    tostring(chunk and chunk.highlight_dirty or nil),
+    tostring(chunk and chunk.highlight_anchored or nil),
+    tostring(self.doc.has_cached_line and self.doc:has_cached_line(line) or nil),
+    tostring(get_render_highlighter(self.doc) and (get_render_highlighter(self.doc).is_chunk_mode and get_render_highlighter(self.doc):is_chunk_mode() and "chunk" or "line") or "nil"),
+    tostring(self.scroll and self.scroll.x),
+    tostring(self.scroll and self.scroll.y),
+    tostring(line_text)
+  )
+end
 
 ---@class core.docview : core.view
 ---@field super core.view
 local DocView = View:extend()
 
 function DocView:__tostring() return "DocView" end
+
+local function find_scroll_trace(...) end
+
+function DocView:draw_find_match_overlay(line, x, y)
+  local line1, col1, line2, col2
+  local active_find_match = core.active_find_match
+  if active_find_match and active_find_match.doc == self.doc then
+    line1, col1, line2, col2 = active_find_match.line1, active_find_match.col1, active_find_match.line2, active_find_match.col2
+  elseif active_find_match and not self:is(require "core.commandview") and self.doc and self.doc.get_selection then
+    line1, col1, line2, col2 = self.doc:get_selection(true)
+  end
+
+  if not line1 or line < line1 or line > line2 then
+    return
+  end
+  local text = self.doc:get_line(line)
+  local lh = self:get_line_height()
+
+  if line1 ~= line then col1 = 1 end
+  if line2 ~= line then col2 = #text + 1 end
+
+  local x1 = x + self:get_col_x_offset(line, col1)
+  local x2 = x + self:get_col_x_offset(line, col2)
+  if x1 == x2 then
+    return
+  end
+
+  renderer.draw_rect(x1, y + 1, x2 - x1, math.max(1, lh - 2), style.find_match or { 0xFF, 0x8C, 0x00, 0xFF })
+  local match_text = text:sub(col1, math.max(col1, col2 - 1))
+  if match_text ~= "" then
+    renderer.draw_text(
+      self:get_font(),
+      match_text,
+      x1,
+      y + self:get_line_text_y_offset(),
+      style.find_match_text or { 0xFF, 0xFF, 0xFF, 0xFF }
+    )
+  end
+end
+
+local function get_largefile_visible_line_range(self)
+  local lh = math.max(1, self:get_line_height())
+  local usable_height = math.max(lh, (self.size.y or 0) - style.padding.y * 2)
+  local visible_lines = math.max(1, math.ceil(usable_height / lh) + 1)
+  local minline = math.max(1, math.floor(((self.scroll.y or 0) - style.padding.y) / lh) + 1)
+  local maxline = math.min(self.doc:line_count(), minline + visible_lines)
+  return minline, maxline
+end
 
 DocView.context = "session"
 
@@ -34,8 +145,9 @@ DocView.translate = {
   end,
 
   ["next_page"] = function(doc, line, col, dv)
-    if line == #doc.lines then
-      return #doc.lines, #doc.lines[line]
+    local line_count = doc:line_count()
+    if line == line_count then
+      return line_count, doc:get_line_length(line_count)
     end
     local min, max = dv:get_visible_line_range()
     return line + (max - min), 1
@@ -49,8 +161,9 @@ DocView.translate = {
   end,
 
   ["next_line"] = function(doc, line, col, dv)
-    if line == #doc.lines then
-      return #doc.lines, math.huge
+    local line_count = doc:line_count()
+    if line == line_count then
+      return line_count, math.huge
     end
     return move_to_line_offset(dv, line, col, 1)
   end,
@@ -81,6 +194,8 @@ function DocView:try_close(do_close)
   and #core.get_views_referencing_doc(self.doc) == 1 then
     if self.close_confirm_pending and is_unsaved_confirm_active then
       self.close_confirm_pending = false
+      -- 中文说明：用户第二次触发关闭确认，等同于明确选择“不保存关闭”。
+      self.doc._close_without_saving_requested = true
       do_close()
       return
     end
@@ -90,8 +205,11 @@ function DocView:try_close(do_close)
       submit = function(_, item)
         self.close_confirm_pending = false
         if item.text:match("^[cC]") then
+          -- 中文说明：记录用户明确选择 Close Without Saving，后续 WLPT 关闭日志会读取这个标记。
+          self.doc._close_without_saving_requested = true
           do_close()
         elseif item.text:match("^[sS]") then
+          self.doc._close_without_saving_requested = false
           self.doc:save()
           do_close()
         end
@@ -108,6 +226,9 @@ function DocView:try_close(do_close)
     })
   else
     self.close_confirm_pending = false
+    if self.doc then
+      self.doc._close_without_saving_requested = false
+    end
     do_close()
   end
 end
@@ -130,11 +251,12 @@ end
 
 
 function DocView:get_scrollable_size()
+  local line_count = self.doc:line_count()
   if not config.scroll_past_end then
     local _, _, _, h_scroll = self.h_scrollbar:get_track_rect()
-    return self:get_line_height() * (#self.doc.lines) + style.padding.y * 2 + h_scroll
+    return self:get_line_height() * line_count + style.padding.y * 2 + h_scroll
   end
-  return self:get_line_height() * (#self.doc.lines - 1) + self.size.y
+  return self:get_line_height() * (line_count - 1) + self.size.y
 end
 
 function DocView:get_h_scrollable_size()
@@ -154,7 +276,7 @@ end
 
 function DocView:get_gutter_width()
   local padding = style.padding.x * 2
-  return self:get_font():get_width(#self.doc.lines) + padding, padding
+  return self:get_font():get_width(self.doc:line_count()) + padding, padding
 end
 
 
@@ -178,10 +300,13 @@ end
 
 
 function DocView:get_visible_line_range()
+  if self.doc:is_large_file_mode() then
+    return get_largefile_visible_line_range(self)
+  end
   local x, y, x2, y2 = self:get_content_bounds()
   local lh = self:get_line_height()
   local minline = math.max(1, math.floor((y - style.padding.y) / lh) + 1)
-  local maxline = math.min(#self.doc.lines, math.floor((y2 - style.padding.y) / lh) + 1)
+  local maxline = math.min(self.doc:line_count(), math.floor((y2 - style.padding.y) / lh) + 1)
   return minline, maxline
 end
 
@@ -190,9 +315,26 @@ function DocView:get_col_x_offset(line, col)
   local default_font = self:get_font()
   local _, indent_size = self.doc:get_indent_info()
   default_font:set_tab_size(indent_size)
+  local render_highlighter = get_render_highlighter(self.doc)
+  if self.doc:is_large_file_mode() and not (render_highlighter and render_highlighter.is_chunk_mode and render_highlighter:is_chunk_mode()) then
+    local xoffset = 0
+    local line_text = self.doc:get_line(line)
+    if col <= 1 then
+      return 0
+    end
+    local column = 1
+    for char in common.utf8_chars(line_text) do
+      if column >= col then
+        return xoffset
+      end
+      xoffset = xoffset + default_font:get_width(char, {tab_offset = xoffset})
+      column = column + #char
+    end
+    return xoffset
+  end
   local column = 1
   local xoffset = 0
-  for _, type, text in self.doc.highlighter:each_token(line) do
+  for _, type, text in render_highlighter:each_token(line) do
     local font = style.syntax_fonts[type] or default_font
     if font ~= default_font then font:set_tab_size(indent_size) end
     local length = #text
@@ -218,13 +360,25 @@ end
 
 
 function DocView:get_x_offset_col(line, x)
-  local line_text = self.doc.lines[line]
+  local line_text = self.doc:get_line(line)
 
   local xoffset, i = 0, 1
   local default_font = self:get_font()
   local _, indent_size = self.doc:get_indent_info()
   default_font:set_tab_size(indent_size)
-  for _, type, text in self.doc.highlighter:each_token(line) do
+  local render_highlighter = get_render_highlighter(self.doc)
+  if self.doc:is_large_file_mode() and not (render_highlighter and render_highlighter.is_chunk_mode and render_highlighter:is_chunk_mode()) then
+    for char in common.utf8_chars(line_text) do
+      local w = default_font:get_width(char, {tab_offset = xoffset})
+      if xoffset + w >= x then
+        return (x <= xoffset + (w / 2)) and i or i + #char
+      end
+      xoffset = xoffset + w
+      i = i + #char
+    end
+    return #line_text
+  end
+  for _, type, text in render_highlighter:each_token(line) do
     local font = style.syntax_fonts[type] or default_font
     if font ~= default_font then font:set_tab_size(indent_size) end
     local width = font:get_width(text, {tab_offset = xoffset})
@@ -252,7 +406,7 @@ end
 function DocView:resolve_screen_position(x, y)
   local ox, oy = self:get_line_screen_position(1)
   local line = math.floor((y - oy) / self:get_line_height()) + 1
-  line = common.clamp(line, 1, #self.doc.lines)
+  line = common.clamp(line, 1, self.doc:line_count())
   local col = self:get_x_offset_col(line, x - ox)
   return line, col
 end
@@ -320,7 +474,8 @@ function DocView:on_mouse_moved(x, y, ...)
       if l1 > l2 then l1, l2 = l2, l1 end
       self.doc.selections = { }
       for i = l1, l2 do
-        self.doc:set_selections(i - l1 + 1, i, math.min(c1, #self.doc.lines[i]), i, math.min(c2, #self.doc.lines[i]))
+        local line_length = self.doc:get_line_length(i)
+        self.doc:set_selections(i - l1 + 1, i, math.min(c1, line_length), i, math.min(c2, line_length))
       end
     else
       if snap_type then
@@ -352,23 +507,32 @@ end
 
 function DocView:on_mouse_pressed(button, x, y, clicks)
   if button ~= "left" or not self.hovering_gutter then
+    if button == "left" then
+      local line, col = self:resolve_screen_position(x, y)
+      log_hit_test(self, "before-press", x, y, line, col)
+    end
     local res = DocView.super.on_mouse_pressed(self, button, x, y, clicks)
+    if button == "left" then
+      local line1, col1 = self.doc:get_selection()
+      log_hit_test(self, "after-press", x, y, line1, col1)
+    end
     self:update_ime_location(true)
     return res
   end
   local line = self:resolve_screen_position(x, y)
+  log_hit_test(self, "gutter-press", x, y, line, 1)
   if keymap.modkeys["shift"] then
     local sline, scol, sline2, scol2 = self.doc:get_selection(true)
     if line > sline then
-      self.doc:set_selection(sline, 1, line,  #self.doc.lines[line])
+      self.doc:set_selection(sline, 1, line, self.doc:get_line_length(line))
     else
-      self.doc:set_selection(line, 1, sline2, #self.doc.lines[sline2])
+      self.doc:set_selection(line, 1, sline2, self.doc:get_line_length(sline2))
     end
   else
     if clicks == 1 then
       self.doc:set_selection(line, 1, line, 1)
     elseif clicks == 2 then
-      self.doc:set_selection(line, 1, line, #self.doc.lines[line])
+      self.doc:set_selection(line, 1, line, self.doc:get_line_length(line))
     end
   end
   self:update_ime_location(true)
@@ -408,28 +572,36 @@ function DocView:update_ime_location(force)
   if not (force or (self.ime_status and core.active_view == self)) then return end
 
   local line1, col1, line2, col2 = self.doc:get_selection(true)
-  local x, y = self:get_line_screen_position(line1)
   local h = self:get_line_height()
   local col = math.min(col1, col2)
-
-  local x1, x2 = 0, 0
+  local anchor_line, anchor_col
+  local target_line, target_col
 
   if self.ime_status and self.ime_selection.size > 0 then
-    -- focus on a part of the text
+    -- 组合串存在选区时，锚点使用组合串起点，避免软换行后仍然落在逻辑行首对应的 y 上。
     local from = col + self.ime_selection.from
     local to = from + self.ime_selection.size
-    x1 = self:get_col_x_offset(line1, from)
-    x2 = self:get_col_x_offset(line1, to)
+    anchor_line, anchor_col = line1, from
+    target_line, target_col = line1, to
   else
-    -- focus the caret / whole text
-    x1 = self:get_col_x_offset(line1, col1)
-    x2 = self:get_col_x_offset(line2, col2)
+    -- 没有组合串选区时，直接使用当前选择范围的实际屏幕坐标。
+    anchor_line, anchor_col = line1, col1
+    target_line, target_col = line2, col2
   end
+  local x, y = get_screen_position_for_selection(self, anchor_line, anchor_col)
+  local x2 = select(1, get_screen_position_for_selection(self, target_line, target_col))
 
-  ime.set_location(x + x1, y, x2 - x1, h)
+  ime.set_location(x, y, x2 - x, h)
 end
 
 function DocView:update()
+  local minline, maxline = self:get_visible_line_range()
+  self.doc:request_visible_window(minline, maxline, 32)
+  self.doc:poll_ready_window(0)
+  if self.doc.chunk_highlighter and not config.large_file_disable_highlight then
+    self.doc.chunk_highlighter:ensure_visible_chunks(minline, maxline, 32, self.scroll.x, self.scroll.y)
+  end
+
   -- scroll to make caret visible and reset blink timer if it moved
   local line1, col1, line2, col2 = self.doc:get_selection()
   if (line1 ~= self.last_line1 or col1 ~= self.last_col1 or
@@ -468,16 +640,31 @@ end
 
 
 function DocView:draw_line_text(line, x, y)
+  local render_highlighter = get_render_highlighter(self.doc)
+  if self.doc:is_large_file_mode() and self.doc.has_cached_line and not self.doc:has_cached_line(line) then
+    local default_font = self:get_font()
+    renderer.draw_text(default_font, "Loading...", x, y + self:get_line_text_y_offset(), style.dim or style.text)
+    return self:get_line_height()
+  end
+  if self.doc:is_large_file_mode() and not (render_highlighter and render_highlighter.is_chunk_mode and render_highlighter:is_chunk_mode()) then
+    local default_font = self:get_font()
+    local text = self.doc:get_line(line)
+    if text:sub(-1) == "\n" then
+      text = text:sub(1, -2)
+    end
+    renderer.draw_text(default_font, text, x, y + self:get_line_text_y_offset(), style.text)
+    return self:get_line_height()
+  end
   local default_font = self:get_font()
   local tx, ty = x, y + self:get_line_text_y_offset()
   local last_token = nil
-  local tokens = self.doc.highlighter:get_line(line).tokens
+  local tokens = render_highlighter:get_line(line).tokens
   local tokens_count = #tokens
   if string.sub(tokens[tokens_count], -1) == "\n" then
     last_token = tokens_count - 1
   end
   local start_tx = tx
-  for tidx, type, text in self.doc.highlighter:each_token(line) do
+  for tidx, type, text in render_highlighter:each_token(line) do
     local color = style.syntax[type]
     local font = style.syntax_fonts[type] or default_font
     -- do not render newline, fixes issue #1164
@@ -498,6 +685,42 @@ end
 function DocView:draw_caret(x, y)
   local lh = self:get_line_height()
   renderer.draw_rect(x, y, style.caret_width, lh, style.caret)
+end
+
+local function get_loading_text(base)
+  local frames = { ".", "..", "...", "...." }
+  local t = math.floor(system.get_time() * 3) % #frames + 1
+  return base .. frames[t]
+end
+
+function DocView:selection_overlaps_find_match(line1, col1, line2, col2)
+  local active_find_match = core.active_find_match
+  if not active_find_match or active_find_match.doc ~= self.doc then
+    return false
+  end
+
+  local sel_start_line, sel_start_col = line1, col1
+  local sel_end_line, sel_end_col = line2, col2
+  if sel_start_line > sel_end_line or (sel_start_line == sel_end_line and sel_start_col > sel_end_col) then
+    sel_start_line, sel_start_col, sel_end_line, sel_end_col =
+      sel_end_line, sel_end_col, sel_start_line, sel_start_col
+  end
+
+  local match_start_line, match_start_col = active_find_match.line1, active_find_match.col1
+  local match_end_line, match_end_col = active_find_match.line2, active_find_match.col2
+  if match_start_line > match_end_line or (match_start_line == match_end_line and match_start_col > match_end_col) then
+    match_start_line, match_start_col, match_end_line, match_end_col =
+      match_end_line, match_end_col, match_start_line, match_start_col
+  end
+
+  local selection_before_match =
+    sel_end_line < match_start_line or
+    (sel_end_line == match_start_line and sel_end_col <= match_start_col)
+  local selection_after_match =
+    sel_start_line > match_end_line or
+    (sel_start_line == match_end_line and sel_start_col >= match_end_col)
+
+  return not selection_before_match and not selection_after_match
 end
 
 function DocView:draw_line_body(line, x, y)
@@ -525,20 +748,22 @@ function DocView:draw_line_body(line, x, y)
   -- draw selection if it overlaps this line
   local lh = self:get_line_height()
   for lidx, line1, col1, line2, col2 in self.doc:get_selections(true) do
+    local is_active_find_selection = self:selection_overlaps_find_match(line1, col1, line2, col2)
     if line >= line1 and line <= line2 then
-      local text = self.doc.lines[line]
+      local text = self.doc:get_line(line)
       if line1 ~= line then col1 = 1 end
       if line2 ~= line then col2 = #text + 1 end
       local x1 = x + self:get_col_x_offset(line, col1)
       local x2 = x + self:get_col_x_offset(line, col2)
-      if x1 ~= x2 then
+      if x1 ~= x2 and not is_active_find_selection then
         renderer.draw_rect(x1, y, x2 - x1, lh, style.selection)
       end
     end
   end
-
   -- draw line's text
-  return self:draw_line_text(line, x, y)
+  local result = self:draw_line_text(line, x, y)
+  self:draw_find_match_overlay(line, x, y)
+  return result
 end
 
 
@@ -558,38 +783,37 @@ end
 
 
 function DocView:draw_ime_decoration(line1, col1, line2, col2)
-  local x, y = self:get_line_screen_position(line1)
+  local col = math.min(col1, col2)
+  local x, y = get_screen_position_for_selection(self, line1, col)
   local line_size = math.max(1, SCALE)
   local lh = self:get_line_height()
-  local col = math.min(col1, col2)
-  local cx = self:get_col_x_offset(line1, col)
 
   -- Draw the IME composition text inline at the caret position.
   if self.ime_editing and #self.ime_editing > 0 then
     local font = self:get_font()
     local text_width = font:get_width(self.ime_editing)
     -- Background highlight for composition text
-    renderer.draw_rect(x + cx, y, text_width, lh, style.background3)
-    renderer.draw_text(font, self.ime_editing, x + cx, y, style.text)
+    renderer.draw_rect(x, y, text_width, lh, style.background3)
+    renderer.draw_text(font, self.ime_editing, x, y, style.text)
     -- Accent underline for composition text
-    renderer.draw_rect(x + cx, y + lh - line_size, text_width, line_size, style.accent)
+    renderer.draw_rect(x, y + lh - line_size, text_width, line_size, style.accent)
   end
 
   -- Draw IME underline for any active document selection.
-  local x1 = self:get_col_x_offset(line1, col1)
-  local x2 = self:get_col_x_offset(line2, col2)
-  renderer.draw_rect(x + math.min(x1, x2), y + lh - line_size, math.abs(x1 - x2), line_size, style.text)
+  local x1 = select(1, get_screen_position_for_selection(self, line1, col1))
+  local x2 = select(1, get_screen_position_for_selection(self, line2, col2))
+  renderer.draw_rect(math.min(x1, x2), y + lh - line_size, math.abs(x1 - x2), line_size, style.text)
 
   -- Draw IME selection within the composition string.
   local from = col + self.ime_selection.from
   local to = from + self.ime_selection.size
-  x1 = self:get_col_x_offset(line1, from)
+  x1 = select(1, get_screen_position_for_selection(self, line1, from))
   if from ~= to then
-    x2 = self:get_col_x_offset(line1, to)
+    x2 = select(1, get_screen_position_for_selection(self, line1, to))
     line_size = style.caret_width
-    renderer.draw_rect(x + math.min(x1, x2), y + lh - line_size, math.abs(x1 - x2), line_size, style.caret)
+    renderer.draw_rect(math.min(x1, x2), y + lh - line_size, math.abs(x1 - x2), line_size, style.caret)
   end
-  self:draw_caret(x + x1, y)
+  self:draw_caret(x1, y)
 end
 
 
@@ -634,29 +858,54 @@ function DocView:draw()
     return
   end
 
-  if self.doc.loading then
-    local loaded_lines = self.doc.loading_progress_lines or self.doc.loading_progress or 0
-    local loaded_mb = (self.doc.loading_progress_bytes or 0) / (1024 * 1024)
-    local total_mb = math.max((self.doc.loading_total_bytes or 0) / (1024 * 1024), 0)
-    local text = string.format(
-      "Loading large file... %d lines (%.1f / %.1f MB)",
-      loaded_lines,
-      loaded_mb,
-      total_mb
-    )
-    local font = self:get_font()
-    local tw = font:get_width(text)
-    local th = font:get_height()
-    local x = self.position.x + (self.size.x - tw) / 2
-    local y = self.position.y + (self.size.y - th) / 2
-    renderer.draw_text(font, text, x, y, style.text)
-    self:draw_scrollbar()
-    return
+  local minline, maxline = self:get_visible_line_range()
+  local view_ready = self.doc:is_view_ready(minline, maxline)
+  local has_partial_largefile_view = self.doc:is_large_file_mode()
+    and self.doc.has_any_cached_lines
+    and self.doc:has_any_cached_lines(minline, maxline)
+
+  if self.doc.loading and (not self.doc:is_large_file_mode() or not view_ready) then
+    if self.doc:is_large_file_mode() and has_partial_largefile_view then
+      -- keep drawing available chunks while native indexing continues
+    else
+      local loaded_lines = self.doc.loading_progress_lines or self.doc.loading_progress or 0
+      local loaded_mb = (self.doc.loading_progress_bytes or 0) / (1024 * 1024)
+      local total_mb = math.max((self.doc.loading_total_bytes or 0) / (1024 * 1024), 0)
+      local text = string.format(
+        "%s %d lines (%.1f / %.1f MB)",
+        get_loading_text("Loading large file"),
+        loaded_lines,
+        loaded_mb,
+        total_mb
+      )
+      local font = self:get_font()
+      local tw = font:get_width(text)
+      local th = font:get_height()
+      local x = self.position.x + (self.size.x - tw) / 2
+      local y = self.position.y + (self.size.y - th) / 2
+      renderer.draw_text(font, text, x, y, style.text)
+      self:draw_scrollbar()
+      return
+    end
   end
+
+  if self.doc:is_large_file_mode() and not view_ready then
+    if not has_partial_largefile_view then
+      local text = get_loading_text("Loading current view")
+      local font = self:get_font()
+      local tw = font:get_width(text)
+      local th = font:get_height()
+      local x = self.position.x + (self.size.x - tw) / 2
+      local y = self.position.y + (self.size.y - th) / 2
+      renderer.draw_text(font, text, x, y, style.dim or style.text)
+      core.redraw = true
+      self:draw_scrollbar()
+      return
+    end
+  end
+
   local _, indent_size = self.doc:get_indent_info()
   self:get_font():set_tab_size(indent_size)
-
-  local minline, maxline = self:get_visible_line_range()
   local lh = self:get_line_height()
 
   local x, y = self:get_line_screen_position(minline)
@@ -675,6 +924,34 @@ function DocView:draw()
   end
   self:draw_overlay()
   core.pop_clip_rect()
+
+  if self.doc.loading and self.doc:is_large_file_mode() then
+    local loaded_lines = self.doc.loading_progress_lines or self.doc.loading_progress or 0
+    local loaded_mb = (self.doc.loading_progress_bytes or 0) / (1024 * 1024)
+    local total_mb = math.max((self.doc.loading_total_bytes or 0) / (1024 * 1024), 0)
+    local text = string.format(
+      "%s %d lines (%.1f / %.1f MB)",
+      get_loading_text("Indexing large file"),
+      loaded_lines,
+      loaded_mb,
+      total_mb
+    )
+    renderer.draw_rect(
+      self.position.x,
+      self.position.y,
+      self.size.x,
+      self:get_line_height() + style.padding.y * 2,
+      style.background2
+    )
+    renderer.draw_text(
+      self:get_font(),
+      text,
+      self.position.x + style.padding.x,
+      self.position.y + self:get_line_text_y_offset(),
+      style.dim or style.text
+    )
+    core.redraw = true
+  end
 
   self:draw_scrollbar()
 end

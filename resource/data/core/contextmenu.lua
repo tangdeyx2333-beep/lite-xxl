@@ -85,8 +85,16 @@ end
 function ContextMenu:show(x, y, items, ...)
   local items_list = { width = 0, height = 0, arguments = { ... } }
   for _, item in ipairs(items) do
-    if item and (not item.command or command.is_valid(item.command, ...)) then
-      table.insert(items_list, item)
+    if item then
+      -- Only check command validity for string commands (not functions)
+      if type(item.command) == "string" then
+        if command.is_valid(item.command, ...) then
+          table.insert(items_list, item)
+        end
+      else
+        -- item.command is a function or nil, include it
+        table.insert(items_list, item)
+      end
     end
   end
 

@@ -13,6 +13,8 @@
 typedef struct LargeFileBackend {
   char *path;
   uint64_t file_size;
+  bool binary_mode;
+  size_t binary_line_count;
   size_t chunk_line_count;
   size_t requested_start_line;
   size_t requested_end_line;

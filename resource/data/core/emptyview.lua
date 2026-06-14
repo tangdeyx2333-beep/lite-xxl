@@ -50,7 +50,7 @@ function EmptyView:draw()
     renderer.draw_text(style.font, cmd_text, cmds_x, cmds_y + cmd_h*(i-1), style.dim)
   end
 
-  local title = "Lite XXL"
+  local title = "lite-xxl"
   local version = VERSION
   local logo_h = style.big_font:get_height(title)
   local logo_y = y - logo_h + logo_h/4

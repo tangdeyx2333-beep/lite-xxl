@@ -123,13 +123,16 @@ end
 
 
 ---@param doc core.doc
+---@param allow_duplicate boolean?
 ---@return core.docview
-function RootView:open_doc(doc)
+function RootView:open_doc(doc, allow_duplicate)
   local node = self:get_active_node_default()
-  for i, view in ipairs(node.views) do
-    if view.doc == doc then
-      node:set_active_view(node.views[i])
-      return view
+  if not allow_duplicate then
+    for i, view in ipairs(node.views) do
+      if view.doc == doc then
+        node:set_active_view(node.views[i])
+        return view
+      end
     end
   end
   local view = DocView(doc)
@@ -313,7 +316,7 @@ function RootView:on_mouse_released(button, x, y, ...)
                 -- already saved file: open directly in new instance
                 exec_cmd = string.format("%q --project-dir %q %q", EXEFILE, project_dir, view.doc.abs_filename)
               else
-                local content = table.concat(view.doc.lines)
+                local content = view.doc:get_all_text()
                 local name = view.doc:get_name()
                 if is_blank_unsaved_content(name, content) then
                   exec_cmd = string.format("%q --project-dir %q", EXEFILE, project_dir)
@@ -333,16 +336,19 @@ function RootView:on_mouse_released(button, x, y, ...)
                     if write_instance_storage(storage_key, {
                       content = content,
                       name = name,
+                      selection = { view.doc:get_selection(true) },
                     }) then
                       doc_entry = {
                         type = "temp_storage",
-                        storage_key = storage_key
+                        storage_key = storage_key,
+                        selection = { view.doc:get_selection(true) }
                       }
                     else
                       doc_entry = {
                         type = "content",
                         content = content,
-                        name = name
+                        name = name,
+                        selection = { view.doc:get_selection(true) }
                       }
                     end
                     fp:write("return ", common.serialize({

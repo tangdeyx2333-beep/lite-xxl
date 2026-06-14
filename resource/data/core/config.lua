@@ -69,6 +69,13 @@ config.file_size_limit = 10
 ---@type number
 config.large_file_size_limit = 32
 
+---The wlpt file threshold, in mebibytes.
+---Files larger than this size will default to the `wlpt` document path.
+---
+---Defaults to 1.
+---@type number
+config.wlpt_file_size_limit = 1
+
 ---Maximum amount of time, in seconds, that large-file loading work may use
 ---before yielding back to the main loop.
 ---
@@ -84,15 +91,76 @@ config.large_file_read_chunk_size = 16 * 1024
 
 ---Automatically disable syntax highlighting for large files.
 ---
----Defaults to true.
+---Defaults to false.
 ---@type boolean
-config.large_file_disable_highlight = true
+config.large_file_disable_highlight = false
 
 ---Automatically disable undo/redo tracking for large files.
 ---
 ---Defaults to true.
 ---@type boolean
 config.large_file_disable_undo = true
+
+---是否为 wl/wlpt 大文件模式启用“停稳后快速窗口高亮”。
+---
+---开启后，大文件在滚动过程中仍然按纯文本绘制；
+---只有当视图停止滚动一小段时间后，才会尝试对当前可视窗口做一次轻量语法高亮。
+---
+---是否为 wl/wlpt 大文件模式启用“真实语法轻量功能通道”。
+---
+---开启后，大文件模式仍然保持纯文本或局部高亮绘制策略，
+---不会恢复全文语法高亮；
+---但命令层可以继续读取文件的真实 syntax 信息，用于注释切换等轻量语法功能。
+---
+---这个开关的目标是尽量恢复“大文件下与文件格式相关、但不依赖全文高亮”的行为；
+---如果你怀疑它导致卡顿或兼容性问题，可以随时关闭。
+---
+---默认值：false
+---@type boolean
+config.large_file_enable_syntax_features = false
+
+---Fixed line count for each large-file chunk transferred from the native backend.
+---
+---Defaults to 256.
+---@type integer
+config.large_file_window_chunk_lines = 256
+
+---Number of neighbor chunks to prefetch on each side of the visible viewport.
+---
+---Defaults to 1.
+---@type integer
+config.large_file_window_buffer_chunks = 1
+
+---Maximum number of large-file chunks kept in Lua cache at once.
+---
+---Defaults to 8.
+---@type integer
+config.large_file_window_max_cached_chunks = 8
+
+---Delay, in seconds, before large-file/WLPT chunk highlighting resumes after scrolling stops.
+---Higher values favor scroll smoothness over highlight responsiveness.
+---
+---Defaults to 0.18.
+---@type number
+config.large_file_highlight_scroll_idle_delay = 0.18
+
+---Enable scheduler/thread debug logging to `scheduler.log` in USERDIR.
+---
+---Defaults to false.
+---@type boolean
+config.scheduler_log = false
+
+---Log a scheduler entry when a single thread resume takes at least this many seconds.
+---
+---Defaults to 0.002.
+---@type number
+config.scheduler_slow_resume_threshold = 0.002
+
+---Freeze non-active document background work on the main thread.
+---
+---Defaults to true.
+---@type boolean
+config.inactive_freeze_policy = true
 
 ---A list of files and directories to ignore.
 ---Each element is a Lua pattern, where patterns ending with a forward slash

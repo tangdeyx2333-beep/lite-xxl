@@ -2,7 +2,7 @@
 
 import os.path
 
-app_path = defines.get("app_path", "Lite XXL.app")
+app_path = defines.get("app_path", "lite-xxl.app")
 app_name = os.path.basename(app_path)
 
 # Image options

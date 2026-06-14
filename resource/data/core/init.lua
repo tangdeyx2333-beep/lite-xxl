@@ -14,6 +14,8 @@ local CommandView
 local NagView
 local DocView
 local Doc
+local LargeFileDoc
+local WlPtDoc
 local Project
 local SessionRestore
 
@@ -78,6 +80,110 @@ local function sanitize_recent_projects(recents)
   return sanitized
 end
 
+local function log_filetree_debug(fmt, ...)
+  local ok, message = pcall(string.format, fmt, ...)
+  local line = ok and message or ("format-error: " .. tostring(fmt))
+  local logfile = USERDIR and (USERDIR .. PATHSEP .. "filetree-debug.log")
+  if logfile then
+    local fp = io.open(logfile, "ab")
+    if fp then
+      fp:write(os.date("[%Y-%m-%d %H:%M:%S] "), line, "\n")
+      fp:close()
+    end
+  end
+end
+
+local function log_quit_debug(fmt, ...)
+  local ok, message = pcall(string.format, fmt, ...)
+  local line = ok and message or ("format-error: " .. tostring(fmt))
+  local logfile = USERDIR and (USERDIR .. PATHSEP .. "largefile-debug.log")
+  if logfile then
+    local fp = io.open(logfile, "ab")
+    if fp then
+      fp:write(os.date("[%Y-%m-%d %H:%M:%S] "), line, "\n")
+      fp:close()
+    end
+  end
+end
+
+local function log_window_restore_debug(fmt, ...)
+  local ok, message = pcall(string.format, fmt, ...)
+  local line = ok and message or ("format-error: " .. tostring(fmt))
+  local logfile = USERDIR and (USERDIR .. PATHSEP .. "window-restore-debug.log")
+  if logfile then
+    local fp = io.open(logfile, "ab")
+    if fp then
+      fp:write(os.date("[%Y-%m-%d %H:%M:%S] "), line, "\n")
+      fp:close()
+    end
+  end
+end
+
+local function log_startup_debug(fmt, ...)
+  local ok, message = pcall(string.format, fmt, ...)
+  local line = ok and message or ("format-error: " .. tostring(fmt))
+  local logfile = USERDIR and (USERDIR .. PATHSEP .. "startup-window-debug.log")
+  if logfile then
+    local fp = io.open(logfile, "ab")
+    if fp then
+      fp:write(os.date("[%Y-%m-%d %H:%M:%S] "), line, "\n")
+      fp:close()
+    end
+  end
+end
+
+local function get_session_window_rect(session_window)
+  if type(session_window) ~= "table" then
+    return nil
+  end
+  local w = tonumber(session_window[1])
+  local h = tonumber(session_window[2])
+  local x = tonumber(session_window[3])
+  local y = tonumber(session_window[4])
+  if not (w and h and x and y) then
+    return nil
+  end
+  if w <= 0 or h <= 0 then
+    return nil
+  end
+  return { w = w, h = h, x = x, y = y }
+end
+
+local function rect_intersects_display(rect, display)
+  local left = math.max(rect.x, display.x)
+  local top = math.max(rect.y, display.y)
+  local right = math.min(rect.x + rect.w, display.x + display.w)
+  local bottom = math.min(rect.y + rect.h, display.y + display.h)
+  return right > left and bottom > top
+end
+
+local function should_restore_session_window(session_window)
+  local rect = get_session_window_rect(session_window)
+  if not rect then
+    return false, "invalid-session-window"
+  end
+  if not system.get_display_bounds then
+    return true, "display-bounds-unavailable"
+  end
+  local ok, displays = pcall(system.get_display_bounds)
+  if not ok or type(displays) ~= "table" or #displays == 0 then
+    return true, "display-bounds-unavailable"
+  end
+  for _, display in ipairs(displays) do
+    if type(display) == "table" and rect_intersects_display(rect, display) then
+      return true, string.format(
+        "matched-display id=%s bounds=%s,%s,%s,%s",
+        tostring(display.id),
+        tostring(display.x),
+        tostring(display.y),
+        tostring(display.w),
+        tostring(display.h)
+      )
+    end
+  end
+  return false, "outside-all-displays"
+end
+
 local function list_unsaved_snapshot_files()
   local files = {}
   local dir = get_unsaved_instances_dir()
@@ -118,6 +224,34 @@ local function remove_instance_storage(key)
   os.remove(get_ws_storage_dir() .. PATHSEP .. key)
 end
 
+local PENDING_TREEVIEW_STATE_KEY = "pending_treeview_state"
+
+local function write_pending_treeview_state(width, visible)
+  width = tonumber(width)
+  if not width or width <= 0 then
+    remove_instance_storage(PENDING_TREEVIEW_STATE_KEY)
+    return false
+  end
+  return write_instance_storage(PENDING_TREEVIEW_STATE_KEY, {
+    size = width,
+    visible = visible ~= false
+  })
+end
+
+local function consume_pending_treeview_state()
+  local state = read_instance_storage(PENDING_TREEVIEW_STATE_KEY)
+  if state then
+    remove_instance_storage(PENDING_TREEVIEW_STATE_KEY)
+  end
+  if type(state) ~= "table" then return nil end
+  local width = tonumber(state.size)
+  if not width or width <= 0 then return nil end
+  return {
+    size = width,
+    visible = state.visible ~= false
+  }
+end
+
 local function is_blank_unsaved_content(name, content)
   local normalized_name = type(name) == "string" and name or ""
   local normalized_content = type(content) == "string" and content or ""
@@ -125,8 +259,16 @@ local function is_blank_unsaved_content(name, content)
   return compact == "" and (normalized_name == "" or normalized_name == "unsaved")
 end
 
+local function should_snapshot_wlpt_by_path(doc)
+  return doc
+    and doc.abs_filename
+    and doc.is_wlpt_mode
+    and doc:is_wlpt_mode()
+end
+
 local function save_unsaved_instance_snapshot()
   local docs = {}
+  local views = core.root_view and core.root_view.root_node:get_children() or {}
   local snapshot_name = string.format(
     "%s%013d_%06x%s",
     unsaved_snapshot_prefix,
@@ -136,28 +278,86 @@ local function save_unsaved_instance_snapshot()
   )
   local snapshot_id = snapshot_name:sub(1, -#unsaved_snapshot_ext - 1)
 
-  for i, doc in ipairs(core.docs or {}) do
+  for i, view in ipairs(views) do
+    local doc = view and view.doc
     if doc then
-      local item = {}
-      local content = table.concat(doc.lines)
+      local item = {
+        selection = { doc:get_selection(true) },
+        scroll = view.scroll and {
+          x = view.scroll.to and view.scroll.to.x or view.scroll.x or 0,
+          y = view.scroll.to and view.scroll.to.y or view.scroll.y or 0,
+        } or { x = 0, y = 0 },
+        active = (core.active_view == view)
+      }
       local name = doc.filename or doc:get_name()
-      if not doc.abs_filename and is_blank_unsaved_content(name, content) then
-        item = nil
-      elseif doc.abs_filename and not doc:is_dirty() then
+      local content
+      log_quit_debug(
+        "snapshot.inspect index=%d name=%s abs=%s dirty=%s is_large=%s active=%s sel=%s scroll=%s,%s view=%s",
+        i,
+        tostring(name),
+        tostring(doc.abs_filename),
+        tostring(doc:is_dirty()),
+        tostring(doc.is_large_file),
+        tostring(item.active),
+        tostring(item.selection and item.selection[1]),
+        tostring(item.scroll and item.scroll.x),
+        tostring(item.scroll and item.scroll.y),
+        tostring(view)
+      )
+      if doc.abs_filename and (not doc:is_dirty() or should_snapshot_wlpt_by_path(doc)) then
         item.type = "path"
         item.abs_filename = doc.abs_filename
+        log_quit_debug(
+          "snapshot.store index=%d type=path name=%s abs=%s dirty=%s wlpt=%s",
+          i,
+          tostring(name),
+          tostring(doc.abs_filename),
+          tostring(doc:is_dirty()),
+          tostring(should_snapshot_wlpt_by_path(doc))
+        )
       else
-        local storage_key = string.format("%s_doc_%03d", snapshot_id, i)
-        if write_instance_storage(storage_key, {
-          content = content,
-          name = name,
-        }) then
-          item.type = "temp_storage"
-          item.storage_key = storage_key
+        content = doc:get_all_text()
+        log_quit_debug(
+          "snapshot.content index=%d name=%s len=%d preview=%q",
+          i,
+          tostring(name),
+          #(content or ""),
+          tostring(content or ""):gsub("\n", "\\n"):sub(1, 80)
+        )
+        if not doc.abs_filename and is_blank_unsaved_content(name, content) then
+          item = nil
+          log_quit_debug(
+            "snapshot.skip_blank index=%d name=%s",
+            i,
+            tostring(name)
+          )
         else
-          item.type = "content"
-          item.content = content
-          item.name = name
+        local storage_key = string.format("%s_doc_%03d", snapshot_id, i)
+          if write_instance_storage(storage_key, {
+            content = content,
+            name = name,
+            selection = item.selection,
+          }) then
+            item.type = "temp_storage"
+            item.storage_key = storage_key
+            log_quit_debug(
+              "snapshot.store index=%d type=temp_storage key=%s name=%s len=%d",
+              i,
+              tostring(storage_key),
+              tostring(name),
+              #(content or "")
+            )
+          else
+            item.type = "content"
+            item.content = content
+            item.name = name
+            log_quit_debug(
+              "snapshot.store index=%d type=content name=%s len=%d",
+              i,
+              tostring(name),
+              #(content or "")
+            )
+          end
         end
       end
       if item then
@@ -177,6 +377,7 @@ local function save_unsaved_instance_snapshot()
   fp:write("return ", common.serialize({
     created_at = os.time(),
     project_dir = core.root_project() and core.root_project().path or nil,
+    restore_treeview_from_file_open = core.restore_treeview_from_file_open == true,
     docs = docs
   }), "\n")
   fp:close()
@@ -191,23 +392,81 @@ end
 
 local function restore_unsaved_instance_snapshot_file(snapshot_path)
   local snapshot = load_unsaved_instance_snapshot(snapshot_path)
+  local restore_active_view
+  local restore_treeview_from_file_open = snapshot and snapshot.restore_treeview_from_file_open == true
+  core.restore_treeview_from_file_open = restore_treeview_from_file_open
 
   if snapshot and type(snapshot.docs) == "table" then
     for _, item in ipairs(snapshot.docs) do
       if item.type == "path" and type(item.abs_filename) == "string" and item.abs_filename ~= "" then
-        core.root_view:open_doc(core.open_doc(item.abs_filename))
+        log_quit_debug(
+          "snapshot.restore.item type=path abs=%s selection=%s active=%s scroll=%s,%s",
+          tostring(item.abs_filename),
+          tostring(item.selection and item.selection[1]),
+          tostring(item.active),
+          tostring(item.scroll and item.scroll.x),
+          tostring(item.scroll and item.scroll.y)
+        )
+        local doc = core.open_doc(item.abs_filename)
+        local view = core.root_view:open_doc(doc, true)
+        if item.selection and #item.selection >= 4 then
+          doc:set_selection(table.unpack(item.selection, 1, 4))
+          if view and item.scroll then
+            view.scroll.x, view.scroll.to.x = item.scroll.x or 0, item.scroll.x or 0
+            view.scroll.y, view.scroll.to.y = item.scroll.y or 0, item.scroll.y or 0
+          elseif view and view.scroll_to_line then
+            view:scroll_to_line(item.selection[1], true, true)
+          end
+        end
+        if item.active and view then
+          restore_active_view = view
+        end
       elseif item.type == "content" and type(item.content) == "string" then
         if not is_blank_unsaved_content(item.name, item.content) then
+          log_quit_debug(
+            "snapshot.restore.item type=content name=%s len=%d active=%s scroll=%s,%s preview=%q",
+            tostring(item.name),
+            #(item.content or ""),
+            tostring(item.active),
+            tostring(item.scroll and item.scroll.x),
+            tostring(item.scroll and item.scroll.y),
+            tostring(item.content or ""):gsub("\n", "\\n"):sub(1, 80)
+          )
           local doc = core.open_doc()
           doc:remove(1, 1, 1, 2)
           if item.content ~= "" then
             doc:insert(1, 1, item.content)
           end
-          core.root_view:open_doc(doc)
+          if item.name and item.name ~= "" and item.name ~= "unsaved" then
+            doc.filename = item.name
+          end
+          if item.selection and #item.selection >= 4 then
+            doc:set_selection(table.unpack(item.selection, 1, 4))
+          end
+          local view = core.root_view:open_doc(doc, true)
+          if item.selection and #item.selection >= 4 and view and item.scroll then
+            view.scroll.x, view.scroll.to.x = item.scroll.x or 0, item.scroll.x or 0
+            view.scroll.y, view.scroll.to.y = item.scroll.y or 0, item.scroll.y or 0
+          elseif item.selection and #item.selection >= 4 and view and view.scroll_to_line then
+            view:scroll_to_line(item.selection[1], true, true)
+          end
+          if item.active and view then
+            restore_active_view = view
+          end
         end
       elseif item.type == "temp_storage" and type(item.storage_key) == "string" then
         local stored = read_instance_storage(item.storage_key)
         if stored and type(stored.content) == "string" and not is_blank_unsaved_content(stored.name, stored.content) then
+          log_quit_debug(
+            "snapshot.restore.item type=temp_storage key=%s name=%s len=%d active=%s scroll=%s,%s preview=%q",
+            tostring(item.storage_key),
+            tostring(stored.name),
+            #(stored.content or ""),
+            tostring(item.active),
+            tostring(item.scroll and item.scroll.x),
+            tostring(item.scroll and item.scroll.y),
+            tostring(stored.content or ""):gsub("\n", "\\n"):sub(1, 80)
+          )
           local doc = core.open_doc()
           doc:remove(1, 1, 1, 2)
           if stored.content ~= "" then
@@ -216,29 +475,52 @@ local function restore_unsaved_instance_snapshot_file(snapshot_path)
           if stored.name and stored.name ~= "" and stored.name ~= "unsaved" then
             doc.filename = stored.name
           end
-          core.root_view:open_doc(doc)
+          local selection = stored.selection or item.selection
+          if selection and #selection >= 4 then
+            doc:set_selection(table.unpack(selection, 1, 4))
+          end
+          local view = core.root_view:open_doc(doc, true)
+          if selection and #selection >= 4 and view and item.scroll then
+            view.scroll.x, view.scroll.to.x = item.scroll.x or 0, item.scroll.x or 0
+            view.scroll.y, view.scroll.to.y = item.scroll.y or 0, item.scroll.y or 0
+          elseif selection and #selection >= 4 and view and view.scroll_to_line then
+            view:scroll_to_line(selection[1], true, true)
+          end
+          if item.active and view then
+            restore_active_view = view
+          end
         end
         remove_instance_storage(item.storage_key)
       end
     end
   end
 
+  if restore_active_view then
+    local node = core.root_view and core.root_view.root_node and core.root_view.root_node:get_node_for_view(restore_active_view)
+    if node and node.set_active_view then
+      node:set_active_view(restore_active_view)
+    else
+      core.set_active_view(restore_active_view)
+    end
+  end
+
   os.remove(snapshot_path)
+  return restore_treeview_from_file_open
 end
 
 local function restore_unsaved_instance_snapshots(target_snapshot_path)
   local dir = get_unsaved_instances_dir()
+  local restore_treeview_from_file_open = false
 
   if type(target_snapshot_path) == "string" and target_snapshot_path ~= "" then
-    restore_unsaved_instance_snapshot_file(target_snapshot_path)
-    return
+    return restore_unsaved_instance_snapshot_file(target_snapshot_path) == true
   end
 
   local snapshot_files = list_unsaved_snapshot_files()
-  if #snapshot_files == 0 then return end
+  if #snapshot_files == 0 then return false end
 
   local first_snapshot_path = dir .. PATHSEP .. snapshot_files[1]
-  restore_unsaved_instance_snapshot_file(first_snapshot_path)
+  restore_treeview_from_file_open = restore_unsaved_instance_snapshot_file(first_snapshot_path) == true
 
   for i = 2, #snapshot_files do
     local snapshot_path = dir .. PATHSEP .. snapshot_files[i]
@@ -246,6 +528,7 @@ local function restore_unsaved_instance_snapshots(target_snapshot_path)
     local project_dir = snapshot and snapshot.project_dir or (core.root_project() and core.root_project().path) or "."
     system.exec(string.format("%q --project-dir %q --restore-snapshot %q", EXEFILE, project_dir, snapshot_path))
   end
+  return restore_treeview_from_file_open
 end
 
 
@@ -284,6 +567,15 @@ function core.remove_project(project, force)
     end
   end
   return false
+end
+
+function core.set_pending_treeview_state(width, visible)
+  return write_pending_treeview_state(width, visible)
+end
+
+function core.set_restore_treeview_from_file_open(enabled, source)
+  core.restore_treeview_from_file_open = enabled == true
+  return core.restore_treeview_from_file_open
 end
 
 
@@ -490,7 +782,7 @@ end
 
 function core.init()
   core.log_items = {}
-  core.log_quiet("Lite XXL version %s - mod-version %s", VERSION, MOD_VERSION_STRING)
+  core.log_quiet("Lite XL version %s - mod-version %s", VERSION, MOD_VERSION_STRING)
 
   command = require "core.command"
   keymap = require "core.keymap"
@@ -504,6 +796,8 @@ function core.init()
   Project = require "core.project"
   DocView = require "core.docview"
   Doc = require "core.doc"
+  LargeFileDoc = require "core.doc.largefile"
+  WlPtDoc = require "core.doc.wlpt"
 
   if PATHSEP == '\\' then
     USERDIR = common.normalize_volume(USERDIR)
@@ -512,6 +806,12 @@ function core.init()
   end
 
   local session = load_session()
+  log_window_restore_debug(
+    "session.loaded window_mode=%s window=%s recent0=%s",
+    tostring(session.window_mode),
+    tostring(common.serialize(session.window)),
+    tostring(session.recents and session.recents[1])
+  )
   core.recent_projects = sanitize_recent_projects(session.recents or {})
   core.previous_find = {}
   core.previous_replace = {}
@@ -564,6 +864,15 @@ function core.init()
   core.cursor_clipboard_whole_line = {}
   core.window_mode = "normal"
   core.threads = setmetatable({}, { __mode = "k" })
+  core.thread_metrics = {
+    created = 0,
+    resumed = 0,
+    completed = 0,
+    cancelled = 0,
+    resume_time = 0,
+    max_resume_time = 0,
+  }
+  core.scheduler_epoch = 0
   core.blink_start = system.get_time()
   core.blink_timer = core.blink_start
   core.active_file_dialogs = {}
@@ -571,6 +880,7 @@ function core.init()
   core.visited_files = {}
   core.restart_request = false
   core.quit_request = false
+  core.restore_treeview_from_file_open = #files > 0
 
   -- We load core views before plugins that may need them.
   ---@type core.rootview
@@ -630,16 +940,129 @@ function core.init()
     project_dir_abs = system.absolute_path(".")
     local status, err = pcall(core.set_project, project_dir_abs)
   end
+  log_filetree_debug(
+    "core.init before load_plugins root=%s config_visible=%s config_size=%s restarted=%s",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(config.plugins.treeview and config.plugins.treeview.visible),
+    tostring(config.plugins.treeview and config.plugins.treeview.size),
+    tostring(RESTARTED)
+  )
 
   -- Load core and user plugins giving preference to user ones with same name.
+  log_startup_debug(
+    "startup.load_plugins.begin root=%s restarted=%s project_dir_abs=%s",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(RESTARTED),
+    tostring(project_dir_abs)
+  )
   local plugins_success, plugins_refuse_list = core.load_plugins()
+  log_startup_debug(
+    "startup.load_plugins.done root=%s success=%s user_refused=%d data_refused=%d active_view=%s",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(plugins_success),
+    #(plugins_refuse_list and plugins_refuse_list.userdir and plugins_refuse_list.userdir.plugins or {}),
+    #(plugins_refuse_list and plugins_refuse_list.datadir and plugins_refuse_list.datadir.plugins or {}),
+    core.describe_view and core.describe_view(core.active_view) or tostring(core.active_view)
+  )
 
-  core.window = core.window or renwindow._restore() or renwindow.create("")
-  if session.window_mode == "normal" then
-    system.set_window_size(core.window, table.unpack(session.window))
-  elseif session.window_mode == "maximized" then
-    system.set_window_mode(core.window, "maximized")
+  log_startup_debug(
+    "startup.window.begin root=%s existing_window=%s",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(core.window)
+  )
+  if not core.window then
+    log_startup_debug("startup.window.restore_try root=%s", tostring(core.root_project() and core.root_project().path))
+    core.window = renwindow._restore()
+    log_startup_debug(
+      "startup.window.restore_result root=%s window=%s",
+      tostring(core.root_project() and core.root_project().path),
+      tostring(core.window)
+    )
   end
+  if not core.window then
+    log_startup_debug("startup.window.create_try root=%s", tostring(core.root_project() and core.root_project().path))
+    core.window = renwindow.create("")
+    log_startup_debug(
+      "startup.window.create_result root=%s window=%s",
+      tostring(core.root_project() and core.root_project().path),
+      tostring(core.window)
+    )
+  end
+  log_startup_debug(
+    "startup.window.done root=%s window=%s",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(core.window)
+  )
+  do
+    local w, h, x, y = system.get_window_size(core.window)
+    log_window_restore_debug(
+      "window.created size=%s,%s pos=%s,%s mode=%s",
+      tostring(w),
+      tostring(h),
+      tostring(x),
+      tostring(y),
+      tostring(system.get_window_mode(core.window))
+    )
+  end
+  log_startup_debug(
+    "startup.window.restore.begin root=%s session_mode=%s session_window=%s",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(session.window_mode),
+    tostring(common.serialize(session.window))
+  )
+  if session.window_mode == "normal" then
+    local should_restore, reason = should_restore_session_window(session.window)
+    if should_restore then
+      log_window_restore_debug(
+        "window.restore.apply mode=normal target=%s reason=%s",
+        tostring(common.serialize(session.window)),
+        tostring(reason)
+      )
+      system.set_window_size(core.window, table.unpack(session.window))
+      local w, h, x, y = system.get_window_size(core.window)
+      log_window_restore_debug(
+        "window.restore.after_apply size=%s,%s pos=%s,%s mode=%s",
+        tostring(w),
+        tostring(h),
+        tostring(x),
+        tostring(y),
+        tostring(system.get_window_mode(core.window))
+      )
+    else
+      local w, h, x, y = system.get_window_size(core.window)
+      log_window_restore_debug(
+        "window.restore.skip mode=normal target=%s reason=%s fallback_size=%s,%s fallback_pos=%s,%s",
+        tostring(common.serialize(session.window)),
+        tostring(reason),
+        tostring(w),
+        tostring(h),
+        tostring(x),
+        tostring(y)
+      )
+    end
+  elseif session.window_mode == "maximized" then
+    log_window_restore_debug("window.restore.apply mode=maximized")
+    system.set_window_mode(core.window, "maximized")
+    local w, h, x, y = system.get_window_size(core.window)
+    log_window_restore_debug(
+      "window.restore.after_apply size=%s,%s pos=%s,%s mode=%s",
+      tostring(w),
+      tostring(h),
+      tostring(x),
+      tostring(y),
+      tostring(system.get_window_mode(core.window))
+    )
+  else
+    log_window_restore_debug(
+      "window.restore.skip mode=%s reason=no-session-window-mode-match",
+      tostring(session.window_mode)
+    )
+  end
+  log_startup_debug(
+    "startup.window.restore.done root=%s mode=%s",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(system.get_window_mode(core.window))
+  )
 
 
   do
@@ -651,17 +1074,42 @@ function core.init()
     core.root_view:open_doc(core.open_doc(filename))
   end
 
-  restore_unsaved_instance_snapshots(restore_snapshot_arg)
+  log_startup_debug(
+    "startup.restore_snapshots.begin root=%s arg=%s docs_before=%d",
+    tostring(core.root_project() and core.root_project().path),
+    tostring(restore_snapshot_arg),
+    #(core.docs or {})
+  )
+  local restored_from_file_open = restore_unsaved_instance_snapshots(restore_snapshot_arg)
+  log_startup_debug(
+    "startup.restore_snapshots.done root=%s docs_after=%d active_view=%s restored_from_file_open=%s",
+    tostring(core.root_project() and core.root_project().path),
+    #(core.docs or {}),
+    core.describe_view and core.describe_view(core.active_view) or tostring(core.active_view),
+    tostring(restored_from_file_open)
+  )
+  core.restore_treeview_from_file_open = restored_from_file_open
+  if restored_from_file_open and #(core.docs or {}) > 0 and core.ensure_treeview_visible then
+    local restore_treeview_size = tonumber(config.plugins.treeview.open_project_size)
+      or tonumber(config.plugins.treeview.open_file_size)
+    core.ensure_treeview_visible(restore_treeview_size)
+  end
 
   if not plugins_success then
     -- defer LogView to after everything is initialized,
     -- so that EmptyView won't be added after LogView.
     core.add_thread(function()
       command.perform("core:open-log")
-    end)
+    end, nil, core.thread_options {
+      label = "defer-open-log",
+      kind = "ui-deferred",
+      priority = "U3",
+    })
   end
 
+  log_startup_debug("startup.configure_borderless.begin root=%s", tostring(core.root_project() and core.root_project().path))
   core.configure_borderless_window()
+  log_startup_debug("startup.configure_borderless.done root=%s", tostring(core.root_project() and core.root_project().path))
 
   if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
     local opt = {
@@ -694,13 +1142,26 @@ end
 function core.confirm_close_docs(docs, close_fn, ...)
   local dirty_count = 0
   local dirty_name
+  local total_docs = #(docs or core.docs or {})
   for _, doc in ipairs(docs or core.docs) do
     if doc:is_dirty() then
       dirty_count = dirty_count + 1
       dirty_name = doc:get_name()
     end
   end
+  log_quit_debug(
+    "quit.confirm_close_docs total_docs=%d dirty_count=%d dirty_name=%s",
+    total_docs,
+    dirty_count,
+    tostring(dirty_name)
+  )
   if dirty_count > 0 then
+    for _, doc in ipairs(docs or core.docs) do
+      if doc:is_dirty() then
+        -- 中文说明：全局退出确认会直接进入强制关闭流程，这里标记用户已经选择丢弃未保存修改。
+        doc._close_without_saving_requested = true
+      end
+    end
     local text
     if dirty_count == 1 then
       text = string.format("\"%s\" has unsaved changes. Quit anyway?", dirty_name)
@@ -736,21 +1197,46 @@ end
 
 
 function core.exit(quit_fn, force)
+  log_quit_debug(
+    "quit.exit.begin force=%s docs=%d projects=%d active_view=%s",
+    tostring(force),
+    #(core.docs or {}),
+    #(core.projects or {}),
+    core.describe_view and core.describe_view(core.active_view) or tostring(core.active_view)
+  )
   if force then
+    log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.begin")
     save_unsaved_instance_snapshot()
+    log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.done")
+    log_quit_debug("quit.exit.force delete_temp_files.begin")
     core.delete_temp_files()
+    log_quit_debug("quit.exit.force delete_temp_files.done")
     while #core.projects > 0 do core.remove_project(core.projects[#core.projects], true) end
+    log_quit_debug("quit.exit.force remove_projects.done remaining=%d", #core.projects)
+    log_quit_debug("quit.exit.force save_session.begin")
     save_session()
+    log_quit_debug("quit.exit.force save_session.done")
+    log_quit_debug("quit.exit.force quit_fn.begin")
     quit_fn()
+    log_quit_debug(
+      "quit.exit.force quit_fn.done restart_request=%s quit_request=%s",
+      tostring(core.restart_request),
+      tostring(core.quit_request)
+    )
   else
+    log_quit_debug("quit.exit.normal save_session.begin")
     save_session()
+    log_quit_debug("quit.exit.normal save_session.done")
 
+    log_quit_debug("quit.exit.normal confirm_close_docs.begin")
     core.confirm_close_docs(core.docs, core.exit, quit_fn, true)
+    log_quit_debug("quit.exit.normal confirm_close_docs.dispatched")
   end
 end
 
 
 function core.quit(force)
+  log_quit_debug("quit.request force=%s", tostring(force))
   core.exit(function() core.quit_request = true end, force)
 end
 
@@ -854,6 +1340,7 @@ end
 
 function core.load_plugins()
   local no_errors = true
+  local pending_treeview_state = consume_pending_treeview_state()
   local refused_list = {
     userdir = {dir = USERDIR, plugins = {}},
     datadir = {dir = DATADIR, plugins = {}},
@@ -878,6 +1365,27 @@ function core.load_plugins()
   local load_start = system.get_time()
   for i = 1, #core.plugin_list do
     local plugin = core.plugin_list[i]
+    if pending_treeview_state and plugin.name == "treeview" then
+      config.plugins.treeview = config.plugins.treeview or {}
+      config.plugins.treeview.visible = pending_treeview_state.visible
+      config.plugins.treeview.size = pending_treeview_state.size
+      log_filetree_debug(
+        "core.load_plugins apply pending treeview root=%s visible=%s size=%s",
+        tostring(core.root_project() and core.root_project().path),
+        tostring(config.plugins.treeview.visible),
+        tostring(config.plugins.treeview.size)
+      )
+      pending_treeview_state = nil
+    end
+    if plugin.name == "User Module" or plugin.name == "Project Module" or plugin.name == "treeview" then
+      log_filetree_debug(
+        "core.load_plugins before plugin=%s root=%s config_visible=%s config_size=%s",
+        tostring(plugin.name),
+        tostring(core.root_project() and core.root_project().path),
+        tostring(config.plugins.treeview and config.plugins.treeview.visible),
+        tostring(config.plugins.treeview and config.plugins.treeview.size)
+      )
+    end
     if not config.skip_plugins_version and not plugin.version_match then
       core.log_quiet(
         "Version mismatch for plugin %q[%s] from %s",
@@ -891,6 +1399,16 @@ function core.load_plugins()
     elseif config.plugins[plugin.name] ~= false then
       local start = system.get_time()
       local ok, loaded_plugin = core.try(plugin.load, plugin)
+      if plugin.name == "User Module" or plugin.name == "Project Module" or plugin.name == "treeview" then
+        log_filetree_debug(
+          "core.load_plugins after plugin=%s ok=%s root=%s config_visible=%s config_size=%s",
+          tostring(plugin.name),
+          tostring(ok),
+          tostring(core.root_project() and core.root_project().path),
+          tostring(config.plugins.treeview and config.plugins.treeview.visible),
+          tostring(config.plugins.treeview and config.plugins.treeview.size)
+        )
+      end
       if ok then
         local plugin_version = ""
         if plugin.version_string and  plugin.version_string ~= MOD_VERSION_STRING then
@@ -957,6 +1475,13 @@ function core.set_active_view(view)
     end
     core.last_active_view = core.active_view
     core.active_view = view
+    core.scheduler_epoch = core.scheduler_epoch + 1
+    core.scheduler_debug(
+      "active-view epoch=%s from=%s to=%s",
+      tostring(core.scheduler_epoch),
+      core.describe_view(core.last_active_view),
+      core.describe_view(core.active_view)
+    )
   end
   -- Pre-position the IME window so the candidate box appears at the
   -- caret location as soon as typing starts.
@@ -972,6 +1497,33 @@ end
 
 
 local thread_counter = 0
+function core.thread_options(meta)
+  meta = meta or {}
+  meta.__thread_meta = true
+  return meta
+end
+
+function core.describe_view(view)
+  if not view then return "nil" end
+  if view.doc and view.doc.get_name then
+    return string.format("%s[%s]", tostring(view), tostring(view.doc:get_name()))
+  end
+  return tostring(view)
+end
+
+local function normalize_thread_meta(key, weak_ref, meta)
+  meta = meta or {}
+  meta.key = key
+  meta.label = meta.label or (type(weak_ref) == "string" and weak_ref) or tostring(weak_ref or key)
+  meta.kind = meta.kind or "generic"
+  meta.priority = meta.priority or "U3"
+  meta.owner_view = meta.owner_view == nil and core.active_view or meta.owner_view
+  meta.owner_doc = meta.owner_doc or (meta.owner_view and meta.owner_view.doc) or nil
+  meta.created_at = system.get_time()
+  meta.created_epoch = core.scheduler_epoch
+  return meta
+end
+
 function core.add_thread(f, weak_ref, ...)
   local key = weak_ref
   if not key then
@@ -980,9 +1532,57 @@ function core.add_thread(f, weak_ref, ...)
   end
   assert(core.threads[key] == nil, "Duplicate thread reference")
   local args = {...}
+  local meta
+  if type(args[1]) == "table" and args[1].__thread_meta then
+    meta = args[1]
+    table.remove(args, 1)
+  end
   local fn = function() return core.try(f, table.unpack(args)) end
-  core.threads[key] = { cr = coroutine.create(fn), wake = 0 }
+  meta = normalize_thread_meta(key, weak_ref, meta)
+  core.threads[key] = { cr = coroutine.create(fn), wake = 0, meta = meta }
+  core.thread_metrics.created = core.thread_metrics.created + 1
+  core.scheduler_debug(
+    "thread-create key=%s label=%s kind=%s priority=%s owner=%s epoch=%s",
+    tostring(key),
+    tostring(meta.label),
+    tostring(meta.kind),
+    tostring(meta.priority),
+    core.describe_view(meta.owner_view),
+    tostring(meta.created_epoch)
+  )
   return key
+end
+
+function core.cancel_thread(key, reason)
+  local thread = core.threads[key]
+  if not thread then return false end
+  core.threads[key] = nil
+  core.thread_metrics.cancelled = core.thread_metrics.cancelled + 1
+  core.scheduler_debug(
+    "thread-cancel key=%s label=%s reason=%s",
+    tostring(key),
+    tostring(thread.meta and thread.meta.label),
+    tostring(reason or "unspecified")
+  )
+  return true
+end
+
+local function is_thread_frozen(thread)
+  local meta = thread.meta
+  if not config.inactive_freeze_policy or not meta then
+    return false
+  end
+  if meta.priority == "U0" or meta.priority == "U1" then
+    return false
+  end
+  if not meta.owner_doc then
+    return false
+  end
+  local active_doc = core.active_view and core.active_view.doc
+  if not active_doc then
+    return false
+  end
+  return meta.owner_doc ~= active_doc
 end
 
 
@@ -1025,29 +1625,42 @@ function core.open_doc(filename)
     abs_filename = core.root_project():absolute_path(filename)
     file_info = system.get_file_info(abs_filename)
     new_file = not file_info
+    log_filetree_debug(
+      "core.open_doc request filename=%s abs=%s exists=%s type=%s size=%s",
+      tostring(filename),
+      tostring(abs_filename),
+      tostring(file_info ~= nil),
+      tostring(file_info and file_info.type),
+      tostring(file_info and file_info.size)
+    )
     for _, doc in ipairs(core.docs) do
       if doc.abs_filename and abs_filename == doc.abs_filename then
+        log_filetree_debug(
+          "core.open_doc reuse abs=%s new_file=%s",
+          tostring(abs_filename),
+          tostring(new_file)
+        )
         return doc
       end
     end
   end
   -- no existing doc for filename; create new
-  local is_large = file_info and file_info.size > config.large_file_size_limit * 1e6
-  local doc = Doc(filename, abs_filename, new_file, is_large)
-  if is_large then
-    doc.new_file = false
-    doc.is_large_file = true
-    doc.loading = true
-    doc.disable_undo = config.large_file_disable_undo
-    doc.loading_total_bytes = file_info.size
-    core.add_thread(function()
-      local ok, err = pcall(doc.load, doc, abs_filename)
-      if not ok then
-        doc.loading = false
-        doc.loading_error = err or "Unable to load file"
-        core.redraw = true
-      end
-    end, "large_file_" .. tostring(doc))
+  local wlpt_threshold_bytes = (config.wlpt_file_size_limit or 1) * 1024 * 1024
+  local is_wlpt = file_info and file_info.size > wlpt_threshold_bytes
+  local is_large = is_wlpt or (file_info and file_info.size > config.large_file_size_limit * 1e6)
+  local doc_class = is_wlpt and WlPtDoc or (is_large and LargeFileDoc or Doc)
+  local doc = doc_class(filename, abs_filename, new_file, is_large)
+  log_filetree_debug(
+    "core.open_doc created filename=%s abs=%s new_file=%s is_large=%s is_wlpt=%s doc=%s",
+    tostring(filename),
+    tostring(abs_filename),
+    tostring(new_file),
+    tostring(is_large),
+    tostring(is_wlpt),
+    tostring(doc)
+  )
+  if filename and not new_file and (is_large or is_wlpt) then
+    doc:start_loading(abs_filename, file_info)
   end
   table.insert(core.docs, doc)
   core.log_quiet(filename and "Opened doc \"%s\"" or "Opened new doc", filename)
@@ -1106,6 +1719,19 @@ function core.async_debug(fmt, ...)
     text = tostring(fmt)
   end
   local fp = io.open(USERDIR .. PATHSEP .. "async-fileload.log", "a")
+  if fp then
+    fp:write(os.date("%Y-%m-%d %H:%M:%S"), " ", text, "\n")
+    fp:close()
+  end
+end
+
+function core.scheduler_debug(fmt, ...)
+  if not config.scheduler_log then return end
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then
+    text = tostring(fmt)
+  end
+  local fp = io.open(USERDIR .. PATHSEP .. "scheduler.log", "a")
   if fp then
     fp:write(os.date("%Y-%m-%d %H:%M:%S"), " ", text, "\n")
     fp:close()
@@ -1202,6 +1828,7 @@ function core.on_event(type, ...)
   elseif type == "focuslost" then
     core.root_view:on_focus_lost(...)
   elseif type == "quit" then
+    log_quit_debug("quit.event received")
     core.quit()
   end
   return did_keymap
@@ -1216,7 +1843,7 @@ end
 
 
 function core.compose_window_title(title)
-  return (title == "" or title == nil) and "Lite XXL" or title .. " - Lite XXL"
+  return (title == "" or title == nil) and "lite-xxl" or title .. " - lite-xxl"
 end
 
 
@@ -1253,8 +1880,23 @@ function core.step()
   for i = #core.docs, 1, -1 do
     local doc = core.docs[i]
     if #core.get_views_referencing_doc(doc) == 0 then
+      log_quit_debug(
+        "quit.doc_close.begin index=%d is_large=%s dirty=%s loading=%s filename=%s abs=%s",
+        i,
+        tostring(doc.is_large_file),
+        tostring(doc:is_dirty()),
+        tostring(doc.loading),
+        tostring(doc.filename),
+        tostring(doc.abs_filename)
+      )
       table.remove(core.docs, i)
       doc:on_close()
+      log_quit_debug(
+        "quit.doc_close.done index=%d filename=%s remaining_docs=%d",
+        i,
+        tostring(doc.filename or doc.abs_filename),
+        #core.docs
+      )
     end
   end
 
@@ -1290,9 +1932,55 @@ local run_threads = coroutine.wrap(function()
 
     for k, thread in pairs(threads) do
       -- Run thread if it wasn't deleted externally and it's time to resume it
-      if core.threads[k] and thread.wake < system.get_time() then
+      if core.threads[k] and is_thread_frozen(thread) then
+        if not thread.frozen_logged then
+          thread.frozen_logged = true
+          core.scheduler_debug(
+            "thread-frozen key=%s label=%s kind=%s active=%s owner_doc=%s",
+            tostring(k),
+            tostring(thread.meta and thread.meta.label),
+            tostring(thread.meta and thread.meta.kind),
+            core.describe_view(core.active_view),
+            tostring(thread.meta and thread.meta.owner_doc and thread.meta.owner_doc:get_name())
+          )
+        end
+        minimal_time_to_wake = math.min(minimal_time_to_wake, 1 / config.fps)
+      elseif core.threads[k] and thread.wake < system.get_time() then
+        if thread.frozen_logged then
+          thread.frozen_logged = false
+          core.scheduler_debug(
+            "thread-thawed key=%s label=%s active=%s",
+            tostring(k),
+            tostring(thread.meta and thread.meta.label),
+            core.describe_view(core.active_view)
+          )
+        end
+        local resumed_at = system.get_time()
         local _, wait = assert(coroutine.resume(thread.cr))
+        local elapsed = system.get_time() - resumed_at
+        local meta = thread.meta or {}
+        core.thread_metrics.resumed = core.thread_metrics.resumed + 1
+        core.thread_metrics.resume_time = core.thread_metrics.resume_time + elapsed
+        core.thread_metrics.max_resume_time = math.max(core.thread_metrics.max_resume_time, elapsed)
+        if elapsed >= config.scheduler_slow_resume_threshold then
+          core.scheduler_debug(
+            "thread-slow-resume key=%s label=%s kind=%s priority=%s elapsed_ms=%.3f owner=%s",
+            tostring(k),
+            tostring(meta.label),
+            tostring(meta.kind),
+            tostring(meta.priority),
+            elapsed * 1000,
+            core.describe_view(meta.owner_view)
+          )
+        end
         if coroutine.status(thread.cr) == "dead" then
+          core.thread_metrics.completed = core.thread_metrics.completed + 1
+          core.scheduler_debug(
+            "thread-complete key=%s label=%s elapsed_ms=%.3f",
+            tostring(k),
+            tostring(meta.label),
+            elapsed * 1000
+          )
           core.threads[k] = nil
         else
           wait = wait or (1/30)
@@ -1300,6 +1988,15 @@ local run_threads = coroutine.wrap(function()
           minimal_time_to_wake = math.min(minimal_time_to_wake, wait)
         end
       else
+        if core.threads[k] and thread.frozen_logged and not is_thread_frozen(thread) then
+          thread.frozen_logged = false
+          core.scheduler_debug(
+            "thread-thawed key=%s label=%s active=%s",
+            tostring(k),
+            tostring(thread.meta and thread.meta.label),
+            core.describe_view(core.active_view)
+          )
+        end
         minimal_time_to_wake =  math.min(minimal_time_to_wake, thread.wake - system.get_time())
       end
 
@@ -1363,6 +2060,13 @@ function core.run()
       system.sleep(math.min(next_frame, time_to_wake))
     end
   end
+  log_quit_debug(
+    "quit.run.break restart_request=%s quit_request=%s remaining_docs=%d threads=%s",
+    tostring(core.restart_request),
+    tostring(core.quit_request),
+    #(core.docs or {}),
+    tostring(core.threads and next(core.threads) ~= nil)
+  )
 end
 
 
