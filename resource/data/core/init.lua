@@ -390,6 +390,21 @@ local function load_unsaved_instance_snapshot(snapshot_path)
   end
 end
 
+local function get_startup_snapshot_project_dir(target_snapshot_path)
+  local snapshot_path = target_snapshot_path
+  if type(snapshot_path) ~= "string" or snapshot_path == "" then
+    local snapshot_files = list_unsaved_snapshot_files()
+    if #snapshot_files == 0 then return nil end
+    snapshot_path = get_unsaved_instances_dir() .. PATHSEP .. snapshot_files[1]
+  end
+  local snapshot = load_unsaved_instance_snapshot(snapshot_path)
+  local project_dir = snapshot and snapshot.project_dir
+  local info = type(project_dir) == "string" and system.get_file_info(project_dir)
+  if info and info.type == "dir" and not is_ephemeral_project_dir(project_dir) then
+    return project_dir
+  end
+end
+
 local function restore_unsaved_instance_snapshot_file(snapshot_path)
   local snapshot = load_unsaved_instance_snapshot(snapshot_path)
   local restore_active_view
@@ -855,6 +870,11 @@ function core.init()
   end
   -- Ensure that we have a user directory.
   core.ensure_user_directory()
+
+  if not project_dir_explicit and #files == 0 then
+    -- 没有显式项目参数时，优先使用待恢复快照记录的项目目录，避免文件恢复后文件树仍停在旧最近项目。
+    project_dir = get_startup_snapshot_project_dir(restore_snapshot_arg) or project_dir
+  end
 
   core.frame_start = 0
   core.clip_rect_stack = {{ 0,0,0,0 }}
