@@ -168,6 +168,19 @@ local function predicate_docview()
     and not core.active_view:is(CommandView)
 end
 
+local function is_wlpt_doc(doc)
+  return doc
+    and doc.is_wlpt_mode
+    and doc:is_wlpt_mode()
+end
+
+local function is_markdown_render_allowed(doc)
+  if is_wlpt_doc(doc) and config.wlpt_disable_markdown_render ~= false then
+    return false
+  end
+  return true
+end
+
 
 ---动态生成语法列表（从已加载的语法插件中）
 ---@return table
@@ -526,7 +539,12 @@ function StatusView:register_docview_items()
   self:add_item({
     predicate = function()
       local av = core.active_view
-      return (av:is(DocView) or av._md_source_view) and not av:is(CommandView)
+      if not av or av:is(CommandView) then
+        return false
+      end
+
+      local doc = av.doc or (av._md_source_view and av._md_source_view.doc)
+      return (av:is(DocView) or av._md_source_view) and is_markdown_render_allowed(doc)
     end,
     name = "md:toggle-render",
     alignment = StatusView.Item.RIGHT,

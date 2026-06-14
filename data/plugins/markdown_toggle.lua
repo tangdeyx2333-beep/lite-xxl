@@ -2,8 +2,11 @@
 local core = require "core"
 local command = require "core.command"
 local common = require "core.common"
+local config = require "core.config"
 local style = require "core.style"
 local keymap = require "core.keymap"
+local system = require "system"
+local ContextMenu = require "core.contextmenu"
 local View = require "core.view"
 local DocView = require "core.docview"
 
@@ -216,6 +219,9 @@ function MarkdownPreviewView:new(source_view)
   self._content_height = 0
   self._last_source_change_id = -1
   self._zoom = 1
+  self._selection_anchor = nil
+  self._selection_cursor = nil
+  self._mouse_selecting_preview = false
   self:apply_fonts()
   self:refresh_from_source()
 end
@@ -264,6 +270,179 @@ function MarkdownPreviewView:on_mouse_wheel(y, x)
   end
 end
 
+local function get_text_width_until(font, text, col)
+  if col <= 1 then
+    return 0
+  end
+  return font:get_width(text:sub(1, col - 1))
+end
+
+local function get_col_at_x(font, text, x)
+  if x <= 0 then
+    return 1
+  end
+  local offset = 0
+  local col = 1
+  for ch in common.utf8_chars(text or "") do
+    local width = font:get_width(ch)
+    if offset + width >= x then
+      return x <= offset + width / 2 and col or col + #ch
+    end
+    offset = offset + width
+    col = col + #ch
+  end
+  return #(text or "") + 1
+end
+
+function MarkdownPreviewView:get_text_item_screen_rect(item)
+  local page_x = self:get_page_x()
+  local _, oy = self:get_content_offset()
+  local page_y = oy + style.padding.y * 2
+  return page_x + item.x, page_y + item.y, item.font:get_width(item.text), item.h
+end
+
+function MarkdownPreviewView:hit_test_text(x, y)
+  local best_idx, best_item, best_distance
+  local page_x = self:get_page_x()
+  local page_w = self:get_page_width()
+  for idx, item in ipairs(self._layout_items or {}) do
+    if item.kind == "text" then
+      local sx, sy, sw, sh = self:get_text_item_screen_rect(item)
+      local distance = 0
+      if y < sy then
+        distance = sy - y
+      elseif y > sy + sh then
+        distance = y - (sy + sh)
+      end
+      if y >= sy and y <= sy + sh and x >= sx and x <= sx + math.max(sw, 1) then
+        return { item = idx, col = get_col_at_x(item.font, item.text, x - sx) }
+      end
+      if x >= page_x and x <= page_x + page_w and (not best_distance or distance < best_distance) then
+        best_idx, best_item, best_distance = idx, item, distance
+      end
+    end
+  end
+  if best_item then
+    local sx = self:get_text_item_screen_rect(best_item)
+    return { item = best_idx, col = get_col_at_x(best_item.font, best_item.text, x - sx) }
+  end
+end
+
+function MarkdownPreviewView:normalize_selection()
+  local anchor = self._selection_anchor
+  local cursor = self._selection_cursor
+  if not (anchor and cursor) then
+    return nil
+  end
+  if anchor.item > cursor.item or (anchor.item == cursor.item and anchor.col > cursor.col) then
+    anchor, cursor = cursor, anchor
+  end
+  if anchor.item == cursor.item and anchor.col == cursor.col then
+    return nil
+  end
+  return anchor, cursor
+end
+
+function MarkdownPreviewView:clear_preview_selection()
+  self._selection_anchor = nil
+  self._selection_cursor = nil
+  self._mouse_selecting_preview = false
+  core.redraw = true
+end
+
+function MarkdownPreviewView:get_selected_text()
+  local first, last = self:normalize_selection()
+  if not (first and last) then
+    return ""
+  end
+  local lines = {}
+  for idx = first.item, last.item do
+    local item = self._layout_items[idx]
+    if item and item.kind == "text" then
+      local col1 = idx == first.item and first.col or 1
+      local col2 = idx == last.item and last.col or (#item.text + 1)
+      if col2 > col1 then
+        lines[#lines + 1] = item.text:sub(col1, col2 - 1)
+      elseif first.item ~= last.item then
+        lines[#lines + 1] = ""
+      end
+    end
+  end
+  return table.concat(lines, "\n")
+end
+
+function MarkdownPreviewView:copy_selection()
+  local text = self:get_selected_text()
+  if text == "" then
+    return false
+  end
+  -- 中文说明：复制的是预览页实际显示的文本，而不是原始 Markdown 标记。
+  system.set_clipboard(text)
+  core.log("Copied markdown preview selection")
+  return true
+end
+
+function MarkdownPreviewView:on_mouse_pressed(button, x, y, clicks)
+  if button == "left" then
+    if self:scrollbar_overlaps_point(x, y) then
+      return MarkdownPreviewView.super.on_mouse_pressed(self, button, x, y, clicks)
+    end
+    local pos = self:hit_test_text(x, y)
+    if pos then
+      self._selection_anchor = pos
+      self._selection_cursor = { item = pos.item, col = pos.col }
+      self._mouse_selecting_preview = true
+      core.redraw = true
+      return true
+    end
+    self:clear_preview_selection()
+  end
+  return MarkdownPreviewView.super.on_mouse_pressed(self, button, x, y, clicks)
+end
+
+function MarkdownPreviewView:on_mouse_moved(x, y, dx, dy)
+  if self._mouse_selecting_preview then
+    local pos = self:hit_test_text(x, y)
+    if pos then
+      self._selection_cursor = pos
+      core.redraw = true
+    end
+    return true
+  end
+  return MarkdownPreviewView.super.on_mouse_moved(self, x, y, dx, dy)
+end
+
+function MarkdownPreviewView:on_mouse_released(button, x, y)
+  if button == "left" and self._mouse_selecting_preview then
+    self._mouse_selecting_preview = false
+    return true
+  end
+  return MarkdownPreviewView.super.on_mouse_released(self, button, x, y)
+end
+
+function MarkdownPreviewView:on_context_menu(x, y)
+  return { items = {
+    { text = "Copy", command = function(view) view:copy_selection() end },
+    ContextMenu.DIVIDER,
+    { text = "Select All", command = function(view)
+      view:select_all_preview_text()
+    end },
+  } }, self
+end
+
+function MarkdownPreviewView:select_all_preview_text()
+  local first, last
+  for idx, item in ipairs(self._layout_items or {}) do
+    if item.kind == "text" then
+      first = first or { item = idx, col = 1 }
+      last = { item = idx, col = #item.text + 1 }
+    end
+  end
+  self._selection_anchor = first
+  self._selection_cursor = last
+  core.redraw = true
+end
+
 function MarkdownPreviewView:scroll_by_lines(delta)
   local step = self._fonts.body:get_height() + math.max(2, math.floor(style.padding.y * 0.5))
   self.scroll.to.y = math.max(0, self.scroll.to.y + step * delta)
@@ -276,6 +455,10 @@ function MarkdownPreviewView:refresh_from_source()
   self._md_blocks = parse_markdown(text)
   self._last_source_change_id = src.doc:get_change_id()
   self._layout_width = 0
+  -- 中文说明：源文件变化后旧选区的行列坐标可能失效，必须清理避免复制错位内容。
+  self._selection_anchor = nil
+  self._selection_cursor = nil
+  self._mouse_selecting_preview = false
 end
 
 function MarkdownPreviewView:get_page_width()
@@ -459,6 +642,22 @@ function MarkdownPreviewView:update()
   MarkdownPreviewView.super.update(self)
 end
 
+function MarkdownPreviewView:draw_preview_selection(item_idx, item, page_x, y)
+  local first, last = self:normalize_selection()
+  if not (first and last) or item_idx < first.item or item_idx > last.item then
+    return
+  end
+  local col1 = item_idx == first.item and first.col or 1
+  local col2 = item_idx == last.item and last.col or (#item.text + 1)
+  if col2 <= col1 then
+    return
+  end
+  -- 中文说明：按渲染后的文本坐标画选区，避免影响源 Markdown 文档自身的选区。
+  local x1 = page_x + item.x + get_text_width_until(item.font, item.text, col1)
+  local x2 = page_x + item.x + get_text_width_until(item.font, item.text, col2)
+  renderer.draw_rect(x1, y, math.max(1, x2 - x1), item.h, style.selection)
+end
+
 function MarkdownPreviewView:draw()
   self:draw_background(style.background)
 
@@ -475,10 +674,11 @@ function MarkdownPreviewView:draw()
   local min_y = self.position.y - style.padding.y
   local max_y = self.position.y + self.size.y + style.padding.y
 
-  for _, item in ipairs(self._layout_items) do
+  for item_idx, item in ipairs(self._layout_items) do
     local y = page_y + item.y
     if y + (item.h or 0) >= min_y and y <= max_y then
       if item.kind == "text" then
+        self:draw_preview_selection(item_idx, item, page_x, y)
         renderer.draw_text(item.font, item.text, page_x + item.x, y, item.color)
       elseif item.kind == "rule" then
         renderer.draw_rect(page_x + item.x, y, item.w, item.h, item.color)
@@ -522,9 +722,22 @@ local function get_toggle_target_view(view)
   return nil
 end
 
+local function is_wlpt_doc(doc)
+  return doc
+    and doc.is_wlpt_mode
+    and doc:is_wlpt_mode()
+end
+
+local function is_markdown_render_allowed(doc)
+  if is_wlpt_doc(doc) and config.wlpt_disable_markdown_render ~= false then
+    return false
+  end
+  return true
+end
+
 command.add(function()
   local view = get_toggle_target_view(core.active_view)
-  return view ~= nil, view
+  return view ~= nil and is_markdown_render_allowed(view.doc), view
 end, {
   ["markdown:toggle-render"] = function(view)
     local active_view = core.active_view
@@ -559,7 +772,30 @@ end, {
   end,
 })
 
+command.add(function()
+  local view = core.active_view
+  if not (view and view:extends(MarkdownPreviewView)) then
+    return false
+  end
+  return view:get_selected_text() ~= "", view
+end, {
+  ["markdown:preview-copy"] = function(view)
+    view:copy_selection()
+  end,
+})
+
+command.add(function()
+  local view = core.active_view
+  return view and view:extends(MarkdownPreviewView), view
+end, {
+  ["markdown:preview-select-all"] = function(view)
+    view:select_all_preview_text()
+  end,
+})
+
 keymap.add {
+  ["ctrl+c"] = "markdown:preview-copy",
+  ["ctrl+a"] = "markdown:preview-select-all",
   ["ctrl+m"] = "markdown:toggle-render",
   ["up"] = { "markdown:preview-scroll-up", "command:select-previous", "context-menu:focus-previous", "doc:move-to-previous-line" },
   ["down"] = { "markdown:preview-scroll-down", "command:select-next", "context-menu:focus-next", "doc:move-to-next-line" },

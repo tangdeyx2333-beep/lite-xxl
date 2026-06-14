@@ -365,6 +365,19 @@ config.stonks = true
 ---@type boolean
 config.use_system_file_picker = system.get_sandbox() ~= "none"
 
+-- The config specification used by settings gui generators.
+config.config_spec = {
+  name = "Core",
+  {
+    label = "WLPT File Size Limit",
+    description = "Files larger than this size, in MiB, will use the WLPT large-file path.",
+    path = "wlpt_file_size_limit",
+    type = "number",
+    default = 1,
+    min = 0
+  }
+}
+
 -- holds the plugins real config table
 local plugins_config = {}
 

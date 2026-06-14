@@ -101,6 +101,12 @@ config.large_file_disable_highlight = false
 ---@type boolean
 config.large_file_disable_undo = true
 
+---Disable Markdown rendered preview when a document is using the WLPT path.
+---
+---Defaults to true.
+---@type boolean
+config.wlpt_disable_markdown_render = true
+
 ---是否为 wl/wlpt 大文件模式启用“停稳后快速窗口高亮”。
 ---
 ---开启后，大文件在滚动过程中仍然按纯文本绘制；
@@ -364,6 +370,26 @@ config.stonks = true
 ---Defaults to false if no sandbox is detected.
 ---@type boolean
 config.use_system_file_picker = system.get_sandbox() ~= "none"
+
+-- The config specification used by settings gui generators.
+config.config_spec = {
+  name = "Core",
+  {
+    label = "WLPT File Size Limit",
+    description = "Files larger than this size, in MiB, will use the WLPT large-file path.",
+    path = "wlpt_file_size_limit",
+    type = "number",
+    default = 1,
+    min = 0
+  },
+  {
+    label = "Disable Markdown Render In WLPT",
+    description = "When enabled, documents using the WLPT path cannot switch to rendered Markdown preview.",
+    path = "wlpt_disable_markdown_render",
+    type = "toggle",
+    default = true
+  }
+}
 
 -- holds the plugins real config table
 local plugins_config = {}

@@ -1665,7 +1665,9 @@ function core.open_doc(filename)
     end
   end
   -- no existing doc for filename; create new
-  local wlpt_threshold_bytes = (config.wlpt_file_size_limit or 1) * 1024 * 1024
+  -- 中文说明：WLPT 阈值允许来自设置界面或用户配置；填错时回退到默认 1 MiB，避免打开文件时报错。
+  local wlpt_file_size_limit = tonumber(config.wlpt_file_size_limit) or 1
+  local wlpt_threshold_bytes = math.max(0, wlpt_file_size_limit) * 1024 * 1024
   local is_wlpt = file_info and file_info.size > wlpt_threshold_bytes
   local is_large = is_wlpt or (file_info and file_info.size > config.large_file_size_limit * 1e6)
   local doc_class = is_wlpt and WlPtDoc or (is_large and LargeFileDoc or Doc)
