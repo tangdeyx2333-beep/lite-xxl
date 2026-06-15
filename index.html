@@ -1,28 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>Lite XXL</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lite XXL</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 50px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.3em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        .highlight {
+            display: inline-block;
+            background-color: #e8f4fd;
+            color: #0984e3;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .preview-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+            border: 1px solid #eaeaea;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #0984e3;
+            color: white;
+            box-shadow: 0 4px 6px rgba(9, 132, 227, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: #074b8f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(9, 132, 227, 0.3);
+        }
+        .btn-secondary {
+            background-color: #2d3436;
+            color: white;
+            box-shadow: 0 4px 6px rgba(45, 52, 54, 0.2);
+        }
+        .btn-secondary:hover {
+            background-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(45, 52, 54, 0.3);
+        }
+    </style>
 </head>
 
 <body>
-<h1>Lite XXL</h1>
+    <div class="container">
+        <h1>Lite XXL</h1>
 
-<p>Ultra Large File Editor</p>
+        <p class="subtitle">Ultra Large File Editor</p>
 
-<p>支持 13.6GB 文本文件</p>
+        <div class="highlight">✨ 支持 13.6GB 文本文件</div>
 
-<p>
-<a href="https://github.com/tangdeyx2333-beep/lite-xxl/releases">
-Download
-</a>
-</p>
+        <!-- 这里引用了同目录下的 show.png 图片 -->
+        <img src="./show.png" alt="Lite XXL 界面展示" class="preview-img">
 
-<p>
-<a href="https://github.com/tangdeyx2333-beep/lite-xxl">
-Github
-</a>
-</p>
+        <div class="button-group">
+            <a href="https://github.com/tangdeyx2333-beep/lite-xxl/releases" class="btn btn-primary" target="_blank">
+                📥 Download
+            </a>
 
+            <a href="https://github.com/tangdeyx2333-beep/lite-xxl" class="btn btn-secondary" target="_blank">
+                💻 GitHub
+            </a>
+        </div>
+    </div>
 </body>
 </html>
