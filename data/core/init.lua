@@ -20,6 +20,7 @@ local Project
 local SessionRestore
 
 local core = {}
+local log_quit_debug
 
 local function load_session()
   local ok, t = pcall(dofile, USERDIR .. PATHSEP .. "session.lua")
@@ -38,6 +39,42 @@ local function save_session()
       "}\n")
     fp:close()
   end
+end
+
+-- 中文说明：当前窗口的无痕退出模式只保存在内存里，不写入任何会话文件，因此只影响这个实例。
+function core.is_clean_exit_enabled()
+  return core.clean_exit_enabled == true
+end
+
+-- 中文说明：统一判断当前实例是否允许把退出现场写入磁盘，session / 实例快照 / workspace 都复用这里。
+function core.should_persist_instance_state()
+  return not core.is_clean_exit_enabled()
+end
+
+-- 中文说明：标题栏按钮和命令入口都通过这里切换无痕模式，切换后立即给用户一个状态栏提示。
+function core.set_clean_exit_enabled(enabled, source)
+  core.clean_exit_enabled = enabled == true
+  if log_quit_debug then
+    log_quit_debug(
+      "quit.clean_mode enabled=%s source=%s",
+      tostring(core.clean_exit_enabled),
+      tostring(source)
+    )
+  end
+  if core.status_view and core.status_view.show_message then
+    core.status_view:show_message(
+      "i",
+      style.text,
+      core.clean_exit_enabled and "无痕退出：已开启" or "无痕退出：已关闭"
+    )
+  end
+  core.redraw = true
+  return core.clean_exit_enabled
+end
+
+-- 中文说明：提供统一的切换入口，避免标题栏点击和其他入口重复书写同样的反转逻辑。
+function core.toggle_clean_exit_enabled(source)
+  return core.set_clean_exit_enabled(not core.is_clean_exit_enabled(), source)
 end
 
 
@@ -93,7 +130,7 @@ local function log_filetree_debug(fmt, ...)
   end
 end
 
-local function log_quit_debug(fmt, ...)
+log_quit_debug = function(fmt, ...)
   local ok, message = pcall(string.format, fmt, ...)
   local line = ok and message or ("format-error: " .. tostring(fmt))
   local logfile = USERDIR and (USERDIR .. PATHSEP .. "largefile-debug.log")
@@ -1228,24 +1265,33 @@ end
 
 function core.exit(quit_fn, force)
   log_quit_debug(
-    "quit.exit.begin force=%s docs=%d projects=%d active_view=%s",
+    "quit.exit.begin force=%s clean=%s docs=%d projects=%d active_view=%s",
     tostring(force),
+    tostring(core.is_clean_exit_enabled()),
     #(core.docs or {}),
     #(core.projects or {}),
     core.describe_view and core.describe_view(core.active_view) or tostring(core.active_view)
   )
   if force then
-    log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.begin")
-    save_unsaved_instance_snapshot()
-    log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.done")
+    if core.should_persist_instance_state() then
+      log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.begin")
+      save_unsaved_instance_snapshot()
+      log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.done")
+    else
+      log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.skip reason=clean-exit")
+    end
     log_quit_debug("quit.exit.force delete_temp_files.begin")
     core.delete_temp_files()
     log_quit_debug("quit.exit.force delete_temp_files.done")
     while #core.projects > 0 do core.remove_project(core.projects[#core.projects], true) end
     log_quit_debug("quit.exit.force remove_projects.done remaining=%d", #core.projects)
-    log_quit_debug("quit.exit.force save_session.begin")
-    save_session()
-    log_quit_debug("quit.exit.force save_session.done")
+    if core.should_persist_instance_state() then
+      log_quit_debug("quit.exit.force save_session.begin")
+      save_session()
+      log_quit_debug("quit.exit.force save_session.done")
+    else
+      log_quit_debug("quit.exit.force save_session.skip reason=clean-exit")
+    end
     log_quit_debug("quit.exit.force quit_fn.begin")
     quit_fn()
     log_quit_debug(
@@ -1254,9 +1300,13 @@ function core.exit(quit_fn, force)
       tostring(core.quit_request)
     )
   else
-    log_quit_debug("quit.exit.normal save_session.begin")
-    save_session()
-    log_quit_debug("quit.exit.normal save_session.done")
+    if core.should_persist_instance_state() then
+      log_quit_debug("quit.exit.normal save_session.begin")
+      save_session()
+      log_quit_debug("quit.exit.normal save_session.done")
+    else
+      log_quit_debug("quit.exit.normal save_session.skip reason=clean-exit")
+    end
 
     log_quit_debug("quit.exit.normal confirm_close_docs.begin")
     core.confirm_close_docs(core.docs, core.exit, quit_fn, true)

@@ -218,6 +218,10 @@ end
 local function save_workspace()
   local root_project = core.root_project()
   if not root_project or is_ephemeral_workspace_path(root_project.path) then return end
+  -- 中文说明：无痕退出时，这次实例的工作区布局也不落盘，避免下次恢复出当前窗口现场。
+  if core.should_persist_instance_state and not core.should_persist_instance_state() then
+    return
+  end
   local project_dir = common.basename(root_project.path)
   local id_list = {}
   for filename, id in workspace_keys_for(project_dir) do
@@ -278,7 +282,9 @@ function core.run(...)
     end
     local exit = core.exit
     function core.exit(quit_fn, force)
-      if force then core.try(save_workspace) end
+      if force and (not core.should_persist_instance_state or core.should_persist_instance_state()) then
+        core.try(save_workspace)
+      end
       exit(quit_fn, force)
     end
     

@@ -407,6 +407,28 @@ function StatusView:register_docview_items()
 
   self:add_item({
     predicate = predicate_docview,
+    name = "doc:clean-exit",
+    alignment = StatusView.Item.RIGHT,
+    get_item = function()
+      local enabled = core.is_clean_exit_enabled and core.is_clean_exit_enabled()
+      return {
+        enabled and style.warn or style.text,
+        enabled and "无痕" or "常规"
+      }
+    end,
+    command = function(button)
+      if button == "left" then
+        core.toggle_clean_exit_enabled("statusbar")
+      end
+    end,
+    tooltip = "切换当前窗口的无痕退出模式",
+    separator = self.separator2,
+    -- 中文说明：把按钮放在右侧状态栏，并插到缩进信息（spaces/tabs）左边，正好落在用户指定的位置。
+    position = 1
+  })
+
+  self:add_item({
+    predicate = predicate_docview,
     name = "doc:indentation",
     alignment = StatusView.Item.RIGHT,
     get_item = function()

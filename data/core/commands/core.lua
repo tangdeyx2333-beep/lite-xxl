@@ -219,6 +219,10 @@ command.add(nil, {
     core.quit(true)
   end,
 
+  ["core:toggle-clean-exit"] = function()
+    core.toggle_clean_exit_enabled("command")
+  end,
+
   ["core:toggle-fullscreen"] = function()
     fullscreen = not fullscreen
     if fullscreen then
