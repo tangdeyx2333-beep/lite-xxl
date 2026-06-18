@@ -281,6 +281,15 @@ local function save_unsaved_instance_snapshot()
   for i, view in ipairs(views) do
     local doc = view and view.doc
     if doc then
+      if view == core.command_view then
+        log_quit_debug(
+          "snapshot.skip_command_view index=%d label=%s text=%q",
+          i,
+          tostring(core.command_view and core.command_view.label),
+          tostring(core.command_view and core.command_view.get_text and core.command_view:get_text() or ""):gsub("\n", "\\n"):sub(1, 80)
+        )
+        goto continue
+      end
       local item = {
         selection = { doc:get_selection(true) },
         scroll = view.scroll and {
@@ -364,6 +373,7 @@ local function save_unsaved_instance_snapshot()
         docs[#docs + 1] = item
       end
     end
+    ::continue::
   end
 
   if #docs == 0 then return end

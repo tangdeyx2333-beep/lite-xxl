@@ -1,1 +1,2 @@
-return {recents={[1]="F:\\dummy12",[2]="F:\\.a.github\\final",[3]="F:\\.a.github\\xunji-v2",[4]="D:",[5]="D:",[6]="D:",[7]="F:\\.a.github\\dify",[8]="F:\\.a.github\\final\\data",[9]="D:\\3DMark",[10]="D:\\a_feibo",[11]="F:\\.github",[12]="F:\\3.6.3maven",[13]="F:\\.github-good-projet",[14]="F:\\.a.github\\lite-xxl",[15]="F:\\1_a_claudecode",[16]="F:",[17]="F:",[18]="F:"}, window={[1]=2048,[2]=1152,[3]=146,[4]=186,["n"]=4}, window_mode="normal", previous_find={}, previous_replace={}}
+return {recents={[1]="F:\\.a.github\\NextChat",[2]="F:\\dummy12",[3]="F:\\.a.github\\final"}, window={[1]=2880,[2]=1586,[3]=3840,[4]=34,["n"]=4}, window_mode="maximized", previous_find={}, previous_replace={}}
+le>"}, previous_replace={}}

@@ -79,24 +79,68 @@ function DocView:__tostring() return "DocView" end
 
 local function find_scroll_trace(...) end
 
-function DocView:draw_find_match_overlay(line, x, y)
-  local line1, col1, line2, col2
-  local active_find_match = core.active_find_match
-  if active_find_match and active_find_match.doc == self.doc then
-    line1, col1, line2, col2 = active_find_match.line1, active_find_match.col1, active_find_match.line2, active_find_match.col2
-  elseif active_find_match and not self:is(require "core.commandview") and self.doc and self.doc.get_selection then
-    line1, col1, line2, col2 = self.doc:get_selection(true)
+local function build_find_match_segments(line1, col1, line2, col2, line, text)
+  if line < line1 or line > line2 then
+    return {}
+  end
+  local match_col1 = line1 ~= line and 1 or col1
+  local match_col2 = line2 ~= line and #text + 1 or col2
+  if match_col1 >= match_col2 then
+    return {}
+  end
+  return {
+    { col1 = match_col1, col2 = match_col2 }
+  }
+end
+
+local function split_segments_by_range(segments, range_col1, range_col2, overlap_segments)
+  local next_segments = {}
+  for _, seg in ipairs(segments) do
+    if range_col2 <= seg.col1 or range_col1 >= seg.col2 then
+      next_segments[#next_segments + 1] = seg
+    else
+      if seg.col1 < range_col1 then
+        next_segments[#next_segments + 1] = {
+          col1 = seg.col1,
+          col2 = math.min(seg.col2, range_col1)
+        }
+      end
+      local overlap_col1 = math.max(seg.col1, range_col1)
+      local overlap_col2 = math.min(seg.col2, range_col2)
+      if overlap_col1 < overlap_col2 then
+        overlap_segments[#overlap_segments + 1] = {
+          col1 = overlap_col1,
+          col2 = overlap_col2
+        }
+      end
+      if range_col2 < seg.col2 then
+        next_segments[#next_segments + 1] = {
+          col1 = math.max(seg.col1, range_col2),
+          col2 = seg.col2
+        }
+      end
+    end
+  end
+  return next_segments, overlap_segments
+end
+
+local function partition_find_match_segments(self, line, text, line1, col1, line2, col2)
+  local fill_segments = build_find_match_segments(line1, col1, line2, col2, line, text)
+  local overlap_segments = {}
+
+  for _, sel_line1, sel_col1, sel_line2, sel_col2 in self.doc:get_selections(true) do
+    if line >= sel_line1 and line <= sel_line2 then
+      local selection_col1 = sel_line1 ~= line and 1 or sel_col1
+      local selection_col2 = sel_line2 ~= line and #text + 1 or sel_col2
+      fill_segments, overlap_segments =
+        split_segments_by_range(fill_segments, selection_col1, selection_col2, overlap_segments)
+    end
   end
 
-  if not line1 or line < line1 or line > line2 then
-    return
-  end
-  local text = self.doc:get_line(line)
-  local lh = self:get_line_height()
+  return fill_segments, overlap_segments
+end
 
-  if line1 ~= line then col1 = 1 end
-  if line2 ~= line then col2 = #text + 1 end
-
+local function draw_find_fill_segment(self, line, x, y, lh, text, col1, col2)
   local x1 = x + self:get_col_x_offset(line, col1)
   local x2 = x + self:get_col_x_offset(line, col2)
   if x1 == x2 then
@@ -113,6 +157,49 @@ function DocView:draw_find_match_overlay(line, x, y)
       y + self:get_line_text_y_offset(),
       style.find_match_text or { 0xFF, 0xFF, 0xFF, 0xFF }
     )
+  end
+end
+
+local function draw_find_overlap_underline(self, line, x, y, lh, col1, col2)
+  local x1 = x + self:get_col_x_offset(line, col1)
+  local x2 = x + self:get_col_x_offset(line, col2)
+  if x1 == x2 then
+    return
+  end
+
+  renderer.draw_rect(
+    x1,
+    y + lh - 1,
+    math.max(1, x2 - x1),
+    1,
+    style.find_match or { 0xFF, 0x8C, 0x00, 0xFF }
+  )
+end
+
+function DocView:draw_find_match_overlay(line, x, y)
+  local line1, col1, line2, col2
+  local active_find_match = core.active_find_match
+  if active_find_match and active_find_match.doc == self.doc then
+    line1, col1, line2, col2 = active_find_match.line1, active_find_match.col1, active_find_match.line2, active_find_match.col2
+  elseif active_find_match and not self:is(require "core.commandview") and self.doc and self.doc.get_selection then
+    line1, col1, line2, col2 = self.doc:get_selection(true)
+  end
+
+  if not line1 or line < line1 or line > line2 then
+    return
+  end
+  local text = self.doc:get_line(line)
+  local lh = self:get_line_height()
+
+  local fill_segments, overlap_segments =
+    partition_find_match_segments(self, line, text, line1, col1, line2, col2)
+
+  for _, seg in ipairs(fill_segments) do
+    draw_find_fill_segment(self, line, x, y, lh, text, seg.col1, seg.col2)
+  end
+
+  for _, seg in ipairs(overlap_segments) do
+    draw_find_overlap_underline(self, line, x, y, lh, seg.col1, seg.col2)
   end
 end
 
@@ -748,14 +835,13 @@ function DocView:draw_line_body(line, x, y)
   -- draw selection if it overlaps this line
   local lh = self:get_line_height()
   for lidx, line1, col1, line2, col2 in self.doc:get_selections(true) do
-    local is_active_find_selection = self:selection_overlaps_find_match(line1, col1, line2, col2)
     if line >= line1 and line <= line2 then
       local text = self.doc:get_line(line)
       if line1 ~= line then col1 = 1 end
       if line2 ~= line then col2 = #text + 1 end
       local x1 = x + self:get_col_x_offset(line, col1)
       local x2 = x + self:get_col_x_offset(line, col2)
-      if x1 ~= x2 and not is_active_find_selection then
+      if x1 ~= x2 then
         renderer.draw_rect(x1, y, x2 - x1, lh, style.selection)
       end
     end

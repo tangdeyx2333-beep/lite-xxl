@@ -1,4 +1,5 @@
 local core = require "core"
+local common = require "core.common"
 local command = require "core.command"
 local config = require "core.config"
 local search = require "core.doc.search"
@@ -425,7 +426,9 @@ local function execute_find_action(target_view, text, reverse)
   end
 
   if line1 then
-    current_doc:set_selection(line2, col2, line1, col1)
+    -- 中文说明：Find / Enter / F3 找到下一处后，也只保留 find 命中语义，
+    -- 不再把命中文本同时设为普通选区，避免再次进入“选区 + find”的重叠态。
+    current_doc:set_selection(line2, col2, line2, col2)
     center_found_match(target_view, line1, col1, line2, col2)
     set_active_find_match(current_doc, line1, col1, line2, col2)
     log_match_summary(current_doc, text, line1, col1)
@@ -457,6 +460,57 @@ local function get_find_tooltip()
     (tr and (" " .. tr .. " toggles regex find.") or "")
 end
 
+local function selection_is_nonempty(sel)
+  return sel
+    and sel[1] and sel[2] and sel[3] and sel[4]
+    and (sel[1] ~= sel[3] or sel[2] ~= sel[4])
+end
+
+local function activate_selection_as_find_match(target_view, sel, text)
+  if not target_view or not target_view.doc or not selection_is_nonempty(sel) or not text or text == "" then
+    return false
+  end
+
+  local target_doc = target_view.doc
+  local line1, col1, line2, col2 = table.unpack(sel)
+
+  largefile_find_trace(
+    target_doc,
+    "find.seed_as_match file=%s match=%d:%d-%d:%d text=%q",
+    tostring(target_doc.abs_filename or target_doc.filename),
+    line1,
+    col1,
+    line2,
+    col2,
+    tostring(text):gsub("\n", "\\n"):sub(1, 120)
+  )
+
+  -- 中文说明：Ctrl+F 初次打开时，当前文档选区直接升级为当前 find 命中，
+  -- 不再继续保留为普通非空选区，也不先走“查找下一个”的预览链。
+  target_doc:set_selection(line2, col2, line2, col2)
+  center_found_match(target_view, line1, col1, line2, col2)
+  set_active_find_match(target_doc, line1, col1, line2, col2)
+  found_expression = true
+
+  local ok = pcall(log_match_summary, target_doc, text, line1, col1)
+  if not ok then
+    core.find_replace_status.total_matches = 0
+    core.find_replace_status.current_index = 0
+    core.find_replace_status.is_large_file = target_doc.is_large_file or false
+    core.find_replace_status.chunk_start = nil
+    core.find_replace_status.chunk_end = nil
+    core.find_replace_status.chunk_match_count = 0
+  end
+
+  if target_doc.is_large_file then
+    pcall(show_largefile_scope_message, target_doc, text, line1, true)
+  else
+    clear_largefile_nav()
+  end
+
+  return true
+end
+
 local function update_preview(sel, search_fn, text)
   largefile_find_trace(
     last_view and last_view.doc,
@@ -481,7 +535,10 @@ local function update_preview(sel, search_fn, text)
       tostring(line2),
       tostring(col2)
     )
-    last_view.doc:set_selection(line2, col2, line1, col1)
+    -- 中文说明：当 Ctrl+F 由当前选区直接进入 find 时，
+    -- 这段文本此后应升级为“find 命中”，不再继续保留为普通非空选区，
+    -- 否则渲染层会把它同时当成普通选区和 find 命中，落入重叠态。
+    last_view.doc:set_selection(line2, col2, line2, col2)
     center_found_match(last_view, line1, col1, line2, col2)
     set_active_find_match(last_view.doc, line1, col1, line2, col2)
     found_expression = true
@@ -511,6 +568,8 @@ local function update_preview(sel, search_fn, text)
       tostring(line2),
       tostring(col2)
     )
+    -- 中文说明：未命中时恢复到打开 find 前的原始文档选区，
+    -- 这样用户还能看到自己最初拿来查找的那段内容。
     last_view.doc:set_selection(table.unpack(sel))
     core.active_find_match = nil
     found_expression = false
@@ -543,10 +602,12 @@ end
 
 local function find(label, search_fn)
   last_view, last_sel = core.active_view,
-    { core.active_view.doc:get_selection() }
+    { core.active_view.doc:get_selection(true) }
   local text = last_view.doc:get_text(table.unpack(last_sel))
   found_expression = false
   reset_find_status(last_view.doc)
+  local seed_selection_pending = selection_is_nonempty(last_sel) and text ~= ""
+  local seed_text = text
 
   largefile_find_trace(
     last_view.doc,
@@ -576,11 +637,13 @@ local function find(label, search_fn)
     )
     core.command_view:exit(false)
   end
-
-  core.command_view:enter(label, {
+  local find_options = {
     text = text,
     select_text = true,
     show_suggestions = false,
+    -- 中文说明：find 打开后允许用户把焦点切回文档继续点击、拖选、复制、编辑，
+    -- 只有 Esc 或 Close 才真正关闭 find 组件。
+    keep_open_on_focus_loss = true,
     buttons = {
       {
         text = "",
@@ -673,20 +736,62 @@ local function find(label, search_fn)
       end
     end,
     suggest = function(text)
+      if seed_selection_pending and text == seed_text then
+        last_fn, last_text = search_fn, text
+        return core.previous_find
+      end
+      seed_selection_pending = false
       update_preview(last_sel, search_fn, text)
       last_fn, last_text = search_fn, text
       return core.previous_find
     end,
     cancel = function(explicit)
+      -- 中文说明：Esc 与 Close 都只负责退出 find 并清理 find 状态，
+      -- 不再回滚到打开 find 前保存的 last_sel 原始选区。
+      largefile_find_trace(
+        last_view and last_view.doc,
+        "find.cancel file=%s explicit=%s active_view=%s",
+        tostring(last_view and last_view.doc and (last_view.doc.abs_filename or last_view.doc.filename)),
+        tostring(explicit),
+        tostring(core.active_view)
+      )
       core.status_view:remove_tooltip()
-      if explicit then
-        clear_largefile_nav()
-        reset_find_status(last_view and last_view.doc)
-        last_view.doc:set_selection(table.unpack(last_sel))
-        last_view:scroll_to_make_visible(table.unpack(last_sel))
-      end
+      clear_largefile_nav()
+      reset_find_status(last_view and last_view.doc)
     end
-  })
+  }
+
+  if core.command_view:is_persistent_open() and tostring(core.command_view.label or ""):match("^Find") then
+    -- 中文说明：当 find 已经打开时，再次按 Ctrl+F 不新开第二个命令栏，
+    -- 而是复用同一个输入栏，并用当前选区重新填充搜索词。
+    largefile_find_trace(
+      last_view.doc,
+      "find.reopen file=%s selection=%s,%s,%s,%s seed=%q",
+      tostring(last_view.doc.abs_filename or last_view.doc.filename),
+      tostring(last_sel[1]),
+      tostring(last_sel[2]),
+      tostring(last_sel[3]),
+      tostring(last_sel[4]),
+      tostring(text):gsub("\n", "\\n"):sub(1, 120)
+    )
+    core.command_view.state = common.merge(core.command_view.state, find_options)
+    core.command_view.label = label .. ": "
+    core.command_view:set_text(text, true)
+    core.command_view:update_suggestions()
+    core.command_view.gutter_text_brightness = 100
+    core.set_active_view(core.command_view)
+    if seed_selection_pending then
+      seed_selection_pending = false
+      activate_selection_as_find_match(last_view, last_sel, seed_text)
+    end
+    return
+  end
+
+  core.command_view:enter(label, find_options)
+  if seed_selection_pending then
+    seed_selection_pending = false
+    activate_selection_as_find_match(last_view, last_sel, seed_text)
+  end
 end
 
 function run_largefile_chunk_search(dv, direction)

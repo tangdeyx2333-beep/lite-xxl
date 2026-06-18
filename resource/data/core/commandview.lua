@@ -6,6 +6,8 @@ local style = require "core.style"
 local Doc = require "core.doc"
 local DocView = require "core.docview"
 local View = require "core.view"
+local USERDIR = USERDIR
+local PATHSEP = PATHSEP
 
 
 ---@class core.commandview.input : core.doc
@@ -49,7 +51,39 @@ local default_state = {
   typeahead = true,
   wrap = true,
   buttons = nil,
+  keep_open_on_focus_loss = false,
 }
+
+local DEBUG_LOG_PATH = USERDIR and (USERDIR .. PATHSEP .. "wlpt-debug.log") or nil
+
+local function append_find_debug_log(fmt, ...)
+  if not DEBUG_LOG_PATH then
+    return
+  end
+  local ok, message = pcall(string.format, fmt, ...)
+  if not ok then
+    return
+  end
+  local fp = io.open(DEBUG_LOG_PATH, "a")
+  if not fp then
+    return
+  end
+  fp:write(os.date("%Y-%m-%d %H:%M:%S "))
+  fp:write("[DEBUG-find-exit] ")
+  fp:write(message)
+  fp:write("\n")
+  fp:close()
+end
+
+local function is_find_command_view(self)
+  local label = self and self.label or ""
+  return label:match("^Find")
+end
+
+function CommandView:is_persistent_open()
+  -- 中文说明：用于识别“允许失焦后继续显示”的命令栏，例如 find。
+  return self.state ~= default_state and self.state.keep_open_on_focus_loss
+end
 
 
 function CommandView:new()
@@ -363,6 +397,17 @@ end
 
 
 function CommandView:exit(submitted, inexplicit)
+  if is_find_command_view(self) then
+    append_find_debug_log(
+      "commandview.exit label=%q submitted=%s inexplicit=%s active_is_self=%s keep_open=%s last_active=%s",
+      tostring(self.label),
+      tostring(submitted),
+      tostring(inexplicit),
+      tostring(core.active_view == self),
+      tostring(self.state and self.state.keep_open_on_focus_loss),
+      tostring(core.last_active_view)
+    )
+  end
   if core.active_view == self then
     core.set_active_view(core.last_active_view)
   end
@@ -435,7 +480,17 @@ function CommandView:update()
     end
   end
 
-  if core.active_view ~= self and self.state ~= default_state then
+  if core.active_view ~= self
+    and self.state ~= default_state
+    and not self.state.keep_open_on_focus_loss then
+    if is_find_command_view(self) then
+      append_find_debug_log(
+        "commandview.update_inexplicit_exit label=%q active_view=%s keep_open=%s",
+        tostring(self.label),
+        tostring(core.active_view),
+        tostring(self.state and self.state.keep_open_on_focus_loss)
+      )
+    end
     self:exit(false, true)
   end
 
@@ -480,7 +535,7 @@ function CommandView:update()
 
   -- update size based on whether this is the active_view
   local dest = 0
-  if self == core.active_view then
+  if self == core.active_view or self:is_persistent_open() then
     dest = style.font:get_height() + style.padding.y * 2
   end
   self:move_towards(self.size, "y", dest, nil, "commandview")

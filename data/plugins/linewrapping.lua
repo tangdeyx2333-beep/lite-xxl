@@ -532,6 +532,55 @@ function DocView:draw_line_text(line, x, y)
 end
 
 local old_draw_find_match_overlay = DocView.draw_find_match_overlay
+local function split_wrapped_segments_by_selection(segments, overlap_segments, selection_col1, selection_col2)
+  local next_segments = {}
+  for _, seg in ipairs(segments) do
+    if selection_col2 <= seg.col1 or selection_col1 >= seg.col2 then
+      next_segments[#next_segments + 1] = seg
+    else
+      if seg.col1 < selection_col1 then
+        next_segments[#next_segments + 1] = {
+          col1 = seg.col1,
+          col2 = math.min(seg.col2, selection_col1)
+        }
+      end
+      local overlap_col1 = math.max(seg.col1, selection_col1)
+      local overlap_col2 = math.min(seg.col2, selection_col2)
+      if overlap_col1 < overlap_col2 then
+        overlap_segments[#overlap_segments + 1] = {
+          col1 = overlap_col1,
+          col2 = overlap_col2
+        }
+      end
+      if selection_col2 < seg.col2 then
+        next_segments[#next_segments + 1] = {
+          col1 = math.max(seg.col1, selection_col2),
+          col2 = seg.col2
+        }
+      end
+    end
+  end
+  return next_segments, overlap_segments
+end
+
+local function partition_wrapped_find_segments(self, line, text, col1, col2)
+  local fill_segments = {
+    { col1 = col1, col2 = col2 }
+  }
+  local overlap_segments = {}
+
+  for _, sel_line1, sel_col1, sel_line2, sel_col2 in self.doc:get_selections(true) do
+    if line >= sel_line1 and line <= sel_line2 then
+      local selection_col1 = sel_line1 ~= line and 1 or sel_col1
+      local selection_col2 = sel_line2 ~= line and #text + 1 or sel_col2
+      fill_segments, overlap_segments =
+        split_wrapped_segments_by_selection(fill_segments, overlap_segments, selection_col1, selection_col2)
+    end
+  end
+
+  return fill_segments, overlap_segments
+end
+
 function DocView:draw_find_match_overlay(line, x, y)
   if not self.wrapped_settings then return old_draw_find_match_overlay(self, line, x, y) end
 
@@ -554,42 +603,71 @@ function DocView:draw_find_match_overlay(line, x, y)
   if col1 == col2 then return end
 
   local lh = self:get_line_height()
-  local idx0, _, count = get_line_idx_col_count(self, line)
+  local idx0 = get_line_idx_col_count(self, line)
+  local fill_segments, overlap_segments = partition_wrapped_find_segments(self, line, text, col1, col2)
 
-  local idx1, ncol1 = get_line_idx_col_count(self, line, col1)
-  local idx2, ncol2 = get_line_idx_col_count(self, line, col2)
-  local start = 0
+  for _, seg in ipairs(fill_segments) do
+    local idx1 = get_line_idx_col_count(self, line, seg.col1)
+    local idx2 = get_line_idx_col_count(self, line, seg.col2)
 
-  for i = idx1, idx2 do
-    local x1 = x + (idx1 == i and self:get_col_x_offset(line1, col1) or 0)
-    local x2
-    local next_col
-    if self.wrapped_lines[i * 2 + 1] == line then
-      next_col = self.wrapped_lines[i * 2 + 2]
-    else
-      next_col = #text + 1
+    for i = idx1, idx2 do
+      local x1 = x + (idx1 == i and self:get_col_x_offset(line, seg.col1) or 0)
+      local x2
+      local next_col
+      if self.wrapped_lines[i * 2 + 1] == line then
+        next_col = self.wrapped_lines[i * 2 + 2]
+      else
+        next_col = #text + 1
+      end
+
+      if idx2 == i then
+        x2 = x + self:get_col_x_offset(line, seg.col2)
+      else
+        x2 = x + self:get_col_x_offset(line, next_col, true)
+      end
+
+      if x1 ~= x2 then
+        local rect_y = y + (i - idx0) * lh
+        renderer.draw_rect(x1, rect_y + 1, x2 - x1, math.max(1, lh - 2), style.find_match or { 0xFF, 0x8C, 0x00, 0xFF })
+        local match_col1 = (idx1 == i and seg.col1 or self.wrapped_lines[(i - 1) * 2 + 2])
+        local match_col2 = (idx2 == i and seg.col2 or next_col)
+        local match_text = text:sub(match_col1, math.max(match_col1, match_col2 - 1))
+        if match_text ~= "" then
+          renderer.draw_text(
+            self:get_font(),
+            match_text,
+            x1,
+            rect_y + self:get_line_text_y_offset(),
+            style.find_match_text or { 0xFF, 0xFF, 0xFF, 0xFF }
+          )
+        end
+      end
     end
+  end
 
-    if idx2 == i then
-      x2 = x + self:get_col_x_offset(line, col2)
-    else
-      x2 = x + self:get_col_x_offset(line, next_col, true)
-    end
-    
-    if x1 ~= x2 then
-      local rect_y = y + (i - idx0) * lh
-      renderer.draw_rect(x1, rect_y + 1, x2 - x1, math.max(1, lh - 2), style.find_match or { 0xFF, 0x8C, 0x00, 0xFF })
-      local match_col1 = (idx1 == i and col1 or self.wrapped_lines[(i - 1) * 2 + 2])
-      local match_col2 = (idx2 == i and col2 or next_col)
-      local match_text = text:sub(match_col1, math.max(match_col1, match_col2 - 1))
-      if match_text ~= "" then
-        renderer.draw_text(
-          self:get_font(),
-          match_text,
-          x1,
-          rect_y + self:get_line_text_y_offset(),
-          style.find_match_text or { 0xFF, 0xFF, 0xFF, 0xFF }
-        )
+  for _, seg in ipairs(overlap_segments) do
+    local idx1 = get_line_idx_col_count(self, line, seg.col1)
+    local idx2 = get_line_idx_col_count(self, line, seg.col2)
+
+    for i = idx1, idx2 do
+      local x1 = x + (idx1 == i and self:get_col_x_offset(line, seg.col1) or 0)
+      local x2
+      local next_col
+      if self.wrapped_lines[i * 2 + 1] == line then
+        next_col = self.wrapped_lines[i * 2 + 2]
+      else
+        next_col = #text + 1
+      end
+
+      if idx2 == i then
+        x2 = x + self:get_col_x_offset(line, seg.col2)
+      else
+        x2 = x + self:get_col_x_offset(line, next_col, true)
+      end
+
+      if x1 ~= x2 then
+        local rect_y = y + (i - idx0) * lh
+        renderer.draw_rect(x1, rect_y + lh - 1, math.max(1, x2 - x1), 1, style.find_match or { 0xFF, 0x8C, 0x00, 0xFF })
       end
     end
   end
@@ -601,14 +679,10 @@ function DocView:draw_line_body(line, x, y)
   local lh = self:get_line_height()
   local idx0, _, count = get_line_idx_col_count(self, line)
   for lidx, line1, col1, line2, col2 in self.doc:get_selections(true) do
-    local is_active_find_selection = false
-    if self.selection_overlaps_find_match then
-      is_active_find_selection = self:selection_overlaps_find_match(line1, col1, line2, col2)
-    end
     if line >= line1 and line <= line2 then
       if line1 ~= line then col1 = 1 end
       if line2 ~= line then col2 = #doc_line_text(self.doc, line) + 1 end
-      if col1 ~= col2 and not is_active_find_selection then
+      if col1 ~= col2 then
         local idx1, ncol1 = get_line_idx_col_count(self, line, col1)
         local idx2, ncol2 = get_line_idx_col_count(self, line, col2)
         for i = idx1, idx2 do
