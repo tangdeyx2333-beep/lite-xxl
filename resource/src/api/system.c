@@ -19,6 +19,7 @@
   #include <direct.h>
   #include <windows.h>
   #include <fileapi.h>
+  #include <tlhelp32.h>
   #include "../utfconv.h"
   #define fileno _fileno
   #define ftruncate _chsize
@@ -1703,6 +1704,44 @@ static int f_get_process_id(lua_State *L) {
   return 1;
 }
 
+static int f_has_other_instance(lua_State *L) {
+#ifdef _WIN32
+  DWORD current_pid = GetCurrentProcessId();
+  wchar_t current_path[MAX_PATH];
+  const wchar_t *current_name = L"lite-xxl.exe";
+  if (GetModuleFileNameW(NULL, current_path, MAX_PATH) > 0) {
+    const wchar_t *candidate = wcsrchr(current_path, L'\\');
+    if (candidate && candidate[1] != L'\0') {
+      current_name = candidate + 1;
+    }
+  }
+
+  HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  if (snapshot == INVALID_HANDLE_VALUE) {
+    lua_pushboolean(L, 0);
+    return 1;
+  }
+
+  PROCESSENTRY32W entry;
+  bool found = false;
+  SDL_zero(entry);
+  entry.dwSize = sizeof(entry);
+  if (Process32FirstW(snapshot, &entry)) {
+    do {
+      if (entry.th32ProcessID != current_pid && _wcsicmp(entry.szExeFile, current_name) == 0) {
+        found = true;
+        break;
+      }
+    } while (Process32NextW(snapshot, &entry));
+  }
+  CloseHandle(snapshot);
+  lua_pushboolean(L, found ? 1 : 0);
+#else
+  lua_pushboolean(L, 0);
+#endif
+  return 1;
+}
+
 
 static int f_get_time(lua_State *L) {
   double n = SDL_GetPerformanceCounter() / (double) SDL_GetPerformanceFrequency();
@@ -2910,6 +2949,7 @@ static const luaL_Reg lib[] = {
   { "get_primary_selection", f_get_primary_selection },
   { "set_primary_selection", f_set_primary_selection },
   { "get_process_id",        f_get_process_id        },
+  { "has_other_instance",    f_has_other_instance    },
   { "get_time",              f_get_time              },
   { "sleep",                 f_sleep                 },
   { "exec",                  f_exec                  },

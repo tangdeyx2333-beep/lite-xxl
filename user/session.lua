@@ -1,1 +1,1 @@
-return {recents={[1]="F:\\.a.github",[2]="F:\\.a.github\\final",[3]="F:\\.pnpm-store"}, window={[1]=2048,[2]=1152,[3]=256,[4]=144,["n"]=4}, window_mode="normal", previous_find={}, previous_replace={}}
+return {recents={[1]="F:\\.claude"}, window={[1]=2048,[2]=1152,[3]=255,[4]=113,["n"]=4}, window_mode="normal", previous_find={}, previous_replace={}}
