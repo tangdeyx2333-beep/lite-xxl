@@ -434,6 +434,10 @@ local function save_unsaved_instance_snapshot()
   fp:write("return ", common.serialize({
     created_at = os.time(),
     project_dir = core.root_project() and core.root_project().path or nil,
+    -- 中文说明：实例快照记录自己的窗口矩形，避免多个恢复实例复用同一份全局 session 坐标。
+    window = table.pack(system.get_window_size(core.window)),
+    -- 中文说明：实例快照同时记录窗口模式，恢复时优先还原实例自己的 normal/maximized 状态。
+    window_mode = system.get_window_mode(core.window),
     restore_treeview_from_file_open = core.restore_treeview_from_file_open == true,
     docs = docs
   }), "\n")
@@ -460,6 +464,29 @@ local function get_startup_snapshot_project_dir(target_snapshot_path)
   if info and info.type == "dir" and not is_ephemeral_project_dir(project_dir) then
     return project_dir
   end
+end
+
+local function get_snapshot_window_state(snapshot)
+  if type(snapshot) ~= "table" then return nil end
+  local window = get_session_window_rect(snapshot.window)
+  local mode = snapshot.window_mode
+  if not window then return nil end
+  if mode ~= "normal" and mode ~= "maximized" then return nil end
+  return {
+    window = { window.w, window.h, window.x, window.y },
+    window_mode = mode,
+  }
+end
+
+local function get_startup_snapshot_window_state(target_snapshot_path)
+  local snapshot_path = target_snapshot_path
+  if type(snapshot_path) ~= "string" or snapshot_path == "" then
+    local snapshot_files = list_unsaved_snapshot_files()
+    if #snapshot_files == 0 then return nil end
+    snapshot_path = get_unsaved_instances_dir() .. PATHSEP .. snapshot_files[1]
+  end
+  local snapshot = load_unsaved_instance_snapshot(snapshot_path)
+  return get_snapshot_window_state(snapshot), snapshot_path
 end
 
 local function restore_unsaved_instance_snapshot_file(snapshot_path)
@@ -924,9 +951,12 @@ function core.init()
 
   local startup_restore_mode = get_startup_restore_mode(restore_snapshot_arg)
   local has_other_instance = system.has_other_instance and system.has_other_instance() or false
+  local snapshot_window_state = nil
+  local snapshot_window_source = nil
   if startup_restore_mode ~= "secondary-open" then
     session = load_session()
     core.recent_projects = sanitize_recent_projects(session.recents or {})
+    snapshot_window_state, snapshot_window_source = get_startup_snapshot_window_state(restore_snapshot_arg)
   end
   log_startup_debug(
     "startup.restore_mode mode=%s has_other_instance=%s restore_snapshot_arg=%s",
@@ -1100,26 +1130,34 @@ function core.init()
     )
   end
   log_startup_debug(
-    "startup.window.restore.begin root=%s mode=%s session_mode=%s session_window=%s",
+    "startup.window.restore.begin root=%s mode=%s session_mode=%s session_window=%s snapshot_mode=%s snapshot_window=%s snapshot_source=%s",
     tostring(core.root_project() and core.root_project().path),
     tostring(startup_restore_mode),
     tostring(session.window_mode),
-    tostring(common.serialize(session.window))
+    tostring(common.serialize(session.window)),
+    tostring(snapshot_window_state and snapshot_window_state.window_mode),
+    tostring(snapshot_window_state and common.serialize(snapshot_window_state.window)),
+    tostring(snapshot_window_source)
   )
   if startup_restore_mode ~= "secondary-open" then
-    if session.window_mode == "normal" then
-      local should_restore, reason = should_restore_session_window(session.window)
+    local restore_mode = snapshot_window_state and snapshot_window_state.window_mode or session.window_mode
+    local restore_window = snapshot_window_state and snapshot_window_state.window or session.window
+    local restore_source = snapshot_window_state and "snapshot" or "session"
+    if restore_mode == "normal" then
+      local should_restore, reason = should_restore_session_window(restore_window)
       if should_restore then
         log_window_restore_debug(
-          "window.restore.apply startup_mode=%s mode=normal target=%s reason=%s",
+          "window.restore.apply startup_mode=%s source=%s mode=normal target=%s reason=%s",
           tostring(startup_restore_mode),
-          tostring(common.serialize(session.window)),
+          tostring(restore_source),
+          tostring(common.serialize(restore_window)),
           tostring(reason)
         )
-        system.set_window_size(core.window, table.unpack(session.window))
+        system.set_window_size(core.window, table.unpack(restore_window))
         local w, h, x, y = system.get_window_size(core.window)
         log_window_restore_debug(
-          "window.restore.after_apply size=%s,%s pos=%s,%s mode=%s",
+          "window.restore.after_apply source=%s size=%s,%s pos=%s,%s mode=%s",
+          tostring(restore_source),
           tostring(w),
           tostring(h),
           tostring(x),
@@ -1129,9 +1167,10 @@ function core.init()
       else
         local w, h, x, y = system.get_window_size(core.window)
         log_window_restore_debug(
-          "window.restore.skip startup_mode=%s mode=normal target=%s reason=%s fallback_size=%s,%s fallback_pos=%s,%s",
+          "window.restore.skip startup_mode=%s source=%s mode=normal target=%s reason=%s fallback_size=%s,%s fallback_pos=%s,%s",
           tostring(startup_restore_mode),
-          tostring(common.serialize(session.window)),
+          tostring(restore_source),
+          tostring(common.serialize(restore_window)),
           tostring(reason),
           tostring(w),
           tostring(h),
@@ -1139,12 +1178,17 @@ function core.init()
           tostring(y)
         )
       end
-    elseif session.window_mode == "maximized" then
-      log_window_restore_debug("window.restore.apply startup_mode=%s mode=maximized", tostring(startup_restore_mode))
+    elseif restore_mode == "maximized" then
+      log_window_restore_debug(
+        "window.restore.apply startup_mode=%s source=%s mode=maximized",
+        tostring(startup_restore_mode),
+        tostring(restore_source)
+      )
       system.set_window_mode(core.window, "maximized")
       local w, h, x, y = system.get_window_size(core.window)
       log_window_restore_debug(
-        "window.restore.after_apply size=%s,%s pos=%s,%s mode=%s",
+        "window.restore.after_apply source=%s size=%s,%s pos=%s,%s mode=%s",
+        tostring(restore_source),
         tostring(w),
         tostring(h),
         tostring(x),
@@ -1153,9 +1197,10 @@ function core.init()
       )
     else
       log_window_restore_debug(
-        "window.restore.skip startup_mode=%s mode=%s reason=no-session-window-mode-match",
+        "window.restore.skip startup_mode=%s source=%s mode=%s reason=no-window-mode-match",
         tostring(startup_restore_mode),
-        tostring(session.window_mode)
+        tostring(restore_source),
+        tostring(restore_mode)
       )
     end
   else
