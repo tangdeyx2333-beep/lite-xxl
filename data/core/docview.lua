@@ -71,6 +71,150 @@ local function log_hit_test(self, stage, x, y, line, col)
   )
 end
 
+local function get_center_line_for_scroll(self, scroll_y)
+  local line_height = math.max(1, self:get_line_height())
+  local _, _, _, scroll_h = self.h_scrollbar:get_track_rect()
+  local viewport_center = math.max(0, (self.size.y - scroll_h) / 2)
+  local target_y = math.max(0, (scroll_y or 0) + viewport_center - style.padding.y)
+  return common.clamp(math.floor(target_y / line_height) + 1, 1, self.doc:line_count())
+end
+
+local function get_largefile_visible_line_range_for_scroll(self, scroll_y)
+  local lh = math.max(1, self:get_line_height())
+  local usable_height = math.max(lh, (self.size.y or 0) - style.padding.y * 2)
+  local visible_lines = math.max(1, math.ceil(usable_height / lh) + 1)
+  local minline = math.max(1, math.floor(((scroll_y or 0) - style.padding.y) / lh) + 1)
+  local maxline = math.min(self.doc:line_count(), minline + visible_lines)
+  return minline, maxline
+end
+
+local function get_chunk_range_for_line(doc, line)
+  if doc.get_chunk_start_for_line and doc.get_chunk_end_for_start then
+    local start_line = doc:get_chunk_start_for_line(line)
+    return start_line, doc:get_chunk_end_for_start(start_line)
+  end
+  local chunk_size = math.max(1, doc.chunk_line_count or 256)
+  local start_line = math.floor((math.max(1, line) - 1) / chunk_size) * chunk_size + 1
+  return start_line, start_line + chunk_size - 1
+end
+
+local function ranges_overlap(a_start, a_end, b_start, b_end)
+  return not (a_end < b_start or b_end < a_start)
+end
+
+local function get_active_jump_target_range(self)
+  local jump = self.pending_scroll_jump
+  if jump then
+    return jump.request_minline, jump.request_maxline
+  end
+end
+
+local function clear_pending_scroll_jump(self, reason)
+  if not self.pending_scroll_jump then
+    return
+  end
+  docview_trace(
+    "scrollbar.jump.clear file=%s reason=%s target_line=%s request=%s-%s chunk=%s-%s",
+    tostring(self.doc and (self.doc.abs_filename or self.doc.filename)),
+    tostring(reason),
+    tostring(self.pending_scroll_jump.target_line),
+    tostring(self.pending_scroll_jump.request_minline),
+    tostring(self.pending_scroll_jump.request_maxline),
+    tostring(self.pending_scroll_jump.target_chunk_start),
+    tostring(self.pending_scroll_jump.target_chunk_end)
+  )
+  self.pending_scroll_jump = nil
+end
+
+local function begin_pending_scroll_jump(self, reason)
+  if not (self.doc and self.doc.is_large_file_mode and self.doc:is_large_file_mode()) then
+    return false
+  end
+  local target_scroll_y = self.scroll and self.scroll.to and self.scroll.to.y or self.scroll.y or 0
+  local target_line = get_center_line_for_scroll(self, target_scroll_y)
+  local target_chunk_start, target_chunk_end = get_chunk_range_for_line(self.doc, target_line)
+  local current_minline, current_maxline = self:get_visible_line_range()
+  local current_anchor_line = current_minline
+  local current_chunk_start, current_chunk_end = get_chunk_range_for_line(self.doc, current_anchor_line)
+  if ranges_overlap(current_chunk_start, current_chunk_end, target_chunk_start, target_chunk_end) then
+    clear_pending_scroll_jump(self, "same-chunk")
+    return false
+  end
+  local request_minline, request_maxline = get_largefile_visible_line_range_for_scroll(self, target_scroll_y)
+  local existing = self.pending_scroll_jump
+  if existing
+    and existing.target_scroll_y == target_scroll_y
+    and existing.request_minline == request_minline
+    and existing.request_maxline == request_maxline
+    and existing.target_chunk_start == target_chunk_start
+    and existing.target_chunk_end == target_chunk_end
+  then
+    return true
+  end
+  self.pending_scroll_jump = {
+    target_scroll_y = target_scroll_y,
+    target_line = target_line,
+    request_minline = request_minline,
+    request_maxline = request_maxline,
+    target_chunk_start = target_chunk_start,
+    target_chunk_end = target_chunk_end,
+    reason = reason or "unknown",
+  }
+  -- 中文说明：大范围条状时，先冻结当前视图，只请求目标窗口，等待目标 chunk 就绪后再一次性跳转。
+  self.scroll.to.y = self.scroll.y
+  docview_trace(
+    "scrollbar.jump.begin file=%s reason=%s current_chunk=%s-%s target_line=%s target_chunk=%s-%s request=%s-%s frozen_scroll=%s target_scroll=%s",
+    tostring(self.doc.abs_filename or self.doc.filename),
+    tostring(reason),
+    tostring(current_chunk_start),
+    tostring(current_chunk_end),
+    tostring(target_line),
+    tostring(target_chunk_start),
+    tostring(target_chunk_end),
+    tostring(request_minline),
+    tostring(request_maxline),
+    tostring(self.scroll and self.scroll.y),
+    tostring(target_scroll_y)
+  )
+  return true
+end
+
+local function refresh_pending_scroll_jump(self)
+  if not self.v_scrollbar.dragging then
+    return false
+  end
+  -- 中文说明：滚动条拖动过程中持续复判，确保“按下时同 chunk、拖远后跨 chunk”的情况也会切换到跳转链路。
+  return begin_pending_scroll_jump(self, "scrollbar-drag")
+end
+
+local function finalize_pending_scroll_jump(self)
+  local jump = self.pending_scroll_jump
+  if not jump then
+    return false
+  end
+  if not self.doc:is_view_ready(jump.request_minline, jump.request_maxline) then
+    return false
+  end
+  if self.doc.has_any_cached_lines and not self.doc:has_any_cached_lines(jump.target_chunk_start, jump.target_chunk_end) then
+    return false
+  end
+  self.scroll.y = jump.target_scroll_y
+  self.scroll.to.y = jump.target_scroll_y
+  docview_trace(
+    "scrollbar.jump.commit file=%s target_line=%s request=%s-%s target_chunk=%s-%s final_scroll=%s",
+    tostring(self.doc.abs_filename or self.doc.filename),
+    tostring(jump.target_line),
+    tostring(jump.request_minline),
+    tostring(jump.request_maxline),
+    tostring(jump.target_chunk_start),
+    tostring(jump.target_chunk_end),
+    tostring(jump.target_scroll_y)
+  )
+  clear_pending_scroll_jump(self, "ready")
+  core.redraw = true
+  return true
+end
+
 ---@class core.docview : core.view
 ---@field super core.view
 local DocView = View:extend()
@@ -268,6 +412,7 @@ function DocView:new(doc)
   self.ime_status = false
   self.ime_editing = nil
   self.hovering_gutter = false
+  self.pending_scroll_jump = nil
   self.v_scrollbar:set_forced_status(config.force_scrollbar_status)
   self.h_scrollbar:set_forced_status(config.force_scrollbar_status)
 end
@@ -499,7 +644,7 @@ function DocView:resolve_screen_position(x, y)
 end
 
 
-function DocView:scroll_to_line(line, ignore_if_visible, instant)
+function DocView:scroll_to_line(line, ignore_if_visible, instant, jump_reason)
   local min, max = self:get_visible_line_range()
   if not (ignore_if_visible and line > min and line < max) then
     local x, y = self:get_line_screen_position(line)
@@ -508,6 +653,12 @@ function DocView:scroll_to_line(line, ignore_if_visible, instant)
     self.scroll.to.y = math.max(0, y - oy - (self.size.y - scroll_h) / 2)
     if instant then
       self.scroll.y = self.scroll.to.y
+      if jump_reason then
+        clear_pending_scroll_jump(self, "instant-scroll")
+      end
+    elseif jump_reason then
+      -- 中文说明：像 Ctrl+G 这种“明确跳到目标行”的入口，直接复用同一套大范围跳转状态机。
+      begin_pending_scroll_jump(self, jump_reason)
     end
   end
 end
@@ -552,6 +703,10 @@ function DocView:on_mouse_moved(x, y, ...)
     self.hovering_gutter = true
   else
     self.cursor = "ibeam"
+  end
+
+  if self.v_scrollbar.dragging then
+    refresh_pending_scroll_jump(self)
   end
 
   if self.mouse_selecting then
@@ -602,6 +757,11 @@ function DocView:on_mouse_pressed(button, x, y, clicks)
     if button == "left" then
       local line1, col1 = self.doc:get_selection()
       log_hit_test(self, "after-press", x, y, line1, col1)
+      if self.v_scrollbar.dragging then
+        begin_pending_scroll_jump(self, "scrollbar")
+      else
+        clear_pending_scroll_jump(self, "non-scrollbar-press")
+      end
     end
     self:update_ime_location(true)
     return res
@@ -682,9 +842,14 @@ function DocView:update_ime_location(force)
 end
 
 function DocView:update()
-  local minline, maxline = self:get_visible_line_range()
-  self.doc:request_visible_window(minline, maxline, 32)
+  local request_minline, request_maxline = get_active_jump_target_range(self)
+  if not request_minline then
+    request_minline, request_maxline = self:get_visible_line_range()
+  end
+  self.doc:request_visible_window(request_minline, request_maxline, 32)
   self.doc:poll_ready_window(0)
+  finalize_pending_scroll_jump(self)
+  local minline, maxline = self:get_visible_line_range()
   if self.doc.chunk_highlighter and not config.large_file_disable_highlight then
     self.doc.chunk_highlighter:ensure_visible_chunks(minline, maxline, 32, self.scroll.x, self.scroll.y)
   end
@@ -945,10 +1110,18 @@ function DocView:draw()
   end
 
   local minline, maxline = self:get_visible_line_range()
-  local view_ready = self.doc:is_view_ready(minline, maxline)
+  local jump_minline, jump_maxline = get_active_jump_target_range(self)
+  local is_waiting_scroll_jump = jump_minline ~= nil
+  local ready_minline = jump_minline or minline
+  local ready_maxline = jump_maxline or maxline
+  local view_ready = self.doc:is_view_ready(ready_minline, ready_maxline)
   local has_partial_largefile_view = self.doc:is_large_file_mode()
     and self.doc.has_any_cached_lines
-    and self.doc:has_any_cached_lines(minline, maxline)
+    and self.doc:has_any_cached_lines(ready_minline, ready_maxline)
+  if is_waiting_scroll_jump then
+    -- 中文说明：跳转等待期间只显示 loading，不绘制局部缓存内容，避免视觉上退化成一路平滑扫过去。
+    has_partial_largefile_view = false
+  end
 
   if self.doc.loading and (not self.doc:is_large_file_mode() or not view_ready) then
     if self.doc:is_large_file_mode() and has_partial_largefile_view then
@@ -975,7 +1148,7 @@ function DocView:draw()
     end
   end
 
-  if self.doc:is_large_file_mode() and not view_ready then
+  if (self.doc:is_large_file_mode() and not view_ready) or is_waiting_scroll_jump then
     if not has_partial_largefile_view then
       local text = get_loading_text("Loading current view")
       local font = self:get_font()

@@ -725,7 +725,8 @@ local commands = {
           return
         end
         dv.doc:set_selection(line, 1  )
-        dv:scroll_to_line(line, true)
+        -- 中文说明：Ctrl+G 统一复用大范围跳转链路，避免远距离定位时沿中间内容平滑滚动。
+        dv:scroll_to_line(line, true, false, "ctrl-g")
       end,
       suggest = function(text)
         return nil
