@@ -93,7 +93,7 @@ config.large_file_read_chunk_size = 16 * 1024
 ---
 ---Defaults to false.
 ---@type boolean
-config.large_file_disable_highlight = false
+config.large_file_enable_highlight = false
 
 ---Automatically disable undo/redo tracking for large files.
 ---

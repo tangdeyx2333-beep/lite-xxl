@@ -206,7 +206,11 @@ end
 
 
 local function save_directories()
-  local project_dir = core.root_project().path
+  local root_project = core.root_project()
+  if not root_project or not root_project.path then
+    return {}
+  end
+  local project_dir = root_project.path
   local dir_list = {}
   for i = 2, #core.projects do
     dir_list[#dir_list + 1] = common.relative_path(project_dir, core.projects[i].path)
@@ -244,8 +248,13 @@ end
 
 
 local function load_workspace()
-  if is_ephemeral_workspace_path(core.root_project().path) then return end
-  local workspace = consume_workspace(core.root_project().path)
+  local root_project = core.root_project()
+  if not root_project or not root_project.path then
+    core.restore_treeview_from_file_open = false
+    return
+  end
+  if is_ephemeral_workspace_path(root_project.path) then return end
+  local workspace = consume_workspace(root_project.path)
   if workspace then
     core.restore_treeview_from_file_open = workspace.restore_treeview_from_file_open == true
     local root = get_unlocked_root(core.root_view.root_node)

@@ -936,10 +936,8 @@ function core.init()
           if not ARGS[i]:match("^-psn") then
             local file_abs = common.is_absolute_path(arg_filename) and arg_filename or (system.absolute_path(".") .. PATHSEP .. common.normalize_path(arg_filename))
             if file_abs then
+              -- 中文说明：外部传入的是单个文件时，只记录待打开文件，不再把父目录自动提升为项目根。
               table.insert(files, file_abs)
-              if not project_dir_explicit then
-                project_dir = file_abs:match("^(.+)[/\\].+$")
-              end
             end
           end
         end
@@ -979,6 +977,9 @@ function core.init()
         or core.recent_projects[1]
         or project_dir
     end
+  elseif not project_dir_explicit and #files > 0 then
+    -- 中文说明：命令行 / 外部双击只传入文件时，本次实例保持“仅打开文件”的模式，不自动绑定任何项目目录。
+    project_dir = nil
   end
 
   core.frame_start = 0
@@ -1005,7 +1006,8 @@ function core.init()
   core.visited_files = {}
   core.restart_request = false
   core.quit_request = false
-  core.restore_treeview_from_file_open = #files > 0
+  -- 中文说明：外部打开单文件时不自动拉起目录树，只有明确打开项目目录时才进入项目树视图。
+  core.restore_treeview_from_file_open = false
 
   -- We load core views before plugins that may need them.
   ---@type core.rootview
@@ -1051,19 +1053,22 @@ function core.init()
     end,
   })
 
-  local project_dir_abs = system.absolute_path(project_dir)
-  -- We prevent set_project below to effectively add and scan the directory because the
-  -- project module and its ignore files is not yet loaded.
-  if project_dir_abs and pcall(core.set_project, project_dir_abs) then
-    if project_dir_explicit then
-      update_recents_project("add", project_dir_abs)
+  local project_dir_abs = project_dir and system.absolute_path(project_dir) or nil
+  -- 中文说明：只有明确存在项目目录时才注册项目；单文件启动时允许 core.projects 为空，避免扫描文件父目录。
+  if project_dir_abs then
+    -- We prevent set_project below to effectively add and scan the directory because the
+    -- project module and its ignore files is not yet loaded.
+    if pcall(core.set_project, project_dir_abs) then
+      if project_dir_explicit then
+        update_recents_project("add", project_dir_abs)
+      end
+    else
+      if not project_dir_explicit then
+        update_recents_project("remove", project_dir)
+      end
+      project_dir_abs = system.absolute_path(".")
+      local status, err = pcall(core.set_project, project_dir_abs)
     end
-  else
-    if not project_dir_explicit then
-      update_recents_project("remove", project_dir)
-    end
-    project_dir_abs = system.absolute_path(".")
-    local status, err = pcall(core.set_project, project_dir_abs)
   end
   log_filetree_debug(
     "core.init before load_plugins root=%s config_visible=%s config_size=%s restarted=%s",
@@ -1216,9 +1221,11 @@ function core.init()
   )
 
 
-  do
+  if project_dir_abs then
     local pdir, pname = project_dir_abs:match("(.*)[/\\\\](.*)")
     core.log_quiet("Opening project %q from directory %s", pname, pdir)
+  else
+    core.log_quiet("Opening files without project directory")
   end
 
   for _, filename in ipairs(files) do
@@ -1524,8 +1531,18 @@ function core.load_plugins()
   }
   local files, ordered = {}, {
     { priority = -2, load = load_lua_plugin_if_exists, version_match = true, file = USERDIR .. PATHSEP .. "init.lua", name = "User Module" },
-    { priority = -1, load = load_lua_plugin_if_exists, version_match = true, file = core.root_project().path .. PATHSEP .. ".lite_project.lua", name = "Project Module" }
   }
+  local root_project = core.root_project and core.root_project()
+  if root_project and root_project.path then
+    -- 中文说明：只有当前实例真的打开了项目目录，才去加载项目级配置模块。
+    table.insert(ordered, {
+      priority = -1,
+      load = load_lua_plugin_if_exists,
+      version_match = true,
+      file = root_project.path .. PATHSEP .. ".lite_project.lua",
+      name = "Project Module"
+    })
+  end
   for _, root_dir in ipairs {DATADIR, USERDIR} do
     local plugin_dir = root_dir .. PATHSEP .. "plugins"
     for _, filename in ipairs(system.list_dir(plugin_dir) or {}) do
@@ -1788,7 +1805,14 @@ function core.project_for_path(path)
   return nil
 end
 -- Legacy interface; do not use. Use a specific project instead. When in doubt, use root_project.
-function core.normalize_to_project_dir(path) core.deprecation_log("core.normalize_to_project_dir") return core.root_project():normalize_path(path) end
+function core.normalize_to_project_dir(path)
+  core.deprecation_log("core.normalize_to_project_dir")
+  local root_project = core.root_project()
+  if root_project then
+    return root_project:normalize_path(path)
+  end
+  return common.normalize_path(path)
+end
 function core.project_absolute_path(path) core.deprecation_log("core.project_absolute_path") return core.root_project() and core.root_project():absolute_path(path) or system.absolute_path(path) end
 
 function core.open_doc(filename)
@@ -1798,8 +1822,18 @@ function core.open_doc(filename)
   if filename then
     -- normalize filename and set absolute filename then
     -- try to find existing doc for filename
-    filename = core.root_project():normalize_path(filename)
-    abs_filename = core.root_project():absolute_path(filename)
+    local root_project = core.root_project()
+    if root_project then
+      -- 中文说明：项目模式下继续按项目相对路径处理，保持原有行为不变。
+      filename = root_project:normalize_path(filename)
+      abs_filename = root_project:absolute_path(filename)
+    else
+      -- 中文说明：仅打开单文件时没有项目根，这里直接按普通路径归一化并转成绝对路径。
+      filename = common.normalize_path(filename)
+      abs_filename = common.is_absolute_path(filename)
+        and filename
+        or system.absolute_path(filename)
+    end
     file_info = system.get_file_info(abs_filename)
     new_file = not file_info
     log_filetree_debug(

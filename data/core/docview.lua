@@ -26,7 +26,7 @@ end
 
 local function get_render_highlighter(doc)
   if doc and doc.is_large_file_mode and doc:is_large_file_mode()
-    and not config.large_file_disable_highlight
+    and config.large_file_enable_highlight
     and doc.chunk_highlighter
   then
     return doc.chunk_highlighter
@@ -850,7 +850,7 @@ function DocView:update()
   self.doc:poll_ready_window(0)
   finalize_pending_scroll_jump(self)
   local minline, maxline = self:get_visible_line_range()
-  if self.doc.chunk_highlighter and not config.large_file_disable_highlight then
+  if self.doc.chunk_highlighter and config.large_file_enable_highlight then
     self.doc.chunk_highlighter:ensure_visible_chunks(minline, maxline, 32, self.scroll.x, self.scroll.y)
   end
 

@@ -133,7 +133,7 @@ function ChunkHighlighter:_build_plain_line(line)
 end
 
 function ChunkHighlighter:get_line(line)
-  if config.large_file_disable_highlight then
+  if not config.large_file_enable_highlight then
     return self:_build_plain_line(line)
   end
   local chunk = self:_get_chunk_for_line(line)
@@ -272,7 +272,7 @@ function ChunkHighlighter:_update_scroll_state(scroll_x, scroll_y, now)
 end
 
 function ChunkHighlighter:ensure_visible_chunks(start_line, end_line, margin, scroll_x, scroll_y)
-  if config.large_file_disable_highlight then
+  if not config.large_file_enable_highlight then
     if self.running_key then
       core.cancel_thread(self.running_key, "chunk-highlight-disabled")
       self.running_key = nil

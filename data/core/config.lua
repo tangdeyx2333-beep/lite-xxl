@@ -89,11 +89,11 @@ config.large_file_load_time_budget = 0.001
 ---@type integer
 config.large_file_read_chunk_size = 16 * 1024
 
----Automatically disable syntax highlighting for large files.
+---Enable syntax highlighting for large files.
 ---
----Defaults to false.
+---Defaults to true.
 ---@type boolean
-config.large_file_disable_highlight = false
+config.large_file_enable_highlight = true
 
 ---Automatically disable undo/redo tracking for large files.
 ---

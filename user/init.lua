@@ -95,9 +95,9 @@ config.wlpt_file_size_limit = 1
 -- 注意这个如果文件过大渲染会有明显卡顿，并且有几率无响应，无响应强制退出会有丢失数据的风险
 config.wlpt_disable_markdown_render = false 
 
--- 注意：此功能仅为性能优化，开启后将关闭语法高亮，显示效果仅供参考，不保证准确性。
--- 建议：在大文件场景下关闭高亮，可获得更佳的编辑性能与流畅度体验。
-config.large_file_disable_highlight = false
+-- 注意：此功能仅为性能优化；true 表示开启大文件语法高亮，false 表示关闭高亮。
+-- 建议：在大文件场景下如需更高流畅度，可将它设为 false。
+config.large_file_enable_highlight = true
 
 -------------------------- Miscellaneous -------------------------------------
 

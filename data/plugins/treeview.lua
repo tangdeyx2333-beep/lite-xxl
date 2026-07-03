@@ -521,11 +521,32 @@ function TreeView:draw_item(item, active, hovered, x, y, w, h)
   self:draw_item_body(item, active, hovered, x, y, w, h)
 end
 
+function TreeView:draw_empty_state()
+  local message = "当前仅打开单文件，未打开项目目录"
+  local hint = "打开文件夹后，这里会显示项目目录树"
+  local padding_x = style.padding.x * 2
+  local width = math.max(0, self.size.x - padding_x * 2)
+  local center_y = self.position.y + self.size.y / 2
+  local message_h = style.font:get_height()
+  local hint_h = style.font:get_height()
+  local message_y = center_y - message_h
+  local hint_y = center_y + style.padding.y
+
+  common.draw_text(style.font, style.text, message, "center", self.position.x + padding_x, message_y, width, message_h)
+  common.draw_text(style.font, style.dim, hint, "center", self.position.x + padding_x, hint_y, width, hint_h)
+end
+
 
 function TreeView:draw()
   if not self.visible then return end
   self:draw_background(style.background2)
   local _y, _h = self.position.y, self.size.y
+
+  if #core.projects == 0 then
+    self:draw_empty_state()
+    self:draw_scrollbar()
+    return
+  end
 
   for item, x,y,w,h in self:each_item() do
     if not item then

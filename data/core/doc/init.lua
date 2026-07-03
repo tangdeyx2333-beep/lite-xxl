@@ -168,14 +168,14 @@ function Doc:reset_syntax()
   end
   self.logical_syntax = logical_syn
   syntax_trace(
-    "doc.reset_syntax file=%s is_large=%s display_before=%s logical=%s disable_highlight=%s",
+    "doc.reset_syntax file=%s is_large=%s display_before=%s logical=%s enable_highlight=%s",
     tostring(self.abs_filename or self.filename),
     tostring(self.is_large_file),
     tostring(self.syntax and self.syntax.name),
     tostring(logical_syn and logical_syn.name),
-    tostring(config.large_file_disable_highlight)
+    tostring(config.large_file_enable_highlight)
   )
-  if self.is_large_file and config.large_file_disable_highlight then
+  if self.is_large_file and not config.large_file_enable_highlight then
     local syn = syntax.get("plain_text", "")
     if self.syntax ~= syn then
       self.syntax = syn
