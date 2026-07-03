@@ -7,6 +7,8 @@ local keymap = require "core.keymap"
 local DocView = require "core.docview"
 local CommandView = require "core.commandview"
 local StatusView = require "core.statusview"
+local USERDIR = USERDIR
+local PATHSEP = PATHSEP
 
 local last_view, last_fn, last_text, last_sel
 core.find_replace_largefile = core.find_replace_largefile or { visible = false }
@@ -25,6 +27,7 @@ local found_expression
 local run_largefile_chunk_search
 local get_search_scope
 local insert_unique
+local get_doc_trace_name
 local chunk_key_repeat_state = {
   direction = nil,
   initial_at = 0,
@@ -36,9 +39,29 @@ local chunk_key_repeat_interval = 0.5
 local chunk_key_repeat_min_interval = 0.18
 local chunk_key_repeat_ramp_duration = 1.6
 
-local function largefile_find_trace(...) end
+local DEBUG_LOG_PATH = USERDIR and (USERDIR .. PATHSEP .. "wlpt-debug.log") or nil
 
-local function get_doc_trace_name(target_doc)
+local function largefile_find_trace(target_doc, fmt, ...)
+  if not DEBUG_LOG_PATH then
+    return
+  end
+  local ok, text = pcall(string.format, fmt, ...)
+  if not ok then
+    text = tostring(fmt)
+  end
+  local fp = io.open(DEBUG_LOG_PATH, "a")
+  if not fp then
+    return
+  end
+  fp:write(os.date("%Y-%m-%d %H:%M:%S"), " [DEBUG-find] ")
+  if target_doc then
+    fp:write("doc=", get_doc_trace_name(target_doc), " ")
+  end
+  fp:write(text, "\n")
+  fp:close()
+end
+
+function get_doc_trace_name(target_doc)
   if not target_doc then
     return "<nil-doc>"
   end
@@ -410,6 +433,37 @@ local function chunk_wrapped_search_fn(target_doc, line, col, text, case_sensiti
   })
 end
 
+local function get_reverse_search_start(target_doc, line, col)
+  local active_match = core.active_find_match
+  if active_match and active_match.doc == target_doc and active_match.line1 and active_match.col1 then
+    local start_line, start_col = target_doc:position_offset(active_match.line1, active_match.col1, -1)
+    largefile_find_trace(
+      target_doc,
+      "find.reverse_anchor file=%s source=active-match match_start=%d:%d search_start=%d:%d",
+      tostring(target_doc.abs_filename or target_doc.filename),
+      active_match.line1,
+      active_match.col1,
+      start_line,
+      start_col
+    )
+    return start_line, start_col
+  end
+
+  -- 中文说明：没有当前 find 命中时，反向查找从光标前一个字符开始，
+  -- 避免把光标所在位置的同一段文本再次命中，造成“prev 看起来没动”。
+  local start_line, start_col = target_doc:position_offset(line, col, -1)
+  largefile_find_trace(
+    target_doc,
+    "find.reverse_anchor file=%s source=cursor cursor=%d:%d search_start=%d:%d",
+    tostring(target_doc.abs_filename or target_doc.filename),
+    line,
+    col,
+    start_line,
+    start_col
+  )
+  return start_line, start_col
+end
+
 local function execute_find_action(target_view, text, reverse)
   if not target_view or not target_view.doc or not text or text == "" then
     return false
@@ -420,7 +474,9 @@ local function execute_find_action(target_view, text, reverse)
   local sl1, sc1, sl2, sc2 = current_doc:get_selection(true)
   local line1, col1, line2, col2
   if reverse then
-    line1, col1, line2, col2 = chunk_wrapped_search_fn(current_doc, sl1, sc1, text, case_sensitive, find_regex, true)
+    -- 中文说明：反向查找要从当前命中之前开始，否则会先把当前命中自己再次找出来。
+    local reverse_line, reverse_col = get_reverse_search_start(current_doc, sl1, sc1)
+    line1, col1, line2, col2 = chunk_wrapped_search_fn(current_doc, reverse_line, reverse_col, text, case_sensitive, find_regex, true)
   else
     line1, col1, line2, col2 = chunk_wrapped_search_fn(current_doc, sl2, sc2, text, case_sensitive, find_regex, false)
   end
@@ -625,6 +681,17 @@ local function find(label, search_fn)
 
   local function perform_find_action(reverse)
     local text = core.command_view:get_text()
+    largefile_find_trace(
+      last_view and last_view.doc,
+      "find.button file=%s action=%s text=%q selection=%s,%s,%s,%s",
+      tostring(last_view and last_view.doc and (last_view.doc.abs_filename or last_view.doc.filename)),
+      reverse and "find-prev" or "find-next",
+      tostring(text):gsub("\n", "\\n"):sub(1, 120),
+      tostring(last_view and last_view.doc and select(1, last_view.doc:get_selection(true))),
+      tostring(last_view and last_view.doc and select(2, last_view.doc:get_selection(true))),
+      tostring(last_view and last_view.doc and select(3, last_view.doc:get_selection(true))),
+      tostring(last_view and last_view.doc and select(4, last_view.doc:get_selection(true)))
+    )
     last_fn, last_text = search_fn, text
     execute_find_action(last_view, text, reverse)
   end
