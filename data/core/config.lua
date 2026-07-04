@@ -371,6 +371,12 @@ config.stonks = true
 ---@type boolean
 config.use_system_file_picker = system.get_sandbox() ~= "none"
 
+---全局无痕状态在多窗口之间同步的轮询间隔，单位为秒。
+---
+---默认值：1
+---@type number
+config.clean_exit_global_sync_interval = 1
+
 -- The config specification used by settings gui generators.
 config.config_spec = {
   name = "Core",
@@ -388,6 +394,14 @@ config.config_spec = {
     path = "wlpt_disable_markdown_render",
     type = "toggle",
     default = true
+  },
+  {
+    label = "Clean Exit Global Sync Interval",
+    description = "How often open windows refresh the shared clean-exit state, in seconds.",
+    path = "clean_exit_global_sync_interval",
+    type = "number",
+    default = 1,
+    min = 0.1
   }
 }
 

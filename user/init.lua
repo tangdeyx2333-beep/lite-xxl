@@ -91,6 +91,9 @@ config.large_file_highlight_scroll_idle_delay = 0.18
 -- WLPT 大文件阈值，单位 MiB；超过这个大小会走 WLPT 大文件链路
 config.wlpt_file_size_limit = 1
 
+-- 全局无痕状态在多窗口之间同步的轮询间隔，单位秒；值越大越省性能，但其他窗口同步会更慢
+config.clean_exit_global_sync_interval = 1
+
 -- 是否在 WLPT 模式下禁用 Markdown 渲染预览；true 表示禁用，false 表示允许
 -- 注意这个如果文件过大渲染会有明显卡顿，并且有几率无响应，无响应强制退出会有丢失数据的风险
 config.wlpt_disable_markdown_render = false 

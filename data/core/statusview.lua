@@ -421,7 +421,7 @@ function StatusView:register_docview_items()
         core.toggle_clean_exit_enabled("statusbar")
       end
     end,
-    tooltip = "切换当前窗口的无痕退出模式",
+    tooltip = "切换所有窗口共享的无痕退出模式",
     separator = self.separator2,
     -- 中文说明：把按钮放在右侧状态栏，并插到缩进信息（spaces/tabs）左边，正好落在用户指定的位置。
     position = 1

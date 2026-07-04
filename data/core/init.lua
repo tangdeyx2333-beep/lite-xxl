@@ -21,6 +21,11 @@ local SessionRestore
 
 local core = {}
 local log_quit_debug
+local clean_exit_runtime_filename = "clean-exit-runtime.lua"
+local clean_exit_runtime_cache = {
+  modified = nil,
+  state = nil,
+}
 
 local function load_session()
   local ok, t = pcall(dofile, USERDIR .. PATHSEP .. "session.lua")
@@ -51,39 +56,126 @@ local function save_session()
   end
 end
 
--- 中文说明：当前窗口的无痕退出模式只保存在内存里，不写入任何会话文件，因此只影响这个实例。
+local function get_clean_exit_runtime_path()
+  return USERDIR .. PATHSEP .. clean_exit_runtime_filename
+end
+
+local function get_clean_exit_global_sync_interval()
+  return math.max(0.1, tonumber(config.clean_exit_global_sync_interval) or 1)
+end
+
+local function invalidate_clean_exit_runtime_cache()
+  clean_exit_runtime_cache.modified = nil
+  clean_exit_runtime_cache.state = nil
+end
+
+local function load_clean_exit_runtime_state()
+  local runtime_path = get_clean_exit_runtime_path()
+  local info = system.get_file_info(runtime_path)
+  if not info then
+    invalidate_clean_exit_runtime_cache()
+    return nil
+  end
+  if clean_exit_runtime_cache.modified == info.modified then
+    return clean_exit_runtime_cache.state
+  end
+  local ok, runtime_state = pcall(dofile, runtime_path)
+  if not ok or type(runtime_state) ~= "table" then
+    return nil
+  end
+  runtime_state.enabled = runtime_state.enabled == true
+  runtime_state.updated_at = tonumber(runtime_state.updated_at) or 0
+  clean_exit_runtime_cache.modified = info.modified
+  clean_exit_runtime_cache.state = runtime_state
+  return runtime_state
+end
+
+local function save_clean_exit_runtime_state(enabled, source)
+  local runtime_path = get_clean_exit_runtime_path()
+  local fp = io.open(runtime_path, "wb")
+  if not fp then
+    return false
+  end
+  local runtime_state = {
+    enabled = enabled == true,
+    updated_at = system.get_time(),
+    source = tostring(source),
+  }
+  fp:write("return ", common.serialize(runtime_state), "\n")
+  fp:close()
+  invalidate_clean_exit_runtime_cache()
+  return true
+end
+
+local function apply_clean_exit_enabled(enabled, source, options)
+  options = options or {}
+  local clean_enabled = enabled == true
+  local changed = core.clean_exit_enabled ~= clean_enabled
+  core.clean_exit_enabled = clean_enabled
+  if log_quit_debug then
+    log_quit_debug(
+      "quit.clean_mode enabled=%s source=%s changed=%s",
+      tostring(core.clean_exit_enabled),
+      tostring(source),
+      tostring(changed)
+    )
+  end
+  if changed and not options.suppress_message
+      and core.status_view and core.status_view.show_message then
+    core.status_view:show_message(
+      "i",
+      style.text,
+      options.message or (clean_enabled and "无痕退出：已开启" or "无痕退出：已关闭")
+    )
+  end
+  if changed then
+    core.redraw = true
+  end
+  return changed, core.clean_exit_enabled
+end
+
+-- 中文说明：当前窗口显示的无痕状态来自全局运行态文件，所有实例窗口都会跟随同一份状态。
 function core.is_clean_exit_enabled()
   return core.clean_exit_enabled == true
 end
 
+-- 中文说明：关键落盘前会先强制读取一次全局无痕状态，避免别的窗口刚切换完时这里还拿着旧值。
+function core.sync_clean_exit_enabled(source, options)
+  options = options or {}
+  local previous_enabled = core.clean_exit_enabled == true
+  local runtime_state = load_clean_exit_runtime_state()
+  local runtime_enabled = runtime_state and runtime_state.enabled == true or false
+  local message = options.message
+  if not message and not options.suppress_message and previous_enabled ~= runtime_enabled
+      and source == "poll" then
+    message = runtime_enabled and "无痕退出：已同步为开启" or "无痕退出：已同步为关闭"
+  end
+  local changed = select(1, apply_clean_exit_enabled(runtime_enabled, source, {
+    suppress_message = options.suppress_message,
+    message = message,
+  }))
+  return runtime_enabled, changed
+end
+
 -- 中文说明：统一判断当前实例是否允许把退出现场写入磁盘，session / 实例快照 / workspace 都复用这里。
 function core.should_persist_instance_state()
+  core.sync_clean_exit_enabled("persist-check", { suppress_message = true })
   return not core.is_clean_exit_enabled()
 end
 
--- 中文说明：标题栏按钮和命令入口都通过这里切换无痕模式，切换后立即给用户一个状态栏提示。
-function core.set_clean_exit_enabled(enabled, source)
-  core.clean_exit_enabled = enabled == true
-  if log_quit_debug then
-    log_quit_debug(
-      "quit.clean_mode enabled=%s source=%s",
-      tostring(core.clean_exit_enabled),
-      tostring(source)
-    )
+-- 中文说明：标题栏按钮和命令入口都通过这里切换全局无痕状态，切换后会立刻写入共享运行态文件。
+function core.set_clean_exit_enabled(enabled, source, options)
+  options = options or {}
+  apply_clean_exit_enabled(enabled, source, options)
+  if options.persist_runtime ~= false then
+    save_clean_exit_runtime_state(core.clean_exit_enabled, source)
   end
-  if core.status_view and core.status_view.show_message then
-    core.status_view:show_message(
-      "i",
-      style.text,
-      core.clean_exit_enabled and "无痕退出：已开启" or "无痕退出：已关闭"
-    )
-  end
-  core.redraw = true
   return core.clean_exit_enabled
 end
 
--- 中文说明：提供统一的切换入口，避免标题栏点击和其他入口重复书写同样的反转逻辑。
+-- 中文说明：切换前先同步一次全局状态，避免当前窗口拿着过期值做反转。
 function core.toggle_clean_exit_enabled(source)
+  core.sync_clean_exit_enabled("toggle-preflight", { suppress_message = true })
   return core.set_clean_exit_enabled(not core.is_clean_exit_enabled(), source)
 end
 
@@ -797,6 +889,9 @@ local style = require "core.style"
 
 ---------------------------- Miscellaneous -------------------------------------
 
+-- global clean-exit sync interval in seconds:
+-- config.clean_exit_global_sync_interval = 1
+
 -- modify list of files to ignore when indexing the project:
 -- config.ignore_files = {
 --   -- folders
@@ -1006,6 +1101,8 @@ function core.init()
   core.visited_files = {}
   core.restart_request = false
   core.quit_request = false
+  core.clean_exit_enabled = false
+  core.clean_exit_sync_next_at = 0
   -- 中文说明：外部打开单文件时不自动拉起目录树，只有明确打开项目目录时才进入项目树视图。
   core.restore_treeview_from_file_open = false
 
@@ -1020,6 +1117,15 @@ function core.init()
   core.nag_view = NagView()
   ---@type core.titleview
   core.title_view = TitleView()
+
+  -- 中文说明：首个实例启动时主动把全局无痕初始化为关闭；只有跟随已有实例启动时才继承共享状态。
+  if has_other_instance then
+    core.sync_clean_exit_enabled("startup-follow", { suppress_message = true })
+  else
+    core.set_clean_exit_enabled(false, "startup-init", {
+      suppress_message = true
+    })
+  end
 
   -- Some plugins (eg: console) require the nodes to be initialized to defaults
   local cur_node = core.root_view.root_node
@@ -2082,6 +2188,13 @@ function core.step()
   end
 
   local width, height = core.window:get_size()
+  local now = system.get_time()
+
+  -- 中文说明：这里按设置项做低频轮询，只在间隔到期时检查共享文件，避免每帧都去碰磁盘。
+  if now >= (core.clean_exit_sync_next_at or 0) then
+    core.clean_exit_sync_next_at = now + get_clean_exit_global_sync_interval()
+    core.sync_clean_exit_enabled("poll")
+  end
 
   -- update
   core.root_view.size.x, core.root_view.size.y = width, height
