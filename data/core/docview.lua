@@ -8,6 +8,7 @@ local ime = require "core.ime"
 local View = require "core.view"
 local ContextMenu = require "core.contextmenu"
 local DEBUG_LOG_PATH = USERDIR and (USERDIR .. PATHSEP .. "wlpt-debug.log") or nil
+local DEFAULT_HORIZONTAL_SCROLL_MAX_COLS = 8192
 
 local function docview_trace(fmt, ...)
   if not DEBUG_LOG_PATH then
@@ -37,6 +38,15 @@ end
 local function get_single_line_draw_limit()
   local limit = tonumber(config.max_single_line_draw_length) or 8192
   return math.max(1, math.floor(limit))
+end
+
+local function get_default_horizontal_scroll_pixels(self)
+  local font = self:get_font()
+  local _, indent_size = self.doc:get_indent_info()
+  font:set_tab_size(indent_size)
+  -- 中文说明：横向滚动条只提供一个固定范围的“普通拖动条”，这里按 8192 列做近似宽度，不实时扫描最长行。
+  local approx_char_width = math.max(1, font:get_width("0"))
+  return DEFAULT_HORIZONTAL_SCROLL_MAX_COLS * approx_char_width
 end
 
 local function get_single_line_draw_suffix()
@@ -119,8 +129,8 @@ end
 
 local function get_center_line_for_scroll(self, scroll_y)
   local line_height = math.max(1, self:get_line_height())
-  local _, _, _, scroll_h = self.h_scrollbar:get_track_rect()
-  local viewport_center = math.max(0, (self.size.y - scroll_h) / 2)
+  -- 中文说明：横向滚动条是覆盖式控件，不参与主视图纵向可视区域的定位计算。
+  local viewport_center = math.max(0, self.size.y / 2)
   local target_y = math.max(0, (scroll_y or 0) + viewport_center - style.padding.y)
   return common.clamp(math.floor(target_y / line_height) + 1, 1, self.doc:line_count())
 end
@@ -531,14 +541,15 @@ end
 function DocView:get_scrollable_size()
   local line_count = self.doc:line_count()
   if not config.scroll_past_end then
-    local _, _, _, h_scroll = self.h_scrollbar:get_track_rect()
-    return self:get_line_height() * line_count + style.padding.y * 2 + h_scroll
+    -- 中文说明：横向滚动条不再占用正文高度，所以纵向总高度不叠加它的轨道高度。
+    return self:get_line_height() * line_count + style.padding.y * 2
   end
   return self:get_line_height() * (line_count - 1) + self.size.y
 end
 
 function DocView:get_h_scrollable_size()
-  return math.huge
+  -- 中文说明：保留现有滚动条组件，但把横向可滚动范围固定为“视口宽度 + 8192 列近似像素宽度”。
+  return self.size.x + get_default_horizontal_scroll_pixels(self)
 end
 
 
@@ -710,8 +721,8 @@ function DocView:scroll_to_line(line, ignore_if_visible, instant, jump_reason)
   if not (ignore_if_visible and line > min and line < max) then
     local x, y = self:get_line_screen_position(line)
     local ox, oy = self:get_content_offset()
-    local _, _, _, scroll_h = self.h_scrollbar:get_track_rect()
-    self.scroll.to.y = math.max(0, y - oy - (self.size.y - scroll_h) / 2)
+    -- 中文说明：横向滚动条只是覆盖在底部，不改变跳行时的纵向居中规则。
+    self.scroll.to.y = math.max(0, y - oy - self.size.y / 2)
     if instant then
       self.scroll.y = self.scroll.to.y
       if jump_reason then
@@ -734,9 +745,9 @@ function DocView:scroll_to_make_visible(line, col)
   local _, oy = self:get_content_offset()
   local _, ly = self:get_line_screen_position(line, col)
   local lh = self:get_line_height()
-  local _, _, _, scroll_h = self.h_scrollbar:get_track_rect()
   local overscroll = math.min(lh * 2, self.size.y) -- always show the previous / next line when possible
-  self.scroll.to.y = common.clamp(self.scroll.to.y, ly - oy - self.size.y + scroll_h + overscroll, ly - oy - lh)
+  -- 中文说明：这里继续只按正文视口高度校正，不把横向滚动条高度算进来。
+  self.scroll.to.y = common.clamp(self.scroll.to.y, ly - oy - self.size.y + overscroll, ly - oy - lh)
   local gw = self:get_gutter_width()
   local xoffset = self:get_col_x_offset(line, col)
   local xmargin = 3 * self:get_font():get_width(' ')
