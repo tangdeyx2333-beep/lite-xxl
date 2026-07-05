@@ -89,6 +89,20 @@ config.large_file_load_time_budget = 0.001
 ---@type integer
 config.large_file_read_chunk_size = 16 * 1024
 
+---单行渲染时允许送入渲染器的最大字符数。
+---超过后只截断显示文本，不会修改 Doc 层存储的原始内容。
+---
+---Defaults to 8192.
+---@type integer
+config.max_single_line_draw_length = 8192
+
+---单行渲染被截断后追加到显示文本末尾的提示语。
+---这个提示只存在于渲染层，不会写回文档内容。
+---
+---Defaults to "....太长了喵，复制出来单独看喵"
+---@type string
+config.single_line_draw_truncation_suffix = "....太长了喵，复制出来单独看喵"
+
 ---Enable syntax highlighting for large files.
 ---
 ---Defaults to true.

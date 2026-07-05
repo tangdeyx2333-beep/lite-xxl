@@ -311,6 +311,9 @@ function StatusView:register_docview_items()
     get_item = function()
       local dv = core.active_view
       local line, col = dv.doc:get_selection()
+      if dv.get_clamped_visible_col then
+        col = dv:get_clamped_visible_col(line, col)
+      end
       local _, indent_size = dv.doc:get_indent_info()
       -- Calculating tabs when the doc is using the "hard" indent type.
       local ntabs = 0

@@ -719,10 +719,25 @@ local commands = {
   ["doc:go-to-line"] = function(dv)
     core.command_view:enter("Go To Line", {
       submit = function(text, item)
-        local line = tonumber(text)
-        if not line then
+        local max_line = dv.doc:line_count()
+        local trimmed = tostring(text or ""):match("^%s*(.-)%s*$")
+        if trimmed == "" then
           core.error("Invalid line number or unmatched string")
           return
+        end
+        local max_line_text = tostring(max_line)
+        local line
+        if #trimmed > #max_line_text then
+          -- 中文说明：输入的行号大到超出当前文档范围时，直接按最后一行处理，避免继续传给底层造成整数错误。
+          line = max_line
+        else
+          line = tonumber(trimmed)
+          if not line then
+            core.error("Invalid line number or unmatched string")
+            return
+          end
+          -- 中文说明：这里统一把跳转目标限制在文档有效范围内，避免大文件原生窗口收到非法行号。
+          line = math.floor(common.clamp(line, 1, max_line))
         end
         dv.doc:set_selection(line, 1  )
         -- 中文说明：Ctrl+G 统一复用大范围跳转链路，避免远距离定位时沿中间内容平滑滚动。

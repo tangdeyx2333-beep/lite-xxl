@@ -34,6 +34,52 @@ local function get_render_highlighter(doc)
   return doc and doc.highlighter or nil
 end
 
+local function get_single_line_draw_limit()
+  local limit = tonumber(config.max_single_line_draw_length) or 8192
+  return math.max(1, math.floor(limit))
+end
+
+local function get_single_line_draw_suffix()
+  local suffix = config.single_line_draw_truncation_suffix
+  if type(suffix) ~= "string" or suffix == "" then
+    return "....太长了喵，复制出来单独看喵"
+  end
+  return suffix
+end
+
+local function trim_newline_for_draw(text)
+  if type(text) ~= "string" then
+    return ""
+  end
+  if text:sub(-1) == "\n" then
+    return text:sub(1, -2)
+  end
+  return text
+end
+
+local function truncate_single_line_for_draw(text)
+  if type(text) ~= "string" then
+    return "", false
+  end
+  local limit = get_single_line_draw_limit()
+  if #text <= limit then
+    return text, false
+  end
+  -- 中文说明：这里只截断交给渲染器的显示文本，Doc 内保存的原始文本保持不变。
+  return text:sub(1, limit) .. get_single_line_draw_suffix(), true
+end
+
+local function get_max_visible_col_for_line_text(text)
+  if type(text) ~= "string" then
+    return 1
+  end
+  local render_text = trim_newline_for_draw(text)
+  if #render_text > get_single_line_draw_limit() then
+    return get_single_line_draw_limit()
+  end
+  return #render_text + 1
+end
+
 local function get_screen_position_for_selection(self, line, col)
   -- 这里统一走“带列号的屏幕坐标”，这样软换行后的 IME 就能落到实际显示的那一段行上。
   return self:get_line_screen_position(line, col)
@@ -530,6 +576,19 @@ function DocView:get_line_text_y_offset()
   return (lh - th) / 2
 end
 
+function DocView:get_visible_col_limit(line)
+  local line_text = self.doc:get_line(line)
+  return get_max_visible_col_for_line_text(line_text)
+end
+
+function DocView:get_clamped_visible_col(line, col)
+  local visible_col_limit = self:get_visible_col_limit(line)
+  if not col then
+    return visible_col_limit
+  end
+  return common.clamp(col, 1, visible_col_limit)
+end
+
 
 function DocView:get_visible_line_range()
   if self.doc:is_large_file_mode() then
@@ -548,15 +607,16 @@ function DocView:get_col_x_offset(line, col)
   local _, indent_size = self.doc:get_indent_info()
   default_font:set_tab_size(indent_size)
   local render_highlighter = get_render_highlighter(self.doc)
+  local clamped_col = self:get_clamped_visible_col(line, col)
   if self.doc:is_large_file_mode() and not (render_highlighter and render_highlighter.is_chunk_mode and render_highlighter:is_chunk_mode()) then
     local xoffset = 0
-    local line_text = self.doc:get_line(line)
-    if col <= 1 then
+    local line_text = trim_newline_for_draw(self.doc:get_line(line))
+    if clamped_col <= 1 then
       return 0
     end
     local column = 1
     for char in common.utf8_chars(line_text) do
-      if column >= col then
+      if column >= clamped_col then
         return xoffset
       end
       xoffset = xoffset + default_font:get_width(char, {tab_offset = xoffset})
@@ -570,15 +630,15 @@ function DocView:get_col_x_offset(line, col)
     local font = style.syntax_fonts[type] or default_font
     if font ~= default_font then font:set_tab_size(indent_size) end
     local length = #text
-    if column + length <= col then
+    if column + length <= clamped_col then
       xoffset = xoffset + font:get_width(text, {tab_offset = xoffset})
       column = column + length
-      if column >= col then
+      if column >= clamped_col then
         return xoffset
       end
     else
       for char in common.utf8_chars(text) do
-        if column >= col then
+        if column >= clamped_col then
           return xoffset
         end
         xoffset = xoffset + font:get_width(char, {tab_offset = xoffset})
@@ -592,7 +652,8 @@ end
 
 
 function DocView:get_x_offset_col(line, x)
-  local line_text = self.doc:get_line(line)
+  local line_text = trim_newline_for_draw(self.doc:get_line(line))
+  local visible_col_limit = self:get_visible_col_limit(line)
 
   local xoffset, i = 0, 1
   local default_font = self:get_font()
@@ -603,12 +664,12 @@ function DocView:get_x_offset_col(line, x)
     for char in common.utf8_chars(line_text) do
       local w = default_font:get_width(char, {tab_offset = xoffset})
       if xoffset + w >= x then
-        return (x <= xoffset + (w / 2)) and i or i + #char
+        return common.clamp((x <= xoffset + (w / 2)) and i or i + #char, 1, visible_col_limit)
       end
       xoffset = xoffset + w
       i = i + #char
     end
-    return #line_text
+    return visible_col_limit
   end
   for _, type, text in render_highlighter:each_token(line) do
     local font = style.syntax_fonts[type] or default_font
@@ -623,7 +684,7 @@ function DocView:get_x_offset_col(line, x)
       for char in common.utf8_chars(text) do
         local w = font:get_width(char, {tab_offset = xoffset})
         if xoffset + w >= x then
-          return (x <= xoffset + (w / 2)) and i or i + #char
+          return common.clamp((x <= xoffset + (w / 2)) and i or i + #char, 1, visible_col_limit)
         end
         xoffset = xoffset + w
         i = i + #char
@@ -631,7 +692,7 @@ function DocView:get_x_offset_col(line, x)
     end
   end
 
-  return #line_text
+  return visible_col_limit
 end
 
 
@@ -898,16 +959,19 @@ function DocView:draw_line_text(line, x, y)
     renderer.draw_text(default_font, "Loading...", x, y + self:get_line_text_y_offset(), style.dim or style.text)
     return self:get_line_height()
   end
-  if self.doc:is_large_file_mode() and not (render_highlighter and render_highlighter.is_chunk_mode and render_highlighter:is_chunk_mode()) then
-    local default_font = self:get_font()
-    local text = self.doc:get_line(line)
-    if text:sub(-1) == "\n" then
-      text = text:sub(1, -2)
-    end
-    renderer.draw_text(default_font, text, x, y + self:get_line_text_y_offset(), style.text)
+  local default_font = self:get_font()
+  local raw_line_text = self.doc:get_line(line)
+  local render_text = trim_newline_for_draw(raw_line_text)
+  local truncated_render_text, was_truncated = truncate_single_line_for_draw(render_text)
+  if was_truncated then
+    -- 中文说明：超长单行统一在渲染层降级为纯文本截断显示，避免把整行原文继续送进渲染器。
+    renderer.draw_text(default_font, truncated_render_text, x, y + self:get_line_text_y_offset(), style.text)
     return self:get_line_height()
   end
-  local default_font = self:get_font()
+  if self.doc:is_large_file_mode() and not (render_highlighter and render_highlighter.is_chunk_mode and render_highlighter:is_chunk_mode()) then
+    renderer.draw_text(default_font, render_text, x, y + self:get_line_text_y_offset(), style.text)
+    return self:get_line_height()
+  end
   local tx, ty = x, y + self:get_line_text_y_offset()
   local last_token = nil
   local tokens = render_highlighter:get_line(line).tokens
