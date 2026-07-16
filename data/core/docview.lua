@@ -1291,14 +1291,28 @@ function DocView:draw()
 end
 
 function DocView:on_context_menu()
-  return { items = {
+  local items = {
     { text = "Cut",     command = "doc:cut" },
     { text = "Copy",    command = "doc:copy" },
     { text = "Paste",   command = "doc:paste" },
-    ContextMenu.DIVIDER,
-    { text = "Find",    command = "find-replace:find"    },
-    { text = "Replace", command = "find-replace:replace" }
-  } }, self
+  }
+
+  if self.doc and self.doc.abs_filename then
+    table.insert(items, ContextMenu.DIVIDER)
+    table.insert(items, {
+      text = "Open in System",
+      -- 中文说明：编辑区右键只在当前文档已有真实路径时显示资源管理器定位入口。
+      command = function(view)
+        common.reveal_in_system(view.doc.abs_filename)
+      end
+    })
+  end
+
+  table.insert(items, ContextMenu.DIVIDER)
+  table.insert(items, { text = "Find",    command = "find-replace:find"    })
+  table.insert(items, { text = "Replace", command = "find-replace:replace" })
+
+  return { items = items }, self
 end
 
 return DocView

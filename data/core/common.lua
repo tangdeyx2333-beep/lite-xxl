@@ -193,6 +193,106 @@ function common.fuzzy_match(haystack, needle, files)
 end
 
 
+---在系统文件管理器中显示目标路径。
+---@param path string
+---@return boolean
+function common.reveal_in_system(path)
+  local debug_log_path = USERDIR and (USERDIR .. PATHSEP .. "reveal-in-system-debug.log") or nil
+  local function log_reveal_debug(fmt, ...)
+    if not debug_log_path then
+      return
+    end
+    local ok, text = pcall(string.format, fmt, ...)
+    if not ok then
+      text = tostring(fmt)
+    end
+    local fp = io.open(debug_log_path, "a")
+    if fp then
+      fp:write(os.date("%Y-%m-%d %H:%M:%S"), " [reveal] ", text, "\n")
+      fp:close()
+    end
+  end
+
+  if type(path) ~= "string" or path == "" then
+    log_reveal_debug("skip invalid_path path=%s", tostring(path))
+    return false
+  end
+
+  local info = system.get_file_info(path)
+  if PLATFORM == "Windows" then
+    local normalized_path = path:gsub("/", "\\")
+    local ok, err = system.reveal_in_file_manager(normalized_path)
+    log_reveal_debug(
+      "windows path=%s normalized=%s info_type=%s native_ok=%s native_err=%s",
+      tostring(path),
+      tostring(normalized_path),
+      tostring(info and info.type),
+      tostring(ok),
+      tostring(err)
+    )
+    return not not ok
+  end
+
+  if info and info.type == "dir" then
+    local exec_cmd = string.format("open %q", path)
+    log_reveal_debug(
+      "non_windows_dir platform=%s path=%s info_type=%s exec=%s",
+      tostring(PLATFORM),
+      tostring(path),
+      tostring(info and info.type),
+      tostring(exec_cmd)
+    )
+    system.exec(exec_cmd)
+    return true
+  end
+
+  local dirname = common.dirname(path)
+  if not dirname then
+    log_reveal_debug(
+      "skip no_dirname platform=%s path=%s info_type=%s",
+      tostring(PLATFORM),
+      tostring(path),
+      tostring(info and info.type)
+    )
+    return false
+  end
+
+  if string.find(PLATFORM, "Mac") then
+    local exec_cmd = string.format("open -R %q", path)
+    log_reveal_debug(
+      "mac_file path=%s info_type=%s dirname=%s exec=%s",
+      tostring(path),
+      tostring(info and info.type),
+      tostring(dirname),
+      tostring(exec_cmd)
+    )
+    system.exec(exec_cmd)
+    return true
+  elseif PLATFORM == "Linux" or string.find(PLATFORM, "BSD") then
+    local exec_cmd = string.format("xdg-open %q", dirname)
+    log_reveal_debug(
+      "linux_file platform=%s path=%s info_type=%s dirname=%s exec=%s",
+      tostring(PLATFORM),
+      tostring(path),
+      tostring(info and info.type),
+      tostring(dirname),
+      tostring(exec_cmd)
+    )
+    system.exec(exec_cmd)
+    return true
+  end
+
+  log_reveal_debug(
+    "skip unsupported_platform platform=%s path=%s info_type=%s dirname=%s",
+    tostring(PLATFORM),
+    tostring(path),
+    tostring(info and info.type),
+    tostring(dirname)
+  )
+  return false
+end
+
+
 ---Performs fuzzy matching and returns recently used strings if needed.
 ---
 ---If the needle is empty, then a list of recently used strings

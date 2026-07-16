@@ -184,6 +184,47 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
 end
 
 
+local function get_doc_abs_filename(view)
+  if view and view.doc and view.doc.abs_filename then
+    return view.doc.abs_filename
+  end
+end
+
+
+local function get_tab_context_menu_items(view)
+  local items = {
+    { text = "Close", command = "root:close" },
+    { text = "Close Others", command = "root:close-all-others" },
+    { text = "Close All", command = "root:close-all" },
+  }
+
+  if get_doc_abs_filename(view) then
+    table.insert(items, ContextMenu.DIVIDER)
+    table.insert(items, {
+      text = "Open in System",
+      -- 中文说明：tab 右键只在当前文档已有真实路径时显示资源管理器定位入口。
+      command = function(target_view)
+        common.reveal_in_system(get_doc_abs_filename(target_view))
+      end
+    })
+  end
+
+  return items
+end
+
+
+function RootView:show_tab_context_menu(node, idx, x, y)
+  local view = node and node.views[idx]
+  if not view then
+    return false
+  end
+
+  -- 中文说明：先切到被右键的 tab，后续关闭命令继续复用现有 root 命令链路。
+  node:set_active_view(view)
+  return self.context_menu:show(x, y, get_tab_context_menu_items(view), view)
+end
+
+
 ---@param button core.view.mousebutton
 ---@param x number
 ---@param y number
@@ -209,9 +250,11 @@ function RootView:on_mouse_pressed(button, x, y, clicks)
   end
   local idx = node:get_tab_overlapping_point(x, y)
   if idx then
-    if button == "middle" or node.hovered_close == idx then
+    if button == "middle" or (button == "left" and node.hovered_close == idx) then
       node:close_view(self.root_node, node.views[idx])
       return true
+    elseif button == "right" then
+      return self:show_tab_context_menu(node, idx, x, y)
     else
       if button == "left" then
         self.dragged_node = { node = node, idx = idx, dragging = false, drag_start_x = x, drag_start_y = y}

@@ -19,6 +19,7 @@
   #include <direct.h>
   #include <windows.h>
   #include <fileapi.h>
+  #include <shellapi.h>
   #include <tlhelp32.h>
   #include "../utfconv.h"
   #define fileno _fileno
@@ -1775,6 +1776,89 @@ static int f_exec(lua_State *L) {
   return 0;
 }
 
+static int f_reveal_in_file_manager(lua_State *L) {
+  const char *path = luaL_checkstring(L, 1);
+#if _WIN32
+  DWORD attrs = GetFileAttributesW(NULL);
+  LPWSTR wpath = utfconv_utf8towc(path);
+  if (wpath == NULL) {
+    lua_pushboolean(L, 0);
+    push_win32_error(L, ERROR_NOT_ENOUGH_MEMORY);
+    return 2;
+  }
+
+  attrs = GetFileAttributesW(wpath);
+  if (attrs == INVALID_FILE_ATTRIBUTES) {
+    /* 中文说明：这一步先在原生层校验目标路径，避免资源管理器失败时 Lua 侧只能看到“默认目录”这种模糊现象。 */
+    lua_pushboolean(L, 0);
+    push_win32_error(L, GetLastError());
+    SDL_free(wpath);
+    return 2;
+  }
+
+  if (attrs & FILE_ATTRIBUTE_DIRECTORY) {
+    SHELLEXECUTEINFOW exec_info;
+    memset(&exec_info, 0, sizeof(exec_info));
+    exec_info.cbSize = sizeof(exec_info);
+    exec_info.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC;
+    exec_info.lpVerb = L"open";
+    exec_info.lpFile = wpath;
+    exec_info.nShow = SW_SHOWNORMAL;
+
+    /* 中文说明：上面是在准备 ShellExecuteExW 需要的参数；下面正式交给系统文件管理器消费目录路径。 */
+    if (!ShellExecuteExW(&exec_info)) {
+      lua_pushboolean(L, 0);
+      push_win32_error(L, GetLastError());
+      SDL_free(wpath);
+      return 2;
+    }
+
+    lua_pushboolean(L, 1);
+    SDL_free(wpath);
+    return 1;
+  }
+
+  size_t param_len = wcslen(wpath) + 16;
+  wchar_t *params = SDL_calloc(param_len, sizeof(wchar_t));
+  if (params == NULL) {
+    lua_pushboolean(L, 0);
+    push_win32_error(L, ERROR_NOT_ENOUGH_MEMORY);
+    SDL_free(wpath);
+    return 2;
+  }
+
+  swprintf(params, param_len, L"/select,\"%ls\"", wpath);
+
+  SHELLEXECUTEINFOW exec_info;
+  memset(&exec_info, 0, sizeof(exec_info));
+  exec_info.cbSize = sizeof(exec_info);
+  exec_info.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC;
+  exec_info.lpVerb = L"open";
+  exec_info.lpFile = L"explorer.exe";
+  exec_info.lpParameters = params;
+  exec_info.nShow = SW_SHOWNORMAL;
+
+  /* 中文说明：上面是在组装“选中文件”的 explorer 参数；下面正式让系统按 Unicode 参数打开并定位文件。 */
+  if (!ShellExecuteExW(&exec_info)) {
+    lua_pushboolean(L, 0);
+    push_win32_error(L, GetLastError());
+    SDL_free(params);
+    SDL_free(wpath);
+    return 2;
+  }
+
+  lua_pushboolean(L, 1);
+  SDL_free(params);
+  SDL_free(wpath);
+  return 1;
+#else
+  (void) path;
+  lua_pushboolean(L, 0);
+  lua_pushliteral(L, "reveal_in_file_manager is only supported on Windows");
+  return 2;
+#endif
+}
+
 static int f_fuzzy_match(lua_State *L) {
   size_t strLen, ptnLen;
   const char *str = luaL_checklstring(L, 1, &strLen);
@@ -2953,6 +3037,7 @@ static const luaL_Reg lib[] = {
   { "get_time",              f_get_time              },
   { "sleep",                 f_sleep                 },
   { "exec",                  f_exec                  },
+  { "reveal_in_file_manager", f_reveal_in_file_manager },
   { "fuzzy_match",           f_fuzzy_match           },
   { "set_window_opacity",    f_set_window_opacity    },
   { "load_native_plugin",    f_load_native_plugin    },

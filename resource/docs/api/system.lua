@@ -347,6 +347,15 @@ function system.sleep(seconds) end
 function system.exec(command) end
 
 ---
+---Use the system file manager to reveal a path.
+---On Windows, files are selected in Explorer and directories are opened directly.
+---
+---@param path string The file or directory path to reveal.
+---@return boolean success True if the system accepted the reveal request.
+---@return string? error_message Present when success is false.
+function system.reveal_in_file_manager(path) end
+
+---
 ---Generates a matching score depending on how well the value of the
 ---given needle compares to that of the value in the haystack.
 ---
