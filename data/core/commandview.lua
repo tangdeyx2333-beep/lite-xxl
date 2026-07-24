@@ -592,7 +592,6 @@ local function draw_suggestions_box(self)
   core.pop_clip_rect()
 end
 
-
 function CommandView:draw()
   self:draw_background(style.background2)
   local lh = self:get_line_height()

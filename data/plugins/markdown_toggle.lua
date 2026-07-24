@@ -4,6 +4,8 @@ local command = require "core.command"
 local common = require "core.common"
 local config = require "core.config"
 local style = require "core.style"
+local syntax = require "core.syntax"
+local tokenizer = require "core.tokenizer"
 local keymap = require "core.keymap"
 local system = require "system"
 local ContextMenu = require "core.contextmenu"
@@ -12,6 +14,46 @@ local DocView = require "core.docview"
 
 local function trim(s)
   return (s:gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+local MARKDOWN_DEBUG_LOG = USERDIR .. PATHSEP .. "markdown-table-debug.log"
+
+local function append_markdown_debug_log(message)
+  -- 中文说明：这里统一把 Markdown 预览排查信息落到用户目录日志文件，方便定位“解析阶段是否识别到表格候选行”。
+  local fp = io.open(MARKDOWN_DEBUG_LOG, "a")
+  if not fp then
+    return
+  end
+  fp:write(os.date("[%Y-%m-%d %H:%M:%S] "))
+  fp:write(message)
+  fp:write("\n")
+  fp:close()
+end
+
+local function is_markdown_table_delimiter_line(line)
+  local normalized = trim(line or ""):gsub("^|", ""):gsub("|$", "")
+  if normalized == "" or not normalized:find("|", 1, true) then
+    return false
+  end
+  for cell in normalized:gmatch("[^|]+") do
+    local token = trim(cell)
+    if token == "" or not token:match("^:?-+:?$") then
+      return false
+    end
+  end
+  return true
+end
+
+local function is_markdown_table_row_line(line)
+  local normalized = trim(line or "")
+  if normalized == "" then
+    return false
+  end
+  local pipe_count = 0
+  for _ in normalized:gmatch("|") do
+    pipe_count = pipe_count + 1
+  end
+  return pipe_count >= 2
 end
 
 local function render_inline(text)
@@ -104,39 +146,255 @@ local function wrap_text(font, text, max_width)
   return #lines > 0 and lines or { "" }
 end
 
+local MARKDOWN_CODE_LANG_FILENAMES = {
+  text = "preview.txt",
+  txt = "preview.txt",
+  lua = "preview.lua",
+  java = "preview.java",
+  javascript = "preview.js",
+  js = "preview.js",
+  typescript = "preview.ts",
+  ts = "preview.ts",
+  json = "preview.json",
+  python = "preview.py",
+  py = "preview.py",
+  shell = "preview.sh",
+  sh = "preview.sh",
+  bash = "preview.sh",
+  powershell = "preview.ps1",
+  ps1 = "preview.ps1",
+  sql = "preview.sql",
+  html = "preview.html",
+  xml = "preview.xml",
+  css = "preview.css",
+  c = "preview.c",
+  cpp = "preview.cpp",
+  ["c++"] = "preview.cpp",
+  csharp = "preview.cs",
+  cs = "preview.cs",
+  php = "preview.php",
+  go = "preview.go",
+  rust = "preview.rs",
+  ruby = "preview.rb",
+  kotlin = "preview.kt",
+  swift = "preview.swift",
+  markdown = "preview.md",
+  md = "preview.md",
+}
+
+local function get_markdown_code_syntax(lang)
+  if not lang or lang == "" then
+    return syntax.plain_text_syntax
+  end
+  local normalized = trim(lang):lower()
+  local filename = MARKDOWN_CODE_LANG_FILENAMES[normalized] or ("preview." .. normalized)
+  return syntax.get(filename)
+end
+
+local function split_markdown_table_row(line)
+  local normalized = trim(line or ""):gsub("^|", ""):gsub("|$", "")
+  local cells = {}
+  for cell in (normalized .. "|"):gmatch("(.-)|") do
+    table.insert(cells, render_inline(trim(cell)))
+  end
+  return cells
+end
+
+local function parse_markdown_table_alignment(line)
+  local normalized = trim(line or ""):gsub("^|", ""):gsub("|$", "")
+  local aligns = {}
+  for cell in (normalized .. "|"):gmatch("(.-)|") do
+    local token = trim(cell)
+    if token:match("^:%-+:$") then
+      table.insert(aligns, "center")
+    elseif token:match("^:%-+$") then
+      table.insert(aligns, "left")
+    elseif token:match("^%-+:$") then
+      table.insert(aligns, "right")
+    else
+      table.insert(aligns, "left")
+    end
+  end
+  return aligns
+end
+
+local function is_markdown_table_header_line(line)
+  return is_markdown_table_row_line(line) and not is_markdown_table_delimiter_line(line)
+end
+
+local function wrap_preformatted_text(font, text, max_width)
+  if text == "" then
+    return { "" }
+  end
+  local lines = {}
+  local current = ""
+  local current_width = 0
+  for ch in common.utf8_chars(text) do
+    local width = font:get_width(ch, { tab_offset = current_width })
+    if current ~= "" and current_width + width > max_width then
+      table.insert(lines, current)
+      current = ch
+      current_width = font:get_width(ch)
+    else
+      current = current .. ch
+      current_width = current_width + width
+    end
+  end
+  table.insert(lines, current)
+  return lines
+end
+
+local function build_wrapped_token_lines(font, tokens, max_width)
+  local lines = { { segments = {}, text = "", width = 0 } }
+
+  local function push_segment(token_type, text)
+    if text == "" then
+      return
+    end
+    local line = lines[#lines]
+    line.segments[#line.segments + 1] = { type = token_type, text = text }
+    line.text = line.text .. text
+    line.width = font:get_width(line.text)
+  end
+
+  local function push_new_line()
+    lines[#lines + 1] = { segments = {}, text = "", width = 0 }
+  end
+
+  for _, token_type, token_text in tokenizer.each_token(tokens) do
+    local remaining = token_text
+    while remaining ~= "" do
+      local line = lines[#lines]
+      local chunk = ""
+      local chunk_width = line.width
+      for ch in common.utf8_chars(remaining) do
+        local candidate = chunk .. ch
+        local candidate_width = font:get_width(line.text .. candidate)
+        if chunk ~= "" and candidate_width > max_width then
+          break
+        end
+        chunk = candidate
+        chunk_width = candidate_width
+      end
+      if chunk == "" then
+        chunk = remaining:sub(1, 1)
+        chunk_width = font:get_width(line.text .. chunk)
+      end
+      push_segment(token_type, chunk)
+      line.width = chunk_width
+      remaining = remaining:sub(#chunk + 1)
+      if remaining ~= "" then
+        push_new_line()
+      end
+    end
+  end
+
+  for _, line in ipairs(lines) do
+    line.text = line.text ~= "" and line.text or ""
+  end
+  return lines
+end
+
+local function prepare_code_block_render_lines(block, font, max_width)
+  local cache_key = table.concat({ tostring(font), tostring(max_width), block.lang or "", block.text or "" }, "::")
+  if block._render_cache and block._render_cache.key == cache_key then
+    return block._render_cache.lines
+  end
+
+  local block_lines = {}
+  local code_syntax = get_markdown_code_syntax(block.lang)
+  local state = string.char(0)
+  for line in (block.text .. "\n"):gmatch("(.-)\n") do
+    local tokens
+    tokens, state = tokenizer.tokenize(code_syntax, line, state)
+    local wrapped = build_wrapped_token_lines(font, tokens, max_width)
+    if #wrapped == 0 then
+      wrapped = { { segments = {}, text = "" } }
+    end
+    for _, wrapped_line in ipairs(wrapped) do
+      table.insert(block_lines, wrapped_line)
+    end
+  end
+  block._render_cache = {
+    key = cache_key,
+    lines = block_lines
+  }
+  return block_lines
+end
+
 local function parse_markdown(source)
   source = source:gsub("\r\n", "\n"):gsub("\r", "\n")
+  local lines = {}
+  for line in (source .. "\n"):gmatch("(.-)\n") do
+    table.insert(lines, line)
+  end
   local blocks = {}
   local para = {}
-  local in_code = false
-  local code_lines = {}
+  local line_no = 0
+  local i = 1
+
+  -- 中文说明：这一轮日志只服务于排查表格链路，不改变现有渲染逻辑；先确认源码里是否出现了标准表格头和分隔行。
+  append_markdown_debug_log("开始解析 Markdown 预览内容")
 
   local function push_paragraph()
     if #para == 0 then return end
     local text = trim(table.concat(para, " "))
     if text ~= "" then
+      -- 中文说明：如果表格候选行最终被合并进普通段落，这里要明确记下来，便于确认问题发生在“未识别表格”阶段。
+      if text:find("|", 1, true) then
+        append_markdown_debug_log("表格候选内容最终按普通段落处理: " .. text)
+      end
       table.insert(blocks, { type = "paragraph", text = render_inline(text) })
     end
     para = {}
   end
 
-  local function push_code()
+  local function push_code(code_lines, lang)
     if #code_lines == 0 then return end
-    table.insert(blocks, { type = "code", text = table.concat(code_lines, "\n") })
-    code_lines = {}
+    table.insert(blocks, {
+      type = "code",
+      lang = lang,
+      text = table.concat(code_lines, "\n")
+    })
   end
 
-  for line in (source .. "\n"):gmatch("(.-)\n") do
-    if line:match("^```") then
-      if in_code then
-        push_code()
-        in_code = false
-      else
-        push_paragraph()
-        in_code = true
+  while i <= #lines do
+    local line = lines[i]
+    line_no = i
+    if is_markdown_table_row_line(line) then
+      append_markdown_debug_log(string.format("第%d行疑似表格内容: %s", line_no, line))
+    end
+    if is_markdown_table_delimiter_line(line) then
+      append_markdown_debug_log(string.format("第%d行命中表格分隔行特征: %s", line_no, line))
+    end
+
+    local code_lang = line:match("^```%s*([^%s`]*)")
+    if code_lang ~= nil then
+      local block_code_lines = {}
+      local block_lang = trim(code_lang or "")
+      push_paragraph()
+      i = i + 1
+      while i <= #lines and not lines[i]:match("^```") do
+        table.insert(block_code_lines, lines[i])
+        i = i + 1
       end
-    elseif in_code then
-      table.insert(code_lines, line)
+      push_code(block_code_lines, block_lang)
+    elseif i < #lines and is_markdown_table_header_line(line) and is_markdown_table_delimiter_line(lines[i + 1]) then
+      local table_rows = {}
+      local aligns = parse_markdown_table_alignment(lines[i + 1])
+      push_paragraph()
+      table.insert(table_rows, split_markdown_table_row(line))
+      i = i + 2
+      while i <= #lines and is_markdown_table_row_line(lines[i]) and not lines[i]:match("^%s*$") do
+        table.insert(table_rows, split_markdown_table_row(lines[i]))
+        i = i + 1
+      end
+      table.insert(blocks, {
+        type = "table",
+        aligns = aligns,
+        rows = table_rows
+      })
+      i = i - 1
     else
       local heading_marks, heading_text = line:match("^(#+)%s*(.-)%s*$")
       local quote_text = line:match("^%s*>%s?(.*)$")
@@ -180,12 +438,10 @@ local function parse_markdown(source)
         table.insert(para, line)
       end
     end
+    i = i + 1
   end
 
   push_paragraph()
-  if in_code then
-    push_code()
-  end
 
   return blocks
 end
@@ -506,6 +762,21 @@ function MarkdownPreviewView:rebuild_layout()
     y = y + font:get_height() + line_gap
   end
 
+  local function add_token_line(text, segments, font, color, x, extra)
+    table.insert(self._layout_items, {
+      kind = "text",
+      text = text,
+      font = font,
+      color = color,
+      x = x,
+      y = y,
+      h = font:get_height(),
+      segments = segments,
+      extra = extra
+    })
+    y = y + font:get_height() + line_gap
+  end
+
   local function add_space(px)
     y = y + (px or math.floor(style.padding.y * 0.9))
   end
@@ -569,18 +840,8 @@ function MarkdownPreviewView:rebuild_layout()
       add_space(math.floor(style.padding.y / 2))
 
     elseif block.type == "code" then
-      local code_lines = {}
-      for line in (block.text .. "\n"):gmatch("(.-)\n") do
-        table.insert(code_lines, line)
-      end
-
-      local wrapped_code_lines = {}
-      for _, line in ipairs(code_lines) do
-        local wrapped = wrap_text(self._fonts.code, line, text_w - style.padding.x * 2)
-        for _, chunk in ipairs(wrapped) do
-          table.insert(wrapped_code_lines, chunk)
-        end
-      end
+      -- 中文说明：代码块阶段不再把源码揉成普通段落，而是先按 fence 语言走现有 tokenizer，再按预览宽度切成可绘制行。
+      local wrapped_code_lines = prepare_code_block_render_lines(block, self._fonts.code, text_w - style.padding.x * 2)
 
       local code_h = line_block_height(self._fonts.code, #wrapped_code_lines) + style.padding.y * 2
       table.insert(self._layout_items, {
@@ -592,10 +853,132 @@ function MarkdownPreviewView:rebuild_layout()
         color = style.background3
       })
       add_space(style.padding.y)
-      for _, chunk in ipairs(wrapped_code_lines) do
-        add_line(chunk, self._fonts.code, style.text, inset + style.padding.x)
+      for _, wrapped_line in ipairs(wrapped_code_lines) do
+        add_token_line(
+          wrapped_line.text,
+          wrapped_line.segments,
+          self._fonts.code,
+          style.text,
+          inset + style.padding.x,
+          { block = "code", lang = block.lang }
+        )
       end
       add_space(style.padding.y * 2)
+
+    elseif block.type == "table" then
+      -- 中文说明：表格阶段先计算列宽和行高，再把单元格内容按列宽换行，避免整张表退化成一行普通文本。
+      local col_count = 0
+      for _, row in ipairs(block.rows or {}) do
+        col_count = math.max(col_count, #row)
+      end
+      if col_count > 0 then
+        local table_padding_x = math.max(8, math.floor(style.padding.x * 0.7))
+        local table_padding_y = math.max(4, math.floor(style.padding.y * 0.45))
+        local available_width = text_w
+        local min_col_width = math.max(80, math.floor(available_width / math.max(1, col_count * 2)))
+        local col_widths = {}
+        local desired_total = 0
+
+        for col = 1, col_count do
+          local desired = min_col_width
+          for _, row in ipairs(block.rows) do
+            local cell_text = row[col] or ""
+            desired = math.max(desired, math.min(self._fonts.body:get_width(cell_text) + table_padding_x * 2, math.floor(available_width * 0.45)))
+          end
+          col_widths[col] = desired
+          desired_total = desired_total + desired
+        end
+
+        if desired_total > available_width then
+          local scale = available_width / desired_total
+          local scaled_total = 0
+          for col = 1, col_count do
+            col_widths[col] = math.max(min_col_width, math.floor(col_widths[col] * scale))
+            scaled_total = scaled_total + col_widths[col]
+          end
+          if scaled_total > available_width then
+            local overflow = scaled_total - available_width
+            for col = col_count, 1, -1 do
+              local shrink = math.min(overflow, math.max(0, col_widths[col] - min_col_width))
+              col_widths[col] = col_widths[col] - shrink
+              overflow = overflow - shrink
+              if overflow <= 0 then
+                break
+              end
+            end
+          end
+        else
+          col_widths[col_count] = col_widths[col_count] + (available_width - desired_total)
+        end
+
+        local border_color = style.line_number2 or style.accent or style.text
+        local header_bg = style.background
+        local body_bg = style.background2
+        local table_x = inset
+        local border_size = math.max(1, math.floor(SCALE * 1.5))
+        local row_y = y
+
+        for row_idx, row in ipairs(block.rows) do
+          local cell_lines = {}
+          local row_line_count = 1
+          for col = 1, col_count do
+            local cell_text = row[col] or ""
+            local wrapped = wrap_text(self._fonts.body, cell_text, math.max(20, col_widths[col] - table_padding_x * 2))
+            cell_lines[col] = wrapped
+            row_line_count = math.max(row_line_count, #wrapped)
+          end
+          local row_height = row_line_count * self._fonts.body:get_height() + (row_line_count - 1) * line_gap + table_padding_y * 2
+          local cell_x = table_x
+          for col = 1, col_count do
+            table.insert(self._layout_items, {
+              kind = "table_cell_bg",
+              x = cell_x,
+              y = row_y,
+              w = col_widths[col],
+              h = row_height,
+              color = row_idx == 1 and header_bg or ((row_idx % 2 == 0) and style.background or body_bg)
+            })
+            table.insert(self._layout_items, {
+              kind = "table_border",
+              x = cell_x,
+              y = row_y,
+              w = col_widths[col],
+              h = row_height,
+              border = border_size,
+              color = border_color
+            })
+            local text_y = row_y + table_padding_y
+            local align = (block.aligns and block.aligns[col]) or "left"
+            for _, cell_line in ipairs(cell_lines[col]) do
+              local line_width = self._fonts.body:get_width(cell_line)
+              local text_x = cell_x + table_padding_x
+              if align == "right" then
+                text_x = cell_x + col_widths[col] - table_padding_x - line_width
+              elseif align == "center" then
+                text_x = cell_x + math.max(table_padding_x, math.floor((col_widths[col] - line_width) / 2))
+              end
+              table.insert(self._layout_items, {
+                kind = "text",
+                text = cell_line,
+                font = self._fonts.body,
+                color = style.text,
+                x = text_x,
+                y = text_y,
+                h = self._fonts.body:get_height(),
+                extra = {
+                  block = "table",
+                  row = row_idx,
+                  col = col
+                }
+              })
+              text_y = text_y + self._fonts.body:get_height() + line_gap
+            end
+            cell_x = cell_x + col_widths[col]
+          end
+          row_y = row_y + row_height - border_size
+        end
+        y = row_y + style.padding.y
+      end
 
 
     elseif block.type == "hr" then
@@ -679,13 +1062,30 @@ function MarkdownPreviewView:draw()
     if y + (item.h or 0) >= min_y and y <= max_y then
       if item.kind == "text" then
         self:draw_preview_selection(item_idx, item, page_x, y)
-        renderer.draw_text(item.font, item.text, page_x + item.x, y, item.color)
+        if item.segments then
+          local tx = page_x + item.x
+          local start_tx = tx
+          for _, segment in ipairs(item.segments) do
+            local color = style.syntax[segment.type] or item.color
+            local font = style.syntax_fonts[segment.type] or item.font
+            tx = renderer.draw_text(font, segment.text, tx, y, color, { tab_offset = tx - start_tx })
+          end
+        else
+          renderer.draw_text(item.font, item.text, page_x + item.x, y, item.color)
+        end
       elseif item.kind == "rule" then
         renderer.draw_rect(page_x + item.x, y, item.w, item.h, item.color)
       elseif item.kind == "quote_line" then
         renderer.draw_rect(page_x + item.x, y, item.w, item.h, item.color)
       elseif item.kind == "code_bg" then
         renderer.draw_rect(page_x + item.x, y, item.w, item.h, item.color)
+      elseif item.kind == "table_cell_bg" then
+        renderer.draw_rect(page_x + item.x, y, item.w, item.h, item.color)
+      elseif item.kind == "table_border" then
+        renderer.draw_rect(page_x + item.x, y, item.w, item.border, item.color)
+        renderer.draw_rect(page_x + item.x, y + item.h - item.border, item.w, item.border, item.color)
+        renderer.draw_rect(page_x + item.x, y, item.border, item.h, item.color)
+        renderer.draw_rect(page_x + item.x + item.w - item.border, y, item.border, item.h, item.color)
       end
     end
   end

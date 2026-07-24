@@ -185,14 +185,148 @@ end
 ---动态生成语法列表（从已加载的语法插件中）
 ---@return table
 local function get_syntax_list()
-  local list = { { name = "Plain Text", syntax = "plain_text" } }
+  local list = { { name = "Plain Text", syntax = syntax.plain_text_syntax } }
   for _, s in ipairs(syntax.items) do
-    table.insert(list, { name = s.name, syntax = s.name:lower() })
+    table.insert(list, { name = s.name, syntax = s })
   end
   return list
 end
 
-local function syntax_trace(fmt, ...)
+local SYNTAX_SEARCH_ALIASES = {
+  ["plain text"] = { "text", "txt", "plain" },
+  c = { "c" },
+  ["c++"] = { "cpp", "cxx", "cc" },
+  ["c#"] = { "cs", "csharp" },
+  css = { "css" },
+  go = { "go", "golang" },
+  ["go module"] = { "gomod", "go.mod" },
+  ["go sum"] = { "gosum", "go.sum" },
+  html = { "html", "htm" },
+  java = { "java" },
+  javascript = { "js", "javascript", "node" },
+  kotlin = { "kt", "kotlin" },
+  lua = { "lua" },
+  markdown = { "md", "markdown" },
+  ["php source"] = { "phpsource" },
+  php = { "php" },
+  powershell = { "ps", "ps1", "powershell" },
+  python = { "py", "python" },
+  ruby = { "rb", "ruby" },
+  rust = { "rs", "rust" },
+  ["shell script"] = { "sh", "shell", "bash" },
+  postgresql = { "sql", "pgsql", "postgres", "postgresql" },
+  swift = { "swift" },
+  typescript = { "ts", "typescript" },
+  xml = { "xml" },
+  json = { "json" },
+}
+
+local function normalize_syntax_search_text(text)
+  return tostring(text or ""):lower():gsub("[%s%p_]+", "")
+end
+
+local function build_syntax_search_candidates(item)
+  local candidates = { item.name }
+  local aliases = SYNTAX_SEARCH_ALIASES[item.name:lower()]
+  if aliases then
+    for _, alias in ipairs(aliases) do
+      table.insert(candidates, alias)
+    end
+  end
+  return candidates
+end
+
+local function calculate_syntax_match_score(item, query, current_syntax_name)
+  local normalized_query = normalize_syntax_search_text(query)
+  local best_score
+
+  if normalized_query == "" then
+    best_score = item.name == current_syntax_name and 1000 or 0
+  else
+    for _, candidate in ipairs(build_syntax_search_candidates(item)) do
+      local normalized_candidate = normalize_syntax_search_text(candidate)
+      if normalized_candidate ~= "" then
+        local score
+        if normalized_candidate == normalized_query then
+          score = 3000
+        elseif normalized_candidate:find(normalized_query, 1, true) == 1 then
+          score = 2000 - (#normalized_candidate - #normalized_query)
+        elseif normalized_candidate:find(normalized_query, 1, true) then
+          score = 1500 - (normalized_candidate:find(normalized_query, 1, true) - 1)
+        else
+          local pos = 1
+          local gaps = 0
+          local matched = true
+          for ch in normalized_query:gmatch(".") do
+            local found_at = normalized_candidate:find(ch, pos, true)
+            if not found_at then
+              matched = false
+              break
+            end
+            gaps = gaps + (found_at - pos)
+            pos = found_at + 1
+          end
+          if matched then
+            score = 1000 - gaps - math.max(0, #normalized_candidate - #normalized_query)
+          end
+        end
+        if score and (not best_score or score > best_score) then
+          best_score = score
+        end
+      end
+    end
+  end
+
+  return best_score
+end
+
+local syntax_trace
+
+local function apply_selected_syntax(dv, target_syntax)
+  target_syntax = target_syntax or syntax.plain_text_syntax
+  -- 中文说明：这里统一复用同一条语法切换链路，状态栏点击和快捷键搜索都只经过这一处，避免两套逻辑后续漂移。
+  syntax_trace(
+    "status.syntax_switch file=%s is_large=%s selected=%s display_before=%s logical_before=%s",
+    tostring(dv.doc.abs_filename or dv.doc.filename),
+    tostring(dv.doc.is_large_file),
+    tostring(target_syntax and target_syntax.name),
+    tostring(dv.doc.syntax and dv.doc.syntax.name),
+    tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
+  )
+  dv.doc.syntax = target_syntax
+  dv.doc.highlighter:soft_reset()
+  syntax_trace(
+    "status.syntax_switch.applied file=%s display_after=%s logical_after=%s",
+    tostring(dv.doc.abs_filename or dv.doc.filename),
+    tostring(dv.doc.syntax and dv.doc.syntax.name),
+    tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
+  )
+  core.redraw = true
+end
+
+local function build_syntax_selector_suggestions(query, current_syntax_name)
+  local suggestions = {}
+  for _, item in ipairs(get_syntax_list()) do
+    local score = calculate_syntax_match_score(item, query, current_syntax_name)
+    if score then
+      suggestions[#suggestions + 1] = {
+        text = item.name,
+        info = item.name == current_syntax_name and "当前语法" or nil,
+        score = score,
+        syntax = item.syntax,
+      }
+    end
+  end
+  table.sort(suggestions, function(a, b)
+    if a.score ~= b.score then
+      return a.score > b.score
+    end
+    return a.text < b.text
+  end)
+  return suggestions
+end
+
+syntax_trace = function(fmt, ...)
   local ok, text = pcall(string.format, fmt, ...)
   if not ok then
     text = tostring(fmt)
@@ -205,57 +339,39 @@ local function syntax_trace(fmt, ...)
 end
 
 
----显示语法选择器
----@param x number
----@param y number
-local function show_syntax_selector(x, y)
-  local menu_items = {}
-  local current_syntax = core.active_view.doc.syntax
-  local syntax_list = get_syntax_list()  -- 动态获取语法列表
-
-  for i, syn in ipairs(syntax_list) do
-    table.insert(menu_items, {
-      text = syn.name,
-      checked = current_syntax and current_syntax.name == syn.name,
-      command = function()
-        local dv = core.active_view
-        -- 根据语法名称查找对应的语法定义
-        local target_syntax = nil
-        for _, s in ipairs(syntax.items) do
-          if s.name == syn.name then
-            target_syntax = s
-            break
-          end
-        end
-        -- 如果没找到，使用 plain_text_syntax
-        if not target_syntax then
-          target_syntax = syntax.plain_text_syntax
-        end
-        syntax_trace(
-          "status.syntax_switch file=%s is_large=%s selected=%s display_before=%s logical_before=%s",
-          tostring(dv.doc.abs_filename or dv.doc.filename),
-          tostring(dv.doc.is_large_file),
-          tostring(target_syntax and target_syntax.name),
-          tostring(dv.doc.syntax and dv.doc.syntax.name),
-          tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
-        )
-        dv.doc.syntax = target_syntax
-        dv.doc.highlighter:soft_reset()
-        syntax_trace(
-          "status.syntax_switch.applied file=%s display_after=%s logical_after=%s",
-          tostring(dv.doc.abs_filename or dv.doc.filename),
-          tostring(dv.doc.syntax and dv.doc.syntax.name),
-          tostring(dv.doc.logical_syntax and dv.doc.logical_syntax.name)
-        )
-        core.redraw = true
-      end
-    })
+---显示可搜索的语法选择器
+local function show_syntax_selector()
+  local dv = core.active_view
+  if not (dv and dv.doc) then
+    return
   end
-
-  -- 使用 ContextMenu 类直接调用 show 方法
-  local context_menu = core.root_view.context_menu
-  context_menu:show(x, y, menu_items)
+  local current_syntax_name = dv.doc.syntax and dv.doc.syntax.name or "Plain Text"
+  -- 中文说明：这里把原来的纯菜单入口换成 command_view 搜索入口，让快捷键和状态栏点击共用同一个可搜索接口。
+  core.command_view:enter("Select Syntax", {
+    submit = function(text, item)
+      if (not item or not item.text) and text then
+        local suggestions = build_syntax_selector_suggestions(text, current_syntax_name)
+        item = suggestions[1]
+      end
+      if not item or not item.text then
+        return
+      end
+      apply_selected_syntax(dv, item.syntax)
+    end,
+    suggest = function(text)
+      return build_syntax_selector_suggestions(text, current_syntax_name)
+    end
+  })
 end
+
+command.add(function()
+  local dv = core.active_view
+  return dv and dv:extends(DocView) and dv.doc
+end, {
+  ["doc:select-syntax"] = function()
+    show_syntax_selector()
+  end
+})
 
 ---Constructor
 function StatusView:new()
@@ -557,6 +673,7 @@ function StatusView:register_docview_items()
         show_syntax_selector(x, y)
       end
     end,
+    tooltip = "选择语法 (Alt+/)",
     separator = StatusView.separator2
   }
 

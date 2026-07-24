@@ -284,7 +284,8 @@ if macos then
 end
 
 keymap.add_direct {
-  ["ctrl+shift+p"] = "core:find-command",
+  ["ctrl+`"] = "core:find-command",
+  ["alt+/"] = "doc:select-syntax",
   ["ctrl+o"] = "core:open-file",
   ["ctrl+n"] = "core:new-doc",
   ["ctrl+shift+c"] = "core:change-project-folder",
