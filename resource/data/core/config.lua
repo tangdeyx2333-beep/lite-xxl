@@ -10,6 +10,14 @@ local config = {}
 ---@type number
 config.fps = 60
 
+---启动时优先使用的主题名。
+---如果用户通过“切换主题”命令做过选择，运行时会把最新选择写入 USERDIR/theme.lua，
+---下次启动时优先恢复那份持久化结果。
+---
+---Defaults to "default".
+---@type string
+config.theme = "default"
+
 ---Maximum number of log items that will be stored.
 ---When the number of log items exceed this value, old items will be discarded.
 ---
@@ -368,6 +376,25 @@ config.use_system_file_picker = system.get_sandbox() ~= "none"
 -- The config specification used by settings gui generators.
 config.config_spec = {
   name = "Core",
+  {
+    label = "Theme",
+    description = "Choose the built-in theme used by the editor. Custom themes can still be set manually in user settings.",
+    path = "theme",
+    type = "selection",
+    default = "default",
+    values = {
+      {"Default", "default"},
+      {"Fall", "fall"},
+      {"Sublime Dark", "sublime_dark"},
+      {"Summer", "summer"},
+      {"Textadept", "textadept"}
+    },
+    on_apply = function(value)
+      local core = require "core"
+      -- 中文说明：这一步发生在设置面板把新值写回配置之后；这里立即把主题切到新值，并同步更新启动持久化，避免设置改了但界面还停在旧主题。
+      core.apply_theme(value)
+    end
+  },
   {
     label = "WLPT File Size Limit",
     description = "Files larger than this size, in MiB, will use the WLPT large-file path.",

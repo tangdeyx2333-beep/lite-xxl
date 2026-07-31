@@ -10,6 +10,54 @@ local process = require "core.process"
 local fullscreen = false
 local restore_title_view = false
 
+local function get_theme_items()
+  local items = {}
+  for _, theme_name in ipairs(core.get_available_themes and core.get_available_themes() or {}) do
+    items[#items + 1] = {
+      text = theme_name,
+      info = core.current_theme == theme_name and "当前主题" or nil,
+    }
+  end
+  return items
+end
+
+local function suggest_themes(text)
+  local items = get_theme_items()
+  if not text or text == "" then
+    return items
+  end
+
+  -- 中文说明：上面先把完整主题条目组装出来；下面只用主题名做模糊匹配，再回填成命令面板条目，避免直接拿 table 参与匹配导致排序链路失效。
+  local item_map = {}
+  local names = {}
+  for _, item in ipairs(items) do
+    item_map[item.text] = item
+    names[#names + 1] = item.text
+  end
+
+  local result = {}
+  for _, theme_name in ipairs(common.fuzzy_match(names, text)) do
+    result[#result + 1] = item_map[theme_name]
+  end
+  return result
+end
+
+local function change_theme()
+  core.command_view:enter("切换主题", {
+    -- 中文说明：这一步在命令面板里只展示当前可用主题名，优先复用 colors 目录下已有主题文件，避免再维护一份独立主题清单。
+    suggest = suggest_themes,
+    submit = function(text, item)
+      local theme_name = item and item.text or text
+      local ok, err = core.apply_theme(theme_name)
+      if ok then
+        core.log("已切换主题：%s", theme_name)
+      else
+        core.error("切换主题失败：%s", tostring(err))
+      end
+    end
+  })
+end
+
 local function suggest_directory(text)
   text = common.home_expand(text)
   local basedir = common.dirname(core.root_project().path)
@@ -248,6 +296,11 @@ command.add(nil, {
         return common.fuzzy_match(items, text)
       end
     })
+  end,
+
+  ["core:change-theme"] = function()
+    -- 中文说明：这里提供统一的主题切换命令入口；上面负责让用户选主题，下面真正消费的是 core.apply_theme 这条核心链路。
+    change_theme()
   end,
 
   ["core:find-command"] = function()

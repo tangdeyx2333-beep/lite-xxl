@@ -10,7 +10,12 @@ local style = require "core.style"
 
 -- 切换到亮色主题
 -- core.reload_module("colors.summer")
-
+-- 中文说明：下面这些值都是当前内建支持的主题名，四选一即可。
+-- config.theme = "default"
+-- config.theme = "fall"
+config.theme = "sublime_dark"
+-- config.theme = "summer"
+-- config.theme = "textadept"
 --------------------------- Key bindings -------------------------------------
 
 -- 键位绑定

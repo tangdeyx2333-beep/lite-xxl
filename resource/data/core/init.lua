@@ -2,7 +2,48 @@ require "core.strict"
 require "core.regex"
 local common = require "core.common"
 local config = require "core.config"
-local style = require "colors.default"
+local style = require "core.style"
+
+local function load_theme_module(theme_name)
+  -- 中文说明：这一步先把默认主题完整加载一遍，给 style 表补齐当前界面初始化必需的所有颜色槽位；如果目标主题只改其中一部分，下面再做增量覆盖。
+  package.loaded["colors.default"] = nil
+  require "colors.default"
+  if theme_name == "default" then
+    return true
+  end
+
+  -- 中文说明：这里才叠加用户选择的主题；这样即使目标主题缺少 drag_overlay 之类的新字段，也会继续沿用默认主题的安全值，不再阻断启动。
+  package.loaded["colors." .. theme_name] = nil
+  require("colors." .. theme_name)
+  return true
+end
+
+local function load_startup_theme_name()
+  -- 中文说明：这一步在启动最早阶段读取用户上次选择的主题；这样界面一创建就能直接用目标主题，避免先进默认主题再闪一下切过去。
+  local theme_name = type(config.theme) == "string" and config.theme ~= "" and config.theme or "default"
+  local theme_state_path = USERDIR and (USERDIR .. PATHSEP .. "theme.lua") or nil
+  if not theme_state_path then
+    return theme_name
+  end
+  local ok, theme_state = pcall(dofile, theme_state_path)
+  if ok and type(theme_state) == "table"
+      and type(theme_state.name) == "string" and theme_state.name ~= "" then
+    theme_name = theme_state.name
+  end
+  return theme_name
+end
+
+local startup_theme_name = load_startup_theme_name()
+do
+  -- 中文说明：这一步在启动阶段真正执行主题加载；失败时统一回退到 default，保证配置错误最多只丢主题，不会把整个编辑器启动流程拖死。
+  local ok = pcall(load_theme_module, startup_theme_name)
+  if ok then
+    -- no-op
+  else
+    startup_theme_name = "default"
+    load_theme_module("default")
+  end
+end
 local command
 local keymap
 local dirwatch
@@ -20,6 +61,7 @@ local Project
 local SessionRestore
 
 local core = {}
+core.current_theme = startup_theme_name
 
 local function load_session()
   local ok, t = pcall(dofile, USERDIR .. PATHSEP .. "session.lua")
@@ -667,8 +709,14 @@ local style = require "core.style"
 
 ------------------------------ Themes ----------------------------------------
 
--- light theme:
--- core.reload_module("colors.summer")
+-- 主题设置：
+-- 这一步是在用户配置层声明默认主题，适合长期固定使用；
+-- 当前内建支持的主题如下：
+-- config.theme = "default"
+-- config.theme = "fall"
+-- config.theme = "sublime_dark"
+-- config.theme = "summer"
+-- config.theme = "textadept"
 
 --------------------------- Key bindings -------------------------------------
 
@@ -1014,6 +1062,11 @@ function core.init()
     tostring(project_dir_abs)
   )
   local plugins_success, plugins_refuse_list = core.load_plugins()
+  if type(config.theme) == "string" and config.theme ~= ""
+      and config.theme ~= core.current_theme then
+    -- 中文说明：上面是在加载用户模块和项目模块；下面根据最终生效的用户设置再对齐一次主题，并把结果写回启动持久化，保证“设置文件里的主题”能成为后续启动的真实来源。
+    core.apply_theme(config.theme)
+  end
   log_startup_debug(
     "startup.load_plugins.done root=%s success=%s user_refused=%d data_refused=%d active_view=%s",
     tostring(core.root_project() and core.root_project().path),
@@ -1527,6 +1580,63 @@ function core.reload_module(name)
     for k, v in pairs(new) do old[k] = v end
     package.loaded[name] = old
   end
+end
+
+
+local function get_theme_state_path()
+  return USERDIR .. PATHSEP .. "theme.lua"
+end
+
+local function save_theme_state(theme_name)
+  local fp = io.open(get_theme_state_path(), "wb")
+  if not fp then
+    return false
+  end
+  fp:write("return ", common.serialize({ name = theme_name }), "\n")
+  fp:close()
+  return true
+end
+
+function core.get_available_themes()
+  local theme_names = {}
+  local seen = {}
+  for _, root_dir in ipairs({ DATADIR, USERDIR }) do
+    local color_dir = root_dir .. PATHSEP .. "colors"
+    for _, filename in ipairs(system.list_dir(color_dir) or {}) do
+      local theme_name = filename:match("^(.-)%.lua$")
+      if theme_name and not seen[theme_name] then
+        seen[theme_name] = true
+        theme_names[#theme_names + 1] = theme_name
+      end
+    end
+  end
+  table.sort(theme_names)
+  return theme_names
+end
+
+function core.apply_theme(theme_name, options)
+  options = options or {}
+  if type(theme_name) ~= "string" or theme_name == "" then
+    return nil, "invalid-theme-name"
+  end
+
+  local ok, err = pcall(function()
+    -- 中文说明：上面是在校验并重新执行默认主题与目标主题的叠加链路；下面才是把结果落到当前界面和持久化状态里。
+    load_theme_module(theme_name)
+  end)
+  if not ok then
+    return nil, err
+  end
+
+  config.theme = theme_name
+  core.current_theme = theme_name
+  if options.persist ~= false then
+    save_theme_state(theme_name)
+  end
+
+  -- 中文说明：这一步通知整棵视图树在下一帧按新主题重绘；主题模块本身只改了 style 表，还需要这里推动界面消费新颜色。
+  core.redraw = true
+  return true
 end
 
 
