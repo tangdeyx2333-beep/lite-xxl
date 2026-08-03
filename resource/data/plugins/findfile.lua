@@ -74,5 +74,5 @@ command.add(nil, {
 })
 
 keymap.add({
-  [PLATFORM == "Mac OS X" and "cmd+p" or "ctrl+p"] = "core:find-file"
+  [PLATFORM == "Mac OS X" and "cmd+p" or "ctrl+p"] = "core:open-project-folder-picker"
 })

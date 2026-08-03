@@ -94,7 +94,7 @@ config.plugins.treeview.animate_scroll_to_focused_file = true
 config.large_file_highlight_scroll_idle_delay = 0.18
 
 -- WLPT 大文件阈值，单位 MiB；超过这个大小会走 WLPT 大文件链路
-config.wlpt_file_size_limit = 1
+config.wlpt_file_size_limit = 2
 
 -- 全局无痕状态在多窗口之间同步的轮询间隔，单位秒；值越大越省性能，但其他窗口同步会更慢
 config.clean_exit_global_sync_interval = 1
