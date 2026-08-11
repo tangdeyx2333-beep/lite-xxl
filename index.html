@@ -1,111 +1,391 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lite XXL</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            text-align: center;
-            margin: 0;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 50px 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        }
-        h1 {
-            color: #2c3e50;
-            font-size: 2.8em;
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            font-size: 1.3em;
-            color: #7f8c8d;
-            margin-bottom: 15px;
-        }
-        .highlight {
-            display: inline-block;
-            background-color: #e8f4fd;
-            color: #0984e3;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-        }
-        .preview-img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            margin-bottom: 40px;
-            border: 1px solid #eaeaea;
-        }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .btn {
-            text-decoration: none;
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-        }
-        .btn-primary {
-            background-color: #0984e3;
-            color: white;
-            box-shadow: 0 4px 6px rgba(9, 132, 227, 0.2);
-        }
-        .btn-primary:hover {
-            background-color: #074b8f;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(9, 132, 227, 0.3);
-        }
-        .btn-secondary {
-            background-color: #2d3436;
-            color: white;
-            box-shadow: 0 4px 6px rgba(45, 52, 54, 0.2);
-        }
-        .btn-secondary:hover {
-            background-color: #000000;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(45, 52, 54, 0.3);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  项目首页（GitHub Pages 根页面）。
+  本页所有性能数字均为作者实测口径，改动前需先核对 README 与实测记录：
+  - 打开 13.6GB 文件 <1s、随机跳转 <0.5s：作者实测
+  - 内存 Private Bytes 2,162,448K（约 2.1GB）：13.6GB 文件实测，占比约 14%
+  - 行数 25,030,838：zhwiki-latest-pages-articles.xml 实测
+  - EmEditor 对比内存约 7.4GB：作者实测
+-->
+<title>lite-xxl — 为超大文件而生的编辑器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07080a;
+    --bg-elev:#0d0f13;
+    --surface:#12151b;
+    --surface-2:#171a21;
+    --border:#22262e;
+    --border-soft:#1a1d24;
+    --text:#e9ebee;
+    --text-dim:#8b93a3;
+    --text-faint:#4d525c;
+    --cyan:#49d8ff;
+    --magenta:#ff5fa8;
+    --lime:#b6ff5c;
+    --amber:#ffb454;
+    --violet:#9b8cff;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'Manrope', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--text); font-family:var(--sans); overflow-x:hidden;}
+  ::selection{background:var(--cyan); color:#000;}
+
+  /* ---------- PAGE (no preloader, page is visible immediately) ---------- */
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+
+  /* nav */
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 0; border-bottom:1px solid var(--border-soft);
+  }
+  .logo{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:700; font-size:18px;}
+  .logo .bracket{color:var(--cyan);}
+  .logo .xxl{background:linear-gradient(90deg,var(--cyan),var(--magenta)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .navlinks{display:flex; gap:28px; font-size:14px; color:var(--text-dim);}
+  .navlinks a{color:var(--text-dim); text-decoration:none; transition:color .15s;}
+  .navlinks a:hover{color:var(--text);}
+  .navcta{
+    font-family:var(--mono); font-size:13px; padding:8px 16px; border:1px solid var(--border);
+    border-radius:6px; color:var(--text); text-decoration:none; transition:border-color .15s, background .15s;
+  }
+  .navcta:hover{border-color:var(--cyan); background:rgba(73,216,255,.06);}
+
+  /* hero */
+  header.hero{padding:88px 0 56px; text-align:center;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.16em; color:var(--cyan);
+    text-transform:uppercase; margin-bottom:22px;
+  }
+  .title-wrap{position:relative; z-index:0;}
+  /* 光晕视差容器：作为 blob 的定位基准；JS 按鼠标位置驱动其平移，不干扰内部漂浮动画 */
+  .blob-parallax{
+    position:absolute; inset:0; z-index:0; pointer-events:none;
+    transform:translate3d(0,0,0); will-change:transform;
+  }
+  .blob-wrap{
+    position:absolute; left:50%; top:44%; width:520px; height:480px; z-index:0;
+    transform:translate(-50%,-50%) scale(.72) rotate(-6deg);
+    opacity:0; pointer-events:none;
+    filter:brightness(.12) saturate(.3) blur(2px);
+  }
+  .blob-wrap svg{width:100%; height:100%; overflow:visible;}
+  .blob-wrap.go{
+    animation:blobEmerge 1.15s cubic-bezier(.19,1,.22,1) forwards;
+  }
+  .blob-wrap.float{
+    animation:blobFloat 6s ease-in-out infinite alternate;
+  }
+  @keyframes blobEmerge{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(.65) rotate(-8deg); filter:brightness(.08) saturate(.25) blur(2px);}
+    32%{opacity:.32; transform:translate(-50%,-50%) scale(1.04) rotate(-2deg); filter:brightness(.55) saturate(1.05) blur(0px);}
+    58%{opacity:.38; transform:translate(-50%,-50%) scale(.97) rotate(-4.5deg); filter:brightness(.52) saturate(1) blur(0px);}
+    100%{opacity:.4; transform:translate(-50%,-50%) scale(1) rotate(-3.5deg); filter:brightness(.5) saturate(1) blur(0px);}
+  }
+  @keyframes blobFloat{
+    0%{opacity:.4; transform:translate(-50%,-50%) scale(1) rotate(-3.5deg); filter:brightness(.5) saturate(1) blur(0px);}
+    50%{opacity:.42; transform:translate(-45%,-40%) scale(1.07) rotate(-1deg); filter:brightness(.55) saturate(1) blur(0px);}
+    100%{opacity:.38; transform:translate(-53%,-44%) scale(.95) rotate(-6deg); filter:brightness(.48) saturate(1) blur(0px);}
+  }
+  h1{
+    position:relative; z-index:1;
+    font-size:52px; line-height:1.18; font-weight:800; letter-spacing:-.02em;
+    max-width:820px; margin:0 auto;
+    text-shadow:0 2px 24px rgba(0,0,0,.5);
+  }
+  h1 .grad{background:linear-gradient(90deg,var(--cyan),var(--violet) 60%,var(--magenta)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .sub{
+    margin:22px auto 0; max-width:560px; font-size:16px; line-height:1.7; color:var(--text-dim);
+  }
+  .cta-row{display:flex; gap:14px; justify-content:center; margin-top:34px;}
+  .btn{font-family:var(--sans); font-weight:700; font-size:14.5px; padding:13px 24px; border-radius:8px; text-decoration:none; display:inline-block;}
+  .btn-primary{background:var(--text); color:#08090b;}
+  .btn-primary:hover{background:var(--cyan); color:#04121a;}
+  .btn-ghost{border:1px solid var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--text-dim);}
+
+  /* 编辑器演示容器：这一层继续复用原有卡片外观，保持首屏视觉层级不变 */
+  .editor-shell{
+    margin:56px auto 0; max-width:980px; background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; overflow:hidden; box-shadow:0 40px 90px -30px rgba(0,0,0,.7);
+  }
+  /* 演示图片区：上面这一层负责给静态截图预留承载区域，下面图片直接消费这块区域做展示 */
+  .editor-media{
+    display:block; width:100%; height:auto; background:var(--bg-elev);
+  }
+
+  /* stat strip */
+  .stats{
+    max-width:980px; margin:40px auto 0; display:grid; grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--border); border-radius:12px; overflow:hidden;
+  }
+  .stat{padding:24px 20px; border-right:1px solid var(--border);}
+  .stat:last-child{border-right:none;}
+  .stat .num{font-family:var(--mono); font-size:28px; font-weight:700; color:var(--text);}
+  .stat .num span{color:var(--cyan);}
+  .stat .label{margin-top:6px; font-size:12.5px; color:var(--text-dim);}
+
+  /* sections */
+  section{padding:96px 0;}
+  .section-head{max-width:560px; margin:0 auto 52px; text-align:center;}
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{font-size:32px; font-weight:800; letter-spacing:-.01em;}
+  .section-head p{margin-top:14px; color:var(--text-dim); font-size:15px; line-height:1.7;}
+
+  .grid-features{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border);
+    border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  .feature{background:var(--surface); padding:30px 26px;}
+  .feature .ic{width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:18px; font-family:var(--mono); font-weight:700; font-size:14px;}
+  .feature h3{font-size:16px; margin-bottom:10px;}
+  .feature p{font-size:13.5px; color:var(--text-dim); line-height:1.7;}
+
+  /* perf chart */
+  .perf{max-width:900px; margin:0 auto; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:36px;}
+  .perf-legend{display:flex; gap:24px; margin-top:18px; font-family:var(--mono); font-size:12px; color:var(--text-dim);}
+  /* 图表示意图标注与实测内存对比行：区分“示意”和“实测”，避免误导 */
+  .perf-note{margin-top:16px; font-size:12px; color:var(--text-faint);}
+  .perf-mem{display:flex; gap:18px; flex-wrap:wrap; margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--text-dim);}
+  .perf-mem b{color:var(--text); font-weight:600;}
+  .dot{width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px;}
+
+  footer{border-top:1px solid var(--border-soft); padding:36px 0; text-align:center;}
+  footer .logo{justify-content:center; margin-bottom:10px;}
+  footer p{font-size:12.5px; color:var(--text-faint);}
+
+  @media(max-width:760px){
+    h1{font-size:34px;}
+    .grid-features{grid-template-columns:1fr;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .navlinks{display:none;}
+  }
+</style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Lite XXL</h1>
 
-        <p class="subtitle">Ultra Large File Editor</p>
+<div id="page">
+  <div class="wrap">
+    <!-- 顶部导航：站内锚点 + GitHub 仓库外链 -->
+    <nav>
+      <div class="logo"><span class="bracket">[</span>lite<span class="xxl">xxl</span><span class="bracket">]</span></div>
+      <div class="navlinks">
+        <a href="#features">功能</a>
+        <a href="#perf">性能</a>
+        <a href="#download">下载</a>
+      </div>
+      <!-- 右上角 GitHub 入口：直接外链到仓库主页 -->
+      <a class="navcta" href="https://github.com/tangdeyx2333-beep/lite-xxl">GitHub ↗</a>
+    </nav>
+  </div>
 
-        <div class="highlight">✨ 支持 13.6GB 文本文件</div>
-
-        <div class="button-group">
-            <a href="https://github.com/tangdeyx2333-beep/lite-xxl/releases/latest/download/lite-xxl.zip" class="btn btn-primary">
-                📥 Download 下载最新版
-            </a>
-
-            <a href="https://github.com/tangdeyx2333-beep/lite-xxl" class="btn btn-secondary" target="_blank">
-                💻 GitHub
-            </a>
+  <!-- ===== Hero 首屏：标题 + 实测数据副标题 + 下载/性能入口 ===== -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">TEXT EDITOR / BUILT FOR SCALE</div>
+      <div class="title-wrap">
+        <!-- 光晕视差容器：JS 根据鼠标位置驱动它平移，内部 blob 保留自己的漂浮动画 -->
+        <div class="blob-parallax" id="blobParallax">
+        <div class="blob-wrap" id="titleBlob">
+          <svg viewBox="0 0 600 560" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="blobGrad" x1="10%" y1="0%" x2="95%" y2="100%">
+                <stop offset="0%" stop-color="#ff5fa8"/>
+                <stop offset="42%" stop-color="#49d8ff"/>
+                <stop offset="100%" stop-color="#05070c"/>
+              </linearGradient>
+              <filter id="blobBlur" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="24"/>
+              </filter>
+            </defs>
+            <path filter="url(#blobBlur)" fill="url(#blobGrad)"
+              d="M210,30 L430,10 L580,220 L520,430 L360,540 L150,500 L40,340 L60,150 Z"/>
+            <path filter="url(#blobBlur)" fill="rgba(155,140,255,0.55)"
+              d="M300,80 L470,60 L520,240 L400,380 Z"/>
+          </svg>
         </div>
-        <br>
-        <img src="./show.png" alt="Lite XXL 界面展示" class="preview-img">
+        </div>
+        <h1 id="mainTitle">当文件大到没人敢打开，<br><span class="grad">lite-xxl</span> 才刚刚开始。</h1>
+      </div>
+      <!-- 副标题：全部采用实测口径；满载流畅作为补充话术，不单独突出 -->
+      <p class="sub">流式内核 + 索引式跳转，专为超大文件设计的编辑器。13.6GB 的维基百科 XML，打开 &lt;1s、随机跳转 &lt;0.5s，系统满载时依旧流畅。</p>
+      <div class="cta-row">
+        <!-- 主下载按钮：唯一发布渠道为 GitHub Release（当前仅 Windows 版） -->
+        <a class="btn btn-primary" href="https://github.com/tangdeyx2333-beep/lite-xxl/releases/latest/download/lite-xxl.zip">下载 Windows 版</a>
+        <a class="btn btn-ghost" href="#perf">查看性能基准</a>
+      </div>
+
+      <!-- 编辑器演示区：这里改为直接引用现有示例截图，避免继续维护手写示意结构 -->
+      <div class="editor-shell">
+        <img class="editor-media" src="./show.png" alt="lite-xxl 编辑器示例截图"/>
+      </div>
+
+      <!-- 统计条：四组实测数据；第 4 项为内存/文件大小占比（2.1GB / 13.6GB ≈ 14%） -->
+      <div class="stats">
+        <div class="stat"><div class="num"><span>&lt;1s</span></div><div class="label">打开 13.6GB 文件（实测）</div></div>
+        <div class="stat"><div class="num"><span>&lt;0.5s</span></div><div class="label">任意行随机跳转（实测）</div></div>
+        <div class="stat"><div class="num"><span>13.6GB</span></div><div class="label">实测通过的最大文件</div></div>
+        <div class="stat"><div class="num"><span>≈14%</span></div><div class="label">内存占文件大小比例（约 2.1GB）</div></div>
+      </div>
     </div>
+  </header>
+
+  <!-- ===== 功能区：六张卡片，措辞均已对照项目实际能力核对，不做夸大 ===== -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">FEATURES</div>
+        <h2>为大文件重新设计的每一层</h2>
+        <p>不是"能打开"，是打开、编辑、跳转都像小文件一样轻盈。</p>
+      </div>
+      <div class="grid-features">
+        <div class="feature">
+          <div class="ic" style="background:rgba(73,216,255,.1); color:var(--cyan);">01</div>
+          <h3>流式渲染内核</h3>
+          <p>只解析和渲染当前可视区域，文件再大也不做全量加载，打开即用。</p>
+        </div>
+        <div class="feature">
+          <div class="ic" style="background:rgba(155,140,255,.1); color:var(--violet);">02</div>
+          <h3>索引式跳转</h3>
+          <p>后台建立行偏移索引，实测任意行随机跳转 &lt;0.5s。</p>
+        </div>
+        <div class="feature">
+          <div class="ic" style="background:rgba(182,255,92,.1); color:var(--lime);">03</div>
+          <h3>多语言语法高亮</h3>
+          <p>覆盖主流语言与配置文件格式，暗色配色专为长时间阅读代码优化。</p>
+        </div>
+        <div class="feature">
+          <div class="ic" style="background:rgba(255,95,168,.1); color:var(--magenta);">04</div>
+          <h3>Markdown 实时预览</h3>
+          <p>编辑区与预览区分栏同步滚动，写文档所见即所得。</p>
+        </div>
+        <div class="feature">
+          <div class="ic" style="background:rgba(255,180,84,.1); color:var(--amber);">05</div>
+          <h3>暗黑极简界面</h3>
+          <p>去掉一切多余装饰，专注度优先，长时间使用也不刺眼。</p>
+        </div>
+        <div class="feature">
+          <div class="ic" style="background:rgba(255,255,255,.08); color:var(--text);">06</div>
+          <h3>内存可控</h3>
+          <p>打开与跳转耗时不随文件大小线性增长；13.6GB 文件实测内存约 2.1GB（占比约 14%），密集行索引仅 8 字节/行，2500 万行索引约 200MB。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 性能区：趋势图为示意图（非基准测试）；下方内存对比为作者实测 ===== -->
+  <section id="perf">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">BENCHMARK</div>
+        <h2>打开时间不随文件变大</h2>
+        <p>传统编辑器的打开时间随文件大小线性甚至更差地增长，lite-xxl 始终接近于零。</p>
+      </div>
+      <div class="perf">
+        <svg viewBox="0 0 760 260" width="100%" height="auto">
+          <line x1="50" y1="20" x2="50" y2="220" stroke="#22262e" stroke-width="1"/>
+          <line x1="50" y1="220" x2="730" y2="220" stroke="#22262e" stroke-width="1"/>
+          <text x="30" y="224" fill="#4d525c" font-family="JetBrains Mono" font-size="10" text-anchor="end">0s</text>
+          <text x="30" y="30" fill="#4d525c" font-family="JetBrains Mono" font-size="10" text-anchor="end">30s</text>
+          <text x="50" y="238" fill="#4d525c" font-family="JetBrains Mono" font-size="10">100MB</text>
+          <text x="330" y="238" fill="#4d525c" font-family="JetBrains Mono" font-size="10">1GB</text>
+          <text x="560" y="238" fill="#4d525c" font-family="JetBrains Mono" font-size="10">5GB</text>
+          <text x="690" y="238" fill="#4d525c" font-family="JetBrains Mono" font-size="10">13.6GB</text>
+          <polyline points="50,205 200,175 330,120 450,70 560,35 640,20 710,12"
+            fill="none" stroke="#ff5fa8" stroke-width="2.5"/>
+          <polyline points="50,213 200,210 330,208 450,206 560,205 640,204 710,203"
+            fill="none" stroke="#49d8ff" stroke-width="2.5"/>
+        </svg>
+        <div class="perf-legend">
+          <span><i class="dot" style="background:var(--cyan);"></i>lite-xxl</span>
+          <span><i class="dot" style="background:var(--magenta);"></i>传统编辑器</span>
+        </div>
+        <!-- 趋势图为示意；同一 13.6GB 文件的内存对比（lite-xxl vs EmEditor）是作者实测数据 -->
+        <p class="perf-note">* 趋势示意图，非严格基准测试</p>
+        <div class="perf-mem">
+          <span>同一 13.6GB 文件实测内存：</span>
+          <span><i class="dot" style="background:var(--cyan);"></i>lite-xxl <b>≈2.1GB</b>（Private Bytes 2,162,448K）</span>
+          <span><i class="dot" style="background:var(--magenta);"></i>EmEditor <b>≈7.4GB</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 下载区：唯一发布渠道为 GitHub Release（Windows 版） ===== -->
+  <section id="download">
+    <div class="wrap" style="text-align:center;">
+      <div class="section-head" style="margin-bottom:30px;">
+        <div class="eyebrow">DOWNLOAD</div>
+        <h2>去打开一个别人不敢打开的文件</h2>
+      </div>
+      <div class="cta-row">
+        <!-- 下载按钮：指向 GitHub Release 的 Windows 安装包 -->
+        <a class="btn btn-primary" href="https://github.com/tangdeyx2333-beep/lite-xxl/releases/latest/download/lite-xxl.zip">下载 Windows 版</a>
+      </div>
+      <!-- 能力边界说明：避免把“大文件高亮”宣传成完整支持 -->
+      <p class="perf-note" style="margin-top:18px;">超大文件语法高亮为实验性功能，普通文件完整支持。</p>
+    </div>
+  </section>
+
+  <!-- ===== 页脚：品牌标语 ===== -->
+  <footer>
+    <div class="wrap">
+      <div class="logo"><span class="bracket">[</span>lite<span class="xxl">xxl</span><span class="bracket">]</span></div>
+      <p>为超大文件而生的编辑器 · 极速内核，暗黑美学</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+// 首屏背景色块动画：先尊重系统“减少动态效果”设置；
+// 动画分两步：先快速“吐亮”，再转为缓慢漂移，避免长时间干扰阅读
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var blob = document.getElementById('titleBlob');
+
+  if(reduceMotion){
+    blob.style.opacity = .4;
+    blob.style.transform = 'translate(-50%,-50%) scale(1) rotate(-3.5deg)';
+    blob.style.filter = 'brightness(.5) saturate(1)';
+    return;
+  }
+  // 页面一打开，标题背后的色块直接从暗突然"吐"亮出来
+  setTimeout(function(){
+    blob.classList.add('go');
+  }, 120);
+  // 突然亮出来之后，转为持续、缓慢的漂移浮动，让它"活"起来
+  blob.addEventListener('animationend', function(e){
+    if(e.animationName === 'blobEmerge'){
+      blob.classList.add('float');
+    }
+  });
+})();
+
+// 鼠标视差：光晕跟随鼠标轻微偏移（rAF 缓动），让背景更有层次和流动感
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+  var par = document.getElementById('blobParallax');
+  if (!par) { return; }
+  var targetX = 0, targetY = 0, curX = 0, curY = 0;
+  window.addEventListener('mousemove', function(e){
+    // 把鼠标位置归一化到 -0.5~0.5，再乘偏移幅度，形成“朝鼠标方向偏移”的效果
+    targetX = (e.clientX / window.innerWidth  - .5) * 28;
+    targetY = (e.clientY / window.innerHeight - .5) * 20;
+  }, { passive: true });
+  (function tick(){
+    // 每帧向目标位置缓动靠近，避免生硬跳变
+    curX += (targetX - curX) * .08;
+    curY += (targetY - curY) * .08;
+    par.style.transform = 'translate3d(' + curX.toFixed(2) + 'px,' + curY.toFixed(2) + 'px,0)';
+    requestAnimationFrame(tick);
+  })();
+})();
+</script>
 </body>
 </html>
