@@ -89,9 +89,9 @@ config.plugins.treeview.expand_dirs_to_focused_file = true
 config.plugins.treeview.scroll_to_focused_file = true
 config.plugins.treeview.animate_scroll_to_focused_file = true
 
--- 自动补全弹窗触发所需最少输入字符数；值越小越容易触发弹窗（当前按需求设为 2，可手动调整）
+-- 自动补全弹窗触发所需最少输入字符数；值越小越容易触发弹窗
 config.plugins.autocomplete.min_len = 1
-
+ 
 
 -- 大文件/WLPT 停滚多久后才恢复高亮，单位秒；值越大越保滚动性能
 config.large_file_highlight_scroll_idle_delay = 0.18
@@ -101,6 +101,12 @@ config.wlpt_file_size_limit = 2
 
 -- 全局无痕状态在多窗口之间同步的轮询间隔，单位秒；值越大越省性能，但其他窗口同步会更慢
 config.clean_exit_global_sync_interval = 1
+
+-- 临时保存检查间隔，单位秒；负责定期检查是否到了可保存时机
+config.instance_snapshot_autosave_interval = 5
+
+-- 输入停止后等待多久才执行临时保存，单位秒
+config.instance_snapshot_autosave_after_idle = 10
 
 -- 是否在 WLPT 模式下禁用 Markdown 渲染预览；true 表示禁用，false 表示允许
 -- 注意这个如果文件过大渲染会有明显卡顿，并且有几率无响应，无响应强制退出会有丢失数据的风险

@@ -5,3 +5,7 @@
 *.log
 /lite-xxl.exe
 /lite-xxl.exe.lnk
+/*.exe
+/user/clean-exit-runtime.lua
+/user/error.txt
+/docs/plans/2026-08-13-ws-orphan-aggregation-design.md

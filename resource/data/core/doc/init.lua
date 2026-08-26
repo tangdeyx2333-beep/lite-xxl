@@ -157,7 +157,16 @@ function Doc:reset_syntax()
   local header = self:get_text(1, 1, self:position_offset(1, 1, 128))
   local path = self.abs_filename
   if not path and self.filename then
-    path = core.project_dir .. PATHSEP .. self.filename
+    -- 组装语法检测路径：filename 是绝对路径时直接使用，
+    -- 只有相对路径才拼项目根（core.project_dir 已废弃、恒为 nil，不能再引用）
+    if common.is_absolute_path(self.filename) then
+      path = self.filename
+    else
+      local project_dir = core.root_project() and core.root_project().path or nil
+      if project_dir then
+        path = project_dir .. PATHSEP .. self.filename
+      end
+    end
   end
   if path then path = common.normalize_path(path) end
   local logical_syn
@@ -168,14 +177,14 @@ function Doc:reset_syntax()
   end
   self.logical_syntax = logical_syn
   syntax_trace(
-    "doc.reset_syntax file=%s is_large=%s display_before=%s logical=%s disable_highlight=%s",
+    "doc.reset_syntax file=%s is_large=%s display_before=%s logical=%s enable_highlight=%s",
     tostring(self.abs_filename or self.filename),
     tostring(self.is_large_file),
     tostring(self.syntax and self.syntax.name),
     tostring(logical_syn and logical_syn.name),
     tostring(config.large_file_enable_highlight)
   )
-  if self.is_large_file and config.large_file_enable_highlight then
+  if self.is_large_file and not config.large_file_enable_highlight then
     local syn = syntax.get("plain_text", "")
     if self.syntax ~= syn then
       self.syntax = syn
@@ -487,7 +496,12 @@ function Doc:save(filename, abs_filename)
   if not filename then
     assert(self.filename, "no filename set to default to")
     filename = self.filename
+    -- 组装：历史快照恢复的文档可能 abs 缺失但 filename 是绝对路径，这里补回，
+    -- 保证后续 set_filename 成对写入，保存/定位不再丢失路径
     abs_filename = self.abs_filename
+    if not abs_filename and filename and common.is_absolute_path(filename) then
+      abs_filename = filename
+    end
   else
     assert(self.filename or abs_filename, "calling save on unnamed doc without absolute path")
   end
@@ -1175,6 +1189,11 @@ end
 
 -- For plugins to add custom actions of document change
 function Doc:on_text_change(type)
+  -- 中文说明：文档内容发生变化时这里只通知实例快照调度器“有新变更”，
+  -- 不直接执行保存；真正落盘由 core.step 统一调度，避免每次输入都触碰磁盘。
+  if core.mark_instance_snapshot_dirty then
+    core.mark_instance_snapshot_dirty("文档变更:" .. tostring(type))
+  end
 end
 
 -- For plugins to get notified when a document is closed

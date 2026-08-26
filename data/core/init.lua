@@ -78,6 +78,12 @@ local function get_startup_restore_mode(restore_snapshot_arg)
   if type(restore_snapshot_arg) == "string" and restore_snapshot_arg ~= "" then
     return "targeted-restore"
   end
+  -- 中文说明：保存 user/init.lua 触发的是同一进程内重启，此时单实例锁还在，
+  -- system.has_other_instance() 可能返回 true；这里必须按初始窗口恢复快照，
+  -- 否则会被误判成外部第二窗口打开，跳过 unsaved_instances 恢复导致 tab 丢失。
+  if RESTARTED then
+    return "initial-open"
+  end
   if system.has_other_instance and system.has_other_instance() then
     return "secondary-open"
   end
@@ -225,9 +231,79 @@ end
 local unsaved_instances_dirname = "unsaved_instances"
 local unsaved_snapshot_prefix = "instance_"
 local unsaved_snapshot_ext = ".lua"
+local instance_snapshot_autosave_interval = 1
+local instance_snapshot_autosave_after_idle = 10
+local instance_snapshot_runtime = {
+  snapshot_id = nil,
+  snapshot_path = nil,
+  dirty_signature = nil,
+  status_dirty = false,
+  last_status_message = nil,
+  next_flush_at = 0,
+  last_edit_at = 0,
+}
 
 local function get_unsaved_instances_dir()
   return USERDIR .. PATHSEP .. unsaved_instances_dirname
+end
+
+local function get_instance_snapshot_autosave_interval()
+  return math.max(0.25, tonumber(config.instance_snapshot_autosave_interval) or instance_snapshot_autosave_interval)
+end
+
+local function get_instance_snapshot_autosave_after_idle()
+  return math.max(0, tonumber(config.instance_snapshot_autosave_after_idle) or instance_snapshot_autosave_after_idle)
+end
+
+local function ensure_runtime_snapshot_identity()
+  if instance_snapshot_runtime.snapshot_id and instance_snapshot_runtime.snapshot_path then
+    return instance_snapshot_runtime.snapshot_id, instance_snapshot_runtime.snapshot_path
+  end
+
+  local dir = get_unsaved_instances_dir()
+  common.mkdirp(dir)
+  local snapshot_name = string.format(
+    "%s%013d_%06x%s",
+    unsaved_snapshot_prefix,
+    math.floor(system.get_time() * 1000),
+    math.random(0, 0xffffff),
+    unsaved_snapshot_ext
+  )
+  instance_snapshot_runtime.snapshot_id = snapshot_name:sub(1, -#unsaved_snapshot_ext - 1)
+  instance_snapshot_runtime.snapshot_path = dir .. PATHSEP .. snapshot_name
+  return instance_snapshot_runtime.snapshot_id, instance_snapshot_runtime.snapshot_path
+end
+
+local function touch_instance_snapshot_dirty()
+  instance_snapshot_runtime.last_edit_at = system.get_time()
+  instance_snapshot_runtime.dirty_signature = nil
+  instance_snapshot_runtime.status_dirty = true
+end
+
+local function show_instance_snapshot_status(message, force)
+  if not core.status_view or not core.status_view.show_message then
+    return
+  end
+  if not force
+    and not instance_snapshot_runtime.status_dirty
+    and instance_snapshot_runtime.last_status_message == message
+  then
+    return
+  end
+  core.status_view:show_message("i", style.text, message)
+  instance_snapshot_runtime.last_status_message = message
+  instance_snapshot_runtime.status_dirty = false
+end
+
+-- 中文说明：文档编辑事件只进入“标记已变更”阶段，不在输入事件里直接写磁盘；
+-- 后续由 core.step 里的统一调度器判断空闲时间并提交，保证普通 ws 和 WLPT 恢复状态共用同一节奏。
+function core.mark_instance_snapshot_dirty(source)
+  touch_instance_snapshot_dirty()
+  log_quit_debug(
+    "实时落盘 标记变更 来源=%s 时间=%.3f",
+    tostring(source),
+    instance_snapshot_runtime.last_edit_at
+  )
 end
 
 local function normalize_runtime_path(path)
@@ -385,24 +461,114 @@ end
 local function write_instance_storage(key, value)
   local dir = get_ws_storage_dir()
   common.mkdirp(dir)
-  local fp = io.open(dir .. PATHSEP .. key, "w")
-  if not fp then return false end
+  local path = dir .. PATHSEP .. key
+  log_quit_debug(
+    "ws写入 开始 来源=init 键=%s 文件=%s 名称=%s 内容长度=%s",
+    tostring(key),
+    tostring(path),
+    tostring(value and value.name),
+    tostring(value and value.content and #(value.content) or 0)
+  )
+  local fp = io.open(path, "w")
+  if not fp then
+    log_quit_debug(
+      "ws写入 失败 来源=init 键=%s 文件=%s 原因=io.open返回空",
+      tostring(key),
+      tostring(path)
+    )
+    return false
+  end
   fp:write("return ", common.serialize(value), "\n")
   fp:close()
+  log_quit_debug(
+    "ws写入 完成 来源=init 键=%s 文件=%s",
+    tostring(key),
+    tostring(path)
+  )
   return true
 end
 
 local function read_instance_storage(key)
   if type(key) ~= "string" or key == "" then return nil end
-  local ok, value = pcall(dofile, get_ws_storage_dir() .. PATHSEP .. key)
+  local path = get_ws_storage_dir() .. PATHSEP .. key
+  log_quit_debug(
+    "ws读取 开始 来源=restore 键=%s 文件=%s",
+    tostring(key),
+    tostring(path)
+  )
+  local ok, value = pcall(dofile, path)
   if ok and type(value) == "table" then
+    log_quit_debug(
+      "ws读取 成功 来源=restore 键=%s 文件=%s 名称=%s 内容长度=%s",
+      tostring(key),
+      tostring(path),
+      tostring(value.name),
+      tostring(value.content and #(value.content) or 0)
+    )
     return value
   end
+  log_quit_debug(
+    "ws读取 失败 来源=restore 键=%s 文件=%s 结果=%s",
+    tostring(key),
+    tostring(path),
+    tostring(ok)
+  )
 end
 
 local function remove_instance_storage(key)
   if type(key) ~= "string" or key == "" then return end
-  os.remove(get_ws_storage_dir() .. PATHSEP .. key)
+  local path = get_ws_storage_dir() .. PATHSEP .. key
+  local info = system.get_file_info(path)
+  if not info then
+    log_quit_debug(
+      "ws删除 跳过 来源=unknown 键=%s 文件=%s 原因=文件不存在",
+      tostring(key),
+      tostring(path)
+    )
+    return
+  end
+  log_quit_debug(
+    "ws删除 开始 来源=unknown 键=%s 文件=%s",
+    tostring(key),
+    tostring(path)
+  )
+  os.remove(path)
+  log_quit_debug(
+    "ws删除 完成 来源=unknown 键=%s 文件=%s",
+    tostring(key),
+    tostring(path)
+  )
+end
+
+local function remove_runtime_instance_snapshot(snapshot_id, snapshot_path, source)
+  if type(snapshot_id) ~= "string" or snapshot_id == "" then
+    return
+  end
+
+  local removed_ws_count = 0
+  for _, filename in ipairs(system.list_dir(get_ws_storage_dir()) or {}) do
+    if filename:find(snapshot_id .. "_doc_", 1, true) == 1 then
+      remove_instance_storage(filename)
+      removed_ws_count = removed_ws_count + 1
+    end
+  end
+
+  local removed_snapshot = false
+  if type(snapshot_path) == "string" and system.get_file_info(snapshot_path) then
+    os.remove(snapshot_path)
+    removed_snapshot = true
+  end
+
+  if removed_snapshot or removed_ws_count > 0 then
+    log_quit_debug(
+      "实时落盘 清理空实例 阶段=%s 实例=%s 文件=%s 删除instance=%s 删除ws数量=%s",
+      tostring(source),
+      tostring(snapshot_id),
+      tostring(snapshot_path),
+      tostring(removed_snapshot),
+      tostring(removed_ws_count)
+    )
+  end
 end
 
 local PENDING_TREEVIEW_STATE_KEY = "pending_treeview_state"
@@ -447,135 +613,234 @@ local function should_snapshot_wlpt_by_path(doc)
     and doc:is_wlpt_mode()
 end
 
-local function save_unsaved_instance_snapshot()
-  local docs = {}
-  local views = core.root_view and core.root_view.root_node:get_children() or {}
-  local snapshot_name = string.format(
-    "%s%013d_%06x%s",
-    unsaved_snapshot_prefix,
-    math.floor(system.get_time() * 1000),
-    math.random(0, 0xffffff),
-    unsaved_snapshot_ext
-  )
-  local snapshot_id = snapshot_name:sub(1, -#unsaved_snapshot_ext - 1)
+-- 中文说明：实时落盘提交由统一调度器驱动，先准备实例结构和文档分流信息，再统一消费到 ws / wlpt / instance 文件。
+-- 这样普通文档和 WLPT 文档共享同一轮提交时机，避免 instance 引用和内容快照分属两套不可控节奏。
+local function commit_realtime_instance_snapshot(source, force)
+  if not core.root_view or not core.root_view.root_node then
+    log_quit_debug(
+      "实时落盘 提交跳过 阶段=%s 原因=root_view未就绪",
+      tostring(source)
+    )
+    show_instance_snapshot_status("临时保存跳过：界面尚未就绪", force)
+    return false
+  end
 
-  for i, view in ipairs(views) do
+  if not core.should_persist_instance_state() then
+    log_quit_debug(
+      "实时落盘 提交跳过 阶段=%s 原因=无痕退出开启",
+      tostring(source)
+    )
+    -- 中文说明：这里已经明确进入“无痕退出”分支，只需要给出一次状态提示；
+    -- 不能每次定时调度都强制刷新，否则状态栏会被同一句提示反复占住，看起来像死循环。
+    show_instance_snapshot_status("临时保存跳过：无痕退出已开启", false)
+    return false
+  end
+
+  local now = system.get_time()
+  if not force
+    and instance_snapshot_runtime.last_edit_at > 0
+    and now - instance_snapshot_runtime.last_edit_at < get_instance_snapshot_autosave_after_idle()
+  then
+    log_quit_debug(
+      "实时落盘 提交延后 阶段=%s 原因=等待输入空闲 已空闲秒数=%.3f",
+      tostring(source),
+      now - instance_snapshot_runtime.last_edit_at
+    )
+    return false
+  end
+
+  local views = core.root_view.root_node:get_children() or {}
+  local seen_docs = {}
+  local snapshot_id, snapshot_path = ensure_runtime_snapshot_identity()
+  local doc_count = 0
+  local ws_count = 0
+  local wlpt_count = 0
+  local path_count = 0
+  local skip_count = 0
+  local docs = {}
+  local used_storage_keys = {}
+
+  log_quit_debug(
+    "实时落盘 提交开始 阶段=%s 实例=%s 文件=%s 视图数量=%s 文档总数=%s 强制=%s",
+    tostring(source),
+    tostring(snapshot_id),
+    tostring(snapshot_path),
+    tostring(#views),
+    tostring(#(core.docs or {})),
+    tostring(force == true)
+  )
+
+  for index, view in ipairs(views) do
     local doc = view and view.doc
-    if doc then
-      if view == core.command_view then
-        log_quit_debug(
-          "snapshot.skip_command_view index=%d label=%s text=%q",
-          i,
-          tostring(core.command_view and core.command_view.label),
-          tostring(core.command_view and core.command_view.get_text and core.command_view:get_text() or ""):gsub("\n", "\\n"):sub(1, 80)
-        )
-        goto continue
-      end
-      local item = {
-        selection = { doc:get_selection(true) },
-        scroll = view.scroll and {
-          x = view.scroll.to and view.scroll.to.x or view.scroll.x or 0,
-          y = view.scroll.to and view.scroll.to.y or view.scroll.y or 0,
-        } or { x = 0, y = 0 },
-        active = (core.active_view == view)
-      }
-      local name = doc.filename or doc:get_name()
-      local content
+    if doc and view == core.command_view then
       log_quit_debug(
-        "snapshot.inspect index=%d name=%s abs=%s dirty=%s is_large=%s active=%s sel=%s scroll=%s,%s view=%s",
-        i,
-        tostring(name),
-        tostring(doc.abs_filename),
-        tostring(doc:is_dirty()),
-        tostring(doc.is_large_file),
-        tostring(item.active),
-        tostring(item.selection and item.selection[1]),
-        tostring(item.scroll and item.scroll.x),
-        tostring(item.scroll and item.scroll.y),
-        tostring(view)
+        "实时落盘 跳过命令栏 阶段=%s 视图索引=%s 标签=%s",
+        tostring(source),
+        tostring(index),
+        tostring(core.command_view and core.command_view.label)
       )
-      if doc.abs_filename and (not doc:is_dirty() or should_snapshot_wlpt_by_path(doc)) then
+    elseif doc and not seen_docs[doc] then
+      seen_docs[doc] = true
+      doc_count = doc_count + 1
+
+      local name = doc.filename or doc.get_name and doc:get_name() or "unsaved"
+      local is_dirty = doc.is_dirty and doc:is_dirty() or false
+      local is_wlpt = doc.is_wlpt_mode and doc:is_wlpt_mode() or false
+      local item = {
+        selection = view.doc and { view.doc:get_selection(true) } or nil,
+        scroll = view.scroll and { x = view.scroll.x, y = view.scroll.y } or nil,
+        active = view == core.active_view,
+      }
+      local route = "跳过"
+      local reason = ""
+      local content_length = nil
+
+      -- 中文说明：准备阶段先判断文档应该进入哪条临时保存链路，并组装 instance 需要引用的条目。
+      if is_wlpt then
+        route = "wlpt"
+        reason = is_dirty and "WLPT文档有未保存编辑状态" or "WLPT文档当前未脏"
+        wlpt_count = wlpt_count + 1
         item.type = "path"
         item.abs_filename = doc.abs_filename
-        log_quit_debug(
-          "snapshot.store index=%d type=path name=%s abs=%s dirty=%s wlpt=%s",
-          i,
-          tostring(name),
-          tostring(doc.abs_filename),
-          tostring(doc:is_dirty()),
-          tostring(should_snapshot_wlpt_by_path(doc))
-        )
-      else
-        content = doc:get_all_text()
-        log_quit_debug(
-          "snapshot.content index=%d name=%s len=%d preview=%q",
-          i,
-          tostring(name),
-          #(content or ""),
-          tostring(content or ""):gsub("\n", "\\n"):sub(1, 80)
-        )
-        if not doc.abs_filename and is_blank_unsaved_content(name, content) then
-          item = nil
+
+        -- 中文说明：消费阶段复用 WLPT 已有恢复链路，只在文档有编辑状态时覆盖写 storage/wlpt 下的恢复文件。
+        if is_dirty and doc.wlpt_session and doc.wlpt_session.persist_recovery_state then
+          local ok = doc.wlpt_session:persist_recovery_state()
           log_quit_debug(
-            "snapshot.skip_blank index=%d name=%s",
-            i,
-            tostring(name)
+            "实时落盘 wlpt写入 阶段=%s 视图索引=%s 名称=%s 结果=%s",
+            tostring(source),
+            tostring(index),
+            tostring(name),
+            tostring(ok)
           )
+        end
+      elseif doc.abs_filename and not is_dirty then
+        route = "path"
+        reason = "普通文件未修改，只需要实例快照记录路径"
+        path_count = path_count + 1
+        item.type = "path"
+        item.abs_filename = doc.abs_filename
+      else
+        local content = doc.get_all_text and doc:get_all_text() or ""
+        content_length = #(content or "")
+        if not doc.abs_filename and is_blank_unsaved_content(name, content) then
+          route = "跳过"
+          reason = "空白未命名文档不需要临时保存"
+          skip_count = skip_count + 1
         else
-        local storage_key = string.format("%s_doc_%03d", snapshot_id, i)
+          route = "ws"
+          reason = doc.abs_filename and "有路径的普通脏文档需要写入ws内容快照" or "未命名普通文档需要写入ws内容快照"
+          ws_count = ws_count + 1
+          local storage_key = string.format("%s_doc_%03d", snapshot_id, index)
+          used_storage_keys[storage_key] = true
           if write_instance_storage(storage_key, {
             content = content,
             name = name,
             selection = item.selection,
+            abs_filename = doc.abs_filename,
           }) then
             item.type = "temp_storage"
             item.storage_key = storage_key
-            log_quit_debug(
-              "snapshot.store index=%d type=temp_storage key=%s name=%s len=%d",
-              i,
-              tostring(storage_key),
-              tostring(name),
-              #(content or "")
-            )
           else
             item.type = "content"
             item.content = content
             item.name = name
-            log_quit_debug(
-              "snapshot.store index=%d type=content name=%s len=%d",
-              i,
-              tostring(name),
-              #(content or "")
-            )
+            item.abs_filename = doc.abs_filename
           end
         end
       end
-      if item then
+
+      if item.type then
         docs[#docs + 1] = item
       end
+
+      -- 中文说明：消费完成后输出分流结果，后续判断真实落盘是否正确只需要看这一组中文日志。
+      log_quit_debug(
+        "实时落盘 分流提交 阶段=%s 视图索引=%s 路由=%s 原因=%s 名称=%s 绝对路径=%s 脏=%s WLPT=%s 内容长度=%s 条目类型=%s storage_key=%s",
+        tostring(source),
+        tostring(index),
+        tostring(route),
+        tostring(reason),
+        tostring(name),
+        tostring(doc.abs_filename),
+        tostring(is_dirty),
+        tostring(is_wlpt),
+        tostring(content_length),
+        tostring(item.type),
+        tostring(item.storage_key)
+      )
     end
-    ::continue::
   end
 
-  if #docs == 0 then return end
+  if #docs == 0 then
+    log_quit_debug(
+      "实时落盘 提交跳过 阶段=%s 原因=没有可写入文档 实例=%s",
+      tostring(source),
+      tostring(snapshot_id)
+    )
+    remove_runtime_instance_snapshot(snapshot_id, snapshot_path, source)
+    show_instance_snapshot_status("临时保存：暂无可保存内容", force)
+    return false
+  end
 
-  local dir = get_unsaved_instances_dir()
-  common.mkdirp(dir)
+  -- 中文说明：清理阶段只清理当前实例固定前缀下不再被 instance 引用的 ws，避免关闭 tab 后旧内容继续被孤儿聚合捞起来。
+  for _, filename in ipairs(system.list_dir(get_ws_storage_dir()) or {}) do
+    if filename:find(snapshot_id .. "_doc_", 1, true) == 1 and not used_storage_keys[filename] then
+      remove_instance_storage(filename)
+    end
+  end
 
-  local fp = io.open(dir .. PATHSEP .. snapshot_name, "w")
-  if not fp then return end
-
+  common.mkdirp(get_unsaved_instances_dir())
+  local fp = io.open(snapshot_path, "w")
+  if not fp then
+    log_quit_debug(
+      "实时落盘 instance写入失败 阶段=%s 实例=%s 文件=%s 原因=io.open返回空",
+      tostring(source),
+      tostring(snapshot_id),
+      tostring(snapshot_path)
+    )
+    show_instance_snapshot_status("临时保存失败：无法写入实例快照", true)
+    return false
+  end
   fp:write("return ", common.serialize({
     created_at = os.time(),
     project_dir = core.root_project() and core.root_project().path or nil,
-    -- 中文说明：实例快照记录自己的窗口矩形，避免多个恢复实例复用同一份全局 session 坐标。
     window = table.pack(system.get_window_size(core.window)),
-    -- 中文说明：实例快照同时记录窗口模式，恢复时优先还原实例自己的 normal/maximized 状态。
     window_mode = system.get_window_mode(core.window),
     restore_treeview_from_file_open = core.restore_treeview_from_file_open == true,
     docs = docs
   }), "\n")
   fp:close()
+  instance_snapshot_runtime.dirty_signature = string.format("%s:%s:%s:%s", tostring(#docs), tostring(ws_count), tostring(wlpt_count), tostring(path_count))
+
+  log_quit_debug(
+    "实时落盘 提交完成 阶段=%s 实例=%s 文件=%s 文档数量=%s ws数量=%s wlpt数量=%s path数量=%s 跳过数量=%s",
+    tostring(source),
+    tostring(snapshot_id),
+    tostring(snapshot_path),
+    tostring(doc_count),
+    tostring(ws_count),
+    tostring(wlpt_count),
+    tostring(path_count),
+    tostring(skip_count)
+  )
+  show_instance_snapshot_status(
+    string.format(
+      "临时保存完成：文档%s ws%s wlpt%s 路径%s",
+      tostring(doc_count),
+      tostring(ws_count),
+      tostring(wlpt_count),
+      tostring(path_count)
+    ),
+    force
+  )
+  return true
+end
+
+local function save_unsaved_instance_snapshot()
+  -- 中文说明：正常退出不再维护一套单独快照逻辑，而是强制跑一次实时落盘提交；
+  -- 这样退出保存和定时保存始终使用同一份 instance/ws/wlpt 结构，避免两条链路行为漂移。
+  commit_realtime_instance_snapshot("正常退出", true)
 end
 
 local function load_unsaved_instance_snapshot(snapshot_path)
@@ -628,6 +893,11 @@ local function restore_unsaved_instance_snapshot_file(snapshot_path)
   local restore_active_view
   local restore_treeview_from_file_open = snapshot and snapshot.restore_treeview_from_file_open == true
   core.restore_treeview_from_file_open = restore_treeview_from_file_open
+  log_quit_debug(
+    "实例恢复 开始 文件=%s 文档数=%s",
+    tostring(snapshot_path),
+    tostring(snapshot and snapshot.docs and #snapshot.docs or 0)
+  )
 
   if snapshot and type(snapshot.docs) == "table" then
     for _, item in ipairs(snapshot.docs) do
@@ -671,7 +941,13 @@ local function restore_unsaved_instance_snapshot_file(snapshot_path)
             doc:insert(1, 1, item.content)
           end
           if item.name and item.name ~= "" and item.name ~= "unsaved" then
-            doc.filename = item.name
+            -- 组装：优先用新快照记录的 abs；旧快照没有时，用绝对路径名兜底
+            local restored_abs = item.abs_filename
+            if not restored_abs and common.is_absolute_path(item.name) then
+              restored_abs = item.name
+            end
+            -- 使用：成对恢复 filename/abs，避免"有名无路径"导致保存/定位异常
+            doc:set_filename(item.name, restored_abs)
           end
           if item.selection and #item.selection >= 4 then
             doc:set_selection(table.unpack(item.selection, 1, 4))
@@ -688,6 +964,11 @@ local function restore_unsaved_instance_snapshot_file(snapshot_path)
           end
         end
       elseif item.type == "temp_storage" and type(item.storage_key) == "string" then
+        log_quit_debug(
+          "实例恢复 读取ws引用 开始 文件=%s 键=%s",
+          tostring(snapshot_path),
+          tostring(item.storage_key)
+        )
         local stored = read_instance_storage(item.storage_key)
         if stored and type(stored.content) == "string" and not is_blank_unsaved_content(stored.name, stored.content) then
           log_quit_debug(
@@ -706,7 +987,13 @@ local function restore_unsaved_instance_snapshot_file(snapshot_path)
             doc:insert(1, 1, stored.content)
           end
           if stored.name and stored.name ~= "" and stored.name ~= "unsaved" then
-            doc.filename = stored.name
+            -- 组装：优先用快照里记录的 abs；旧快照没有时，用绝对路径名兜底
+            local restored_abs = stored.abs_filename
+            if not restored_abs and common.is_absolute_path(stored.name) then
+              restored_abs = stored.name
+            end
+            -- 使用：成对恢复 filename/abs，避免"有名无路径"导致保存/定位异常
+            doc:set_filename(stored.name, restored_abs)
           end
           local selection = stored.selection or item.selection
           if selection and #selection >= 4 then
@@ -723,6 +1010,11 @@ local function restore_unsaved_instance_snapshot_file(snapshot_path)
             restore_active_view = view
           end
         end
+        log_quit_debug(
+          "实例恢复 消费ws引用 删除准备 文件=%s 键=%s",
+          tostring(snapshot_path),
+          tostring(item.storage_key)
+        )
         remove_instance_storage(item.storage_key)
       end
     end
@@ -738,18 +1030,30 @@ local function restore_unsaved_instance_snapshot_file(snapshot_path)
   end
 
   os.remove(snapshot_path)
+  log_quit_debug(
+    "实例恢复 完成 文件=%s",
+    tostring(snapshot_path)
+  )
   return restore_treeview_from_file_open
 end
 
 local function restore_unsaved_instance_snapshots(target_snapshot_path)
   local dir = get_unsaved_instances_dir()
   local restore_treeview_from_file_open = false
+  local snapshot_files = list_unsaved_snapshot_files()
+  local ws_files = system.list_dir(get_ws_storage_dir()) or {}
+  log_quit_debug(
+    "启动恢复 扫描完成 instance数量=%s ws数量=%s instance列表=%s ws列表=%s",
+    tostring(#snapshot_files),
+    tostring(#ws_files),
+    table.concat(snapshot_files, ","),
+    table.concat(ws_files, ",")
+  )
 
   if type(target_snapshot_path) == "string" and target_snapshot_path ~= "" then
     return restore_unsaved_instance_snapshot_file(target_snapshot_path) == true
   end
 
-  local snapshot_files = list_unsaved_snapshot_files()
   if #snapshot_files == 0 then return false end
 
   local first_snapshot_path = dir .. PATHSEP .. snapshot_files[1]
@@ -764,6 +1068,135 @@ local function restore_unsaved_instance_snapshots(target_snapshot_path)
   return restore_treeview_from_file_open
 end
 
+
+-- 中文说明：以下四个函数组成“启动时孤儿 ws 聚合”链路，职责边界是：
+-- 只兜底处理 instance_*_doc_* 格式且不被任何现存快照引用的 ws 文件；
+-- 不删除、不清空，而是聚合成一个新快照，复用现有 --restore-snapshot 入口拉起新实例页展示。
+
+-- 中文说明：第一步（准备数据）：遍历 unsaved_instances 下所有快照文件，
+-- 汇总其中 docs[*].storage_key，得到“仍被引用的 ws key 集合”。
+-- 必须在恢复动作之前调用，避免并发子实例删掉快照文件后，其 key 被误判成孤儿。
+local function collect_instance_storage_keys()
+  local referenced = {}
+  for _, filename in ipairs(list_unsaved_snapshot_files()) do
+    local snapshot = load_unsaved_instance_snapshot(get_unsaved_instances_dir() .. PATHSEP .. filename)
+    if snapshot and type(snapshot.docs) == "table" then
+      for _, item in ipairs(snapshot.docs) do
+        if type(item.storage_key) == "string" then
+          referenced[item.storage_key] = true
+        end
+      end
+    else
+      -- 快照文件损坏时跳过该文件、继续扫描其他引用，不能中断整个收集流程
+      log_quit_debug(
+        "孤儿聚合 跳过损坏快照 文件=%s",
+        tostring(filename)
+      )
+    end
+  end
+  return referenced
+end
+
+-- 中文说明：第二步（准备数据）：扫描 ws 目录，只筛选命名符合 instance_*_doc_*、
+-- 且不在引用集合中的孤儿 key，产出待聚合列表；.codex-1、final-1 这类非 instance 业务 key 一律不碰。
+local function collect_orphan_ws_keys(referenced)
+  local orphans = {}
+  for _, filename in ipairs(system.list_dir(get_ws_storage_dir()) or {}) do
+    -- 严格按现有命名格式（instance_<13位时间戳>_<6位hex>_doc_<序号>）过滤，避免误伤业务 key
+    if filename:match("^instance_%d+_[0-9a-fA-F]+_doc_%d+$") and not referenced[filename] then
+      orphans[#orphans + 1] = filename
+    end
+  end
+  table.sort(orphans)
+  return orphans
+end
+
+-- 中文说明：第三步（使用数据）：把非空孤儿 ws 内容组装成新快照文件。
+-- 快照只记录 storage_key 引用（temp_storage 类型），内容仍留在 ws 原文件里，
+-- 这样新实例走现有恢复链路时会自己读取并消费清理。
+-- 空白或损坏的孤儿直接删除不聚合，避免每次启动都额外多开一个空窗口。
+local function create_orphan_instance_snapshot(orphan_keys)
+  local docs = {}
+  local project_dir = (core.root_project() and core.root_project().path) or EXEDIR
+  for _, key in ipairs(orphan_keys) do
+    local stored = read_instance_storage(key)
+    if stored and type(stored.content) == "string" and not is_blank_unsaved_content(stored.name, stored.content) then
+      -- 保留原始选区，第一个文档设为活跃页，恢复体验与正常快照一致
+      docs[#docs + 1] = {
+        type = "temp_storage",
+        storage_key = key,
+        selection = stored.selection,
+        active = (#docs == 0),
+      }
+    else
+      remove_instance_storage(key)
+      log_quit_debug(
+        "孤儿聚合 跳过空白/损坏键 键=%s 名称=%s",
+        tostring(key),
+        tostring(stored and stored.name)
+      )
+    end
+  end
+  if #docs == 0 then return nil end
+
+  local dir = get_unsaved_instances_dir()
+  common.mkdirp(dir)
+  -- 生成与现有快照同格式的文件名，并做一次防撞名兜底（正常几乎不会撞名）
+  local snapshot_name, fp
+  repeat
+    snapshot_name = string.format(
+      "%s%013d_%06x%s",
+      unsaved_snapshot_prefix,
+      math.floor(system.get_time() * 1000),
+      math.random(0, 0xffffff),
+      unsaved_snapshot_ext
+    )
+  until not system.get_file_info(dir .. PATHSEP .. snapshot_name)
+  fp = io.open(dir .. PATHSEP .. snapshot_name, "w")
+  if not fp then
+    log_quit_debug(
+      "孤儿聚合 新实例快照 写入失败 原因=io.open返回空"
+    )
+    return nil
+  end
+  fp:write("return ", common.serialize({
+    created_at = os.time(),
+    project_dir = project_dir,
+    -- 中文说明：记录当前窗口矩形与模式，让聚合出的新实例有一个确定的落点
+    window = table.pack(system.get_window_size(core.window)),
+    window_mode = system.get_window_mode(core.window),
+    docs = docs
+  }), "\n")
+  fp:close()
+  log_quit_debug(
+    "孤儿聚合 新实例快照 写入完成 入口=孤儿聚合 文件=%s 文档数=%s",
+    tostring(dir .. PATHSEP .. snapshot_name),
+    tostring(#docs)
+  )
+  return dir .. PATHSEP .. snapshot_name
+end
+
+-- 中文说明：第四步（使用数据）：串联前面的准备与组装步骤，
+-- 通过现有 --restore-snapshot 入口拉起新实例页，让新实例走正常恢复+消费清理，
+-- 完成“孤儿不删除、统一聚合展示”的兜底目标。
+local function aggregate_orphan_ws_snapshots(referenced)
+  local orphan_keys = collect_orphan_ws_keys(referenced)
+  log_quit_debug(
+    "孤儿聚合 开始 孤儿数量=%s 列表=%s",
+    tostring(#orphan_keys),
+    table.concat(orphan_keys, ",")
+  )
+  if #orphan_keys == 0 then return end
+  local snapshot_path = create_orphan_instance_snapshot(orphan_keys)
+  if not snapshot_path then return end
+  local snapshot = load_unsaved_instance_snapshot(snapshot_path)
+  local project_dir = snapshot and snapshot.project_dir or (core.root_project() and core.root_project().path) or "."
+  log_quit_debug(
+    "孤儿聚合 完成 拉起新实例 文件=%s",
+    tostring(snapshot_path)
+  )
+  system.exec(string.format("%q --project-dir %q --restore-snapshot %q", EXEFILE, project_dir, snapshot_path))
+end
 
 local function update_recents_project(action, dir_path_abs)
   local dirname = common.normalize_volume(dir_path_abs)
@@ -1399,10 +1832,15 @@ function core.init()
     #(core.docs or {})
   )
   local restored_from_file_open = false
+  local referenced_storage_keys
   if startup_restore_mode == "targeted-restore" then
     restored_from_file_open = restore_unsaved_instance_snapshots(restore_snapshot_arg)
   elseif startup_restore_mode == "initial-open" then
+    -- 中文说明：主进程启动时先收集所有快照引用的 ws key（必须在恢复前，避免与并发子实例竞争），
+    -- 再走现有正常恢复流程，最后兜底聚合遗留孤儿 ws，统一开一个新实例页展示。
+    referenced_storage_keys = collect_instance_storage_keys()
     restored_from_file_open = restore_unsaved_instance_snapshots()
+    aggregate_orphan_ws_snapshots(referenced_storage_keys)
   else
     log_startup_debug(
       "startup.restore_snapshots.skip root=%s mode=%s reason=secondary-open",
@@ -2304,6 +2742,13 @@ function core.step()
   if now >= (core.clean_exit_sync_next_at or 0) then
     core.clean_exit_sync_next_at = now + get_clean_exit_global_sync_interval()
     core.sync_clean_exit_enabled("poll")
+  end
+
+  -- 中文说明：实时落盘由主循环统一调度，定期把当前 tab 结构和内容状态提交到 instance/ws/wlpt；
+  -- 这里不分散到各个输入事件里写盘，避免普通文档和 WLPT 文档形成两套互相竞争的保存节奏。
+  if now >= (instance_snapshot_runtime.next_flush_at or 0) then
+    instance_snapshot_runtime.next_flush_at = now + get_instance_snapshot_autosave_interval()
+    commit_realtime_instance_snapshot("定时调度", false)
   end
 
   -- update

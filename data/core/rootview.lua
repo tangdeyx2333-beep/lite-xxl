@@ -10,12 +10,46 @@ local function get_ws_storage_dir()
   return USERDIR .. PATHSEP .. "storage" .. PATHSEP .. "ws"
 end
 
+local function log_instance_debug(fmt, ...)
+  local ok, message = pcall(string.format, fmt, ...)
+  local line = ok and message or ("format-error: " .. tostring(fmt))
+  local logfile = USERDIR and (USERDIR .. PATHSEP .. "largefile-debug.log")
+  if logfile then
+    local fp = io.open(logfile, "ab")
+    if fp then
+      fp:write(os.date("[%Y-%m-%d %H:%M:%S] "), line, "\n")
+      fp:close()
+    end
+  end
+end
+
 local function write_instance_storage(key, value)
-  common.mkdirp(get_ws_storage_dir())
-  local fp = io.open(get_ws_storage_dir() .. PATHSEP .. key, "w")
-  if not fp then return false end
+  local dir = get_ws_storage_dir()
+  local path = dir .. PATHSEP .. key
+  common.mkdirp(dir)
+  log_instance_debug(
+    "ws写入 开始 来源=rootview 键=%s 文件=%s 名称=%s 内容长度=%s",
+    tostring(key),
+    tostring(path),
+    tostring(value and value.name),
+    tostring(value and value.content and #(value.content) or 0)
+  )
+  local fp = io.open(path, "w")
+  if not fp then
+    log_instance_debug(
+      "ws写入 失败 来源=rootview 键=%s 文件=%s 原因=io.open返回空",
+      tostring(key),
+      tostring(path)
+    )
+    return false
+  end
   fp:write("return ", common.serialize(value), "\n")
   fp:close()
+  log_instance_debug(
+    "ws写入 完成 来源=rootview 键=%s 文件=%s",
+    tostring(key),
+    tostring(path)
+  )
   return true
 end
 
@@ -375,6 +409,18 @@ function RootView:on_mouse_released(button, x, y, ...)
                   if fp then
                     local snapshot_id = snapshot_name:sub(1, -5)
                     local storage_key = string.format("%s_doc_%03d", snapshot_id, 1)
+                    log_instance_debug(
+                      "实例快照 开始 入口=拖拽拆窗 实例=%s 文件=%s",
+                      tostring(snapshot_id),
+                      tostring(snapshot_path)
+                    )
+                    log_instance_debug(
+                      "实例快照 记录ws引用 实例=%s 键=%s 索引=%s 名称=%s 入口=拖拽拆窗",
+                      tostring(snapshot_id),
+                      tostring(storage_key),
+                      tostring(1),
+                      tostring(name)
+                    )
                     local doc_entry
                     if write_instance_storage(storage_key, {
                       content = content,
@@ -400,6 +446,11 @@ function RootView:on_mouse_released(button, x, y, ...)
                       docs = { doc_entry }
                     }), "\n")
                     fp:close()
+                    log_instance_debug(
+                      "实例快照 写入完成 入口=拖拽拆窗 实例=%s 文件=%s",
+                      tostring(snapshot_id),
+                      tostring(snapshot_path)
+                    )
                     exec_cmd = string.format("%q --project-dir %q --restore-snapshot %q", EXEFILE, project_dir, snapshot_path)
                   end
                 end
