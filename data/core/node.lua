@@ -162,8 +162,17 @@ function Node:remove_view(root, view)
 end
 
 function Node:close_view(root, view)
+  local should_close_instance_after_remove = view
+    and view.doc
+    and #core.docs == 1
+    and #core.get_views_referencing_doc(view.doc) == 1
   local do_close = function()
+    -- 中文说明：先复用现有视图移除链路完成 tab 关闭；这样脏文件确认、节点折叠、空视图回填都仍由原逻辑负责。
     self:remove_view(root, view)
+    if should_close_instance_after_remove and core.close_after_last_file_tab then
+      -- 中文说明：上面已经消费掉最后一个文件 tab；这里进入实例级收尾阶段，要求本次退出不再生成实例快照，并清理当前实例临时文件。
+      core.close_after_last_file_tab("Node:close_view")
+    end
   end
   view:try_close(do_close)
 end

@@ -21,7 +21,15 @@ local t = {
   end,
 
   ["root:close-all"] = function()
-    core.confirm_close_docs(core.docs, core.root_view.close_all_docviews, core.root_view)
+    core.confirm_close_docs(core.docs, function()
+      local had_docs = #(core.docs or {}) > 0
+      -- 中文说明：准备阶段先复用现有批量关闭逻辑移除所有文件 tab；脏文档确认仍由外层 confirm_close_docs 负责。
+      core.root_view:close_all_docviews()
+      if had_docs and core.close_after_last_file_tab then
+        -- 中文说明：消费阶段确认这是用户主动关闭全部 tab 的命令入口，随后按“最后文件 tab 已关闭”收尾当前实例。
+        core.close_after_last_file_tab("root:close-all")
+      end
+    end)
   end,
 
   ["root:close-all-others"] = function()

@@ -207,6 +207,9 @@ end
 
 -- 中文说明：统一判断当前实例是否允许把退出现场写入磁盘，session / 实例快照 / workspace 都复用这里。
 function core.should_persist_instance_state()
+  if core.close_after_last_file_tab_requested then
+    return false
+  end
   core.sync_clean_exit_enabled("persist-check", { suppress_message = true })
   return not core.is_clean_exit_enabled()
 end
@@ -569,6 +572,18 @@ local function remove_runtime_instance_snapshot(snapshot_id, snapshot_path, sour
       tostring(removed_ws_count)
     )
   end
+end
+
+local function cleanup_current_runtime_instance_snapshot(source)
+  local snapshot_id = instance_snapshot_runtime.snapshot_id
+  local snapshot_path = instance_snapshot_runtime.snapshot_path
+  if type(snapshot_id) ~= "string" or snapshot_id == "" then
+    return
+  end
+
+  -- 中文说明：这里进入当前实例退出前的清理阶段，只删除本实例 snapshot_id 前缀对应的 instance/ws 临时文件；
+  -- 不扫描也不处理其它实例文件，避免最后一个 tab 关闭时误删其它窗口的恢复现场。
+  remove_runtime_instance_snapshot(snapshot_id, snapshot_path, source)
 end
 
 local PENDING_TREEVIEW_STATE_KEY = "pending_treeview_state"
@@ -1961,6 +1976,20 @@ function core.temp_filename(ext, dir)
   temp_file_counter = temp_file_counter + 1
   return dir .. PATHSEP .. temp_file_prefix
       .. string.format("%06x", temp_file_counter) .. (ext or "")
+end
+
+function core.close_after_last_file_tab(source)
+  if core.close_after_last_file_tab_requested then
+    return
+  end
+
+  -- 中文说明：最后一个文件标签页已经从界面节点移除，此处进入一次性实例关闭阶段；
+  -- 这个标记只影响当前窗口本次退出，不写入全局无痕状态，避免改变其它实例窗口的退出策略。
+  core.close_after_last_file_tab_requested = true
+
+  -- 中文说明：退出前先消费当前实例已经产生的临时恢复文件，后续 force 退出还会复用 core.delete_temp_files 清理普通临时文件。
+  cleanup_current_runtime_instance_snapshot(source or "最后文件标签页关闭")
+  core.quit(true)
 end
 
 
