@@ -51,6 +51,10 @@ static const char *const get_ft_error(FT_Error err) {
 #define FONT_HEIGHT_OVERFLOW_PX 0
 #define FONT_WIDTH_OVERFLOW_PX 9
 
+// 编辑器字符布局阶段统一使用该倍率放大空格推进距离；Tab 依赖同一基础距离计算，
+// 因而会同步扩大，保证文本测量、光标定位和实际绘制始终处于同一坐标体系。
+#define SPACE_ADVANCE_MULTIPLIER 2.0f
+
 // maximum unicode codepoint supported (https://stackoverflow.com/a/52203901)
 #define MAX_UNICODE 0x10FFFF
 // number of rows and columns in the codepoint map
@@ -454,7 +458,9 @@ static int font_set_face_metrics(RenFont *font, FT_Face face) {
 
   if ((err = FT_Load_Char(face, ' ', (font_set_load_options(font) | FT_LOAD_BITMAP_METRICS_ONLY | FT_LOAD_NO_HINTING) & ~FT_LOAD_FORCE_AUTOHINT)) != 0)
     return err;
-  font->space_advance = face->glyph->advance.x / 64.0f;
+  // 字体度量准备阶段：先读取字体原始空格宽度，再在这里统一放大。
+  // 后续文本测量和绘制都会消费 space_advance，避免只改显示导致光标位置错位。
+  font->space_advance = (face->glyph->advance.x / 64.0f) * SPACE_ADVANCE_MULTIPLIER;
   return 0;
 }
 
