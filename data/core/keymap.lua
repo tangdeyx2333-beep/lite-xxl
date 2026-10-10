@@ -286,6 +286,8 @@ end
 keymap.add_direct {
   ["ctrl+`"] = "core:find-command",
   ["alt+/"] = "doc:select-syntax",
+  ["alt+up"] = "doc:scroll-view-up",
+  ["alt+down"] = "doc:scroll-view-down",
   ["ctrl+o"] = "core:open-file-picker",
   ["ctrl+n"] = "core:new-doc",
   ["ctrl+shift+c"] = "core:change-project-folder",

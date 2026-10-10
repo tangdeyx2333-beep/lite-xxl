@@ -953,3 +953,17 @@ commands["doc:move-to-next-char"] = function(dv)
 end
 
 command.add("core.docview", commands)
+
+command.add("core.docview!", {
+  ["doc:scroll-view-up"] = function(dv)
+    -- 中文流程说明：本阶段按当前编辑器行高准备向文档开头滚动一行的目标，只改变视图目标，不触碰光标、选区或正文。
+    dv.scroll.to.y = dv.scroll.to.y - dv:get_line_height()
+    -- 中文流程说明：下一个视图更新阶段会由既有 View:update 统一消费该目标，完成边界限制与平滑滚动。
+  end,
+
+  ["doc:scroll-view-down"] = function(dv)
+    -- 中文流程说明：本阶段按当前编辑器行高准备向文档末尾滚动一行的目标，只改变视图目标，不触碰光标、选区或正文。
+    dv.scroll.to.y = dv.scroll.to.y + dv:get_line_height()
+    -- 中文流程说明：下一个视图更新阶段会由既有 View:update 统一消费该目标，完成边界限制与平滑滚动。
+  end
+})
