@@ -657,6 +657,9 @@ function insert_unique(t, v)
 end
 
 local function find(label, search_fn)
+  -- 中文说明：这里是一次新查找流程的入口；先恢复默认文本匹配，避免上一次
+  -- 已结束流程遗留的正则状态影响本次 Ctrl+F 查找。
+  find_regex = false
   last_view, last_sel = core.active_view,
     { core.active_view.doc:get_selection(true) }
   local text = last_view.doc:get_text(table.unpack(last_sel))
@@ -705,6 +708,10 @@ local function find(label, search_fn)
     core.command_view:exit(false)
   end
   local find_options = {
+    -- 中文说明：该标记由快捷键 predicate 消费，用于把正则开关严格限制在
+    -- 当前查找输入框，不能因为历史查找状态而作用到无关 CommandView。
+    find_replace_regex_toggle = true,
+    find_replace_stage = "find",
     text = text,
     select_text = true,
     show_suggestions = false,
@@ -801,6 +808,9 @@ local function find(label, search_fn)
         last_view.doc:set_selection(table.unpack(last_sel))
         last_view:scroll_to_make_visible(table.unpack(last_sel))
       end
+      -- 中文说明：提交后命令栏已退出，本次查找流程在此收尾；按需求复位正则状态，
+      -- 使后续独立查找从普通文本匹配开始。
+      find_regex = false
     end,
     suggest = function(text)
       if seed_selection_pending and text == seed_text then
@@ -825,6 +835,9 @@ local function find(label, search_fn)
       core.status_view:remove_tooltip()
       clear_largefile_nav()
       reset_find_status(last_view and last_view.doc)
+      -- 中文说明：Esc 或 Close 是查找流程的取消出口，清理状态时同步复位正则，
+      -- 防止下一次查找继承已取消流程的配置。
+      find_regex = false
     end
   }
 
@@ -947,8 +960,15 @@ end
 
 
 local function replace(kind, default, fn)
+  -- 中文说明：这里开启一条独立的替换流程；先重置正则状态，保证 Ctrl+R 首个输入框
+  -- 默认按文本查找，之后若用户切换正则，会贯穿到实际替换阶段。
+  find_regex = false
   core.status_view:show_tooltip(get_find_tooltip())
   core.command_view:enter("Find To Replace " .. kind, {
+    -- 中文说明：仅第一个“待替换文本”输入框需要消费 Ctrl+Shift+I；第二个“替换为”
+    -- 输入框不应切换匹配模式，避免快捷键误作用于无关的 CommandView。
+    find_replace_regex_toggle = true,
+    find_replace_stage = "replace-find",
     text = default,
     select_text = true,
     show_suggestions = false,
@@ -971,16 +991,23 @@ local function replace(kind, default, fn)
             n = n + v
           end
           core.log("Replaced %d instance(s) of %s %q with %q", n, kind, old, new)
+          -- 中文说明：替换已经消费了第一阶段选择的匹配模式；流程完成后立刻复位，
+          -- 让下一次 Ctrl+R 不会沿用本次正则设置。
+          find_regex = false
         end,
         suggest = function() return core.previous_replace end,
         cancel = function()
           core.status_view:remove_tooltip()
+          -- 中文说明：第二阶段取消同样意味着替换流程结束，必须清理第一阶段遗留的状态。
+          find_regex = false
         end
       })
     end,
     suggest = function() return core.previous_find end,
     cancel = function()
       core.status_view:remove_tooltip()
+      -- 中文说明：用户在第一个输入框取消时尚未进入实际替换，直接结束整条流程并复位。
+      find_regex = false
     end
   })
 end
@@ -1115,10 +1142,24 @@ end
 local function active_find_commandview()
   return core.active_view
     and core.active_view:is(CommandView)
+    and core.command_view.state.find_replace_stage == "find"
+end
+
+local function active_find_large_file_commandview()
+  -- 这一步为左右方向键划定大文件专用边界：普通查找框必须继续使用编辑器原有的
+  -- 光标移动命令，只有大文件查找框才允许消费左右键进行分块导航。
+  return active_find_commandview()
     and last_view ~= nil
-    and last_text ~= nil
-    and type(core.command_view.state) == "table"
-    and type(core.command_view.state.buttons) == "table"
+    and last_view.doc ~= nil
+    and last_view.doc.is_large_file
+end
+
+local function active_regex_toggle_commandview()
+  -- 中文说明：正则开关只服务于 find() 与 replace() 第一阶段显式登记的输入框；
+  -- 不能依赖 last_view 等历史变量判断，以免用户打开其他命令栏时快捷键被误消费。
+  return core.active_view
+    and core.active_view:is(CommandView)
+    and core.command_view.state.find_replace_regex_toggle == true
 end
 
 local function should_run_chunk_key(direction)
@@ -1183,6 +1224,13 @@ local function active_find_commandview_predicate(...)
   return false
 end
 
+local function active_regex_toggle_commandview_predicate(...)
+  if active_regex_toggle_commandview() then
+    return true, core.active_view, ...
+  end
+  return false
+end
+
 command.add(active_find_commandview_predicate, {
   ["find-replace:commandview-next-find"] = function()
     if not active_find_commandview() then
@@ -1208,10 +1256,15 @@ command.add(active_find_commandview_predicate, {
     return command.perform("find-replace:previous-find")
   end,
 
+  ["find-replace:toggle-sensitivity"] = function()
+    case_sensitive = not case_sensitive
+    core.status_view:show_tooltip(get_find_tooltip())
+    if last_sel then update_preview(last_sel, last_fn, last_text) end
+  end,
+})
+
+command.add(active_find_large_file_commandview, {
   ["find-replace:commandview-prev-chunk"] = function()
-    if not active_find_commandview() or not last_view or not last_view.doc or not last_view.doc.is_large_file then
-      return false
-    end
     if not should_run_chunk_key(-1) then
       return true
     end
@@ -1220,26 +1273,23 @@ command.add(active_find_commandview_predicate, {
   end,
 
   ["find-replace:commandview-next-chunk"] = function()
-    if not active_find_commandview() or not last_view or not last_view.doc or not last_view.doc.is_large_file then
-      return false
-    end
     if not should_run_chunk_key(1) then
       return true
     end
     run_largefile_chunk_search(last_view, 1)
     return true
   end,
+})
 
-  ["find-replace:toggle-sensitivity"] = function()
-    case_sensitive = not case_sensitive
-    core.status_view:show_tooltip(get_find_tooltip())
-    if last_sel then update_preview(last_sel, last_fn, last_text) end
-  end,
-
+command.add(active_regex_toggle_commandview_predicate, {
   ["find-replace:toggle-regex"] = function()
     find_regex = not find_regex
     core.status_view:show_tooltip(get_find_tooltip())
-    if last_sel then update_preview(last_sel, last_fn, last_text) end
+    -- 中文说明：预览属于 Ctrl+F 查找链路；Ctrl+R 第一阶段只记录匹配模式，
+    -- 不触碰可能来自历史查找的选区，避免替换输入时意外改动编辑区的预览状态。
+    if core.command_view.state.find_replace_stage == "find" and last_sel then
+      update_preview(last_sel, last_fn, last_text)
+    end
   end
 })
 

@@ -90,8 +90,7 @@ config.plugins.treeview.scroll_to_focused_file = true
 config.plugins.treeview.animate_scroll_to_focused_file = true
 
 -- 自动补全弹窗触发所需最少输入字符数；值越小越容易触发弹窗
-config.plugins.autocomplete.min_len = 1
- 
+config.plugins.autocomplete.min_len = 2
 
 -- 大文件/WLPT 停滚多久后才恢复高亮，单位秒；值越大越保滚动性能
 config.large_file_highlight_scroll_idle_delay = 0.18
