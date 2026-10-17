@@ -959,7 +959,9 @@ function run_largefile_chunk_search(dv, direction)
 end
 
 
-local function replace(kind, default, fn)
+local function replace(kind, default, fn, in_selection)
+  -- 中文流程说明：替换命令栏打开前记录来源正文视图；全文替换提交后需要把该视图的阅读位置交给文档视图层恢复，而选区替换不进入这条保护链路。
+  local replace_view = core.active_view
   -- 中文说明：这里开启一条独立的替换流程；先重置正则状态，保证 Ctrl+R 首个输入框
   -- 默认按文本查找，之后若用户切换正则，会贯穿到实际替换阶段。
   find_regex = false
@@ -983,9 +985,24 @@ local function replace(kind, default, fn)
         submit = function(new)
           core.status_view:remove_tooltip()
           insert_unique(core.previous_replace, new)
-          local results = doc():replace(function(text)
+          local target_doc = doc()
+          local change_id_before_replace = target_doc and target_doc:get_change_id()
+          if not in_selection and target_doc and replace_view and replace_view.doc == target_doc then
+            -- 中文流程说明：全文替换即将进入“先插入、后删除”的既有文档链路；先把替换前视图位置挂在发起替换的正文视图上，等待该视图的自动可见逻辑消费后恢复，避免内部光标归位改写阅读位置。
+            replace_view.full_replace_scroll_restore = {
+              scroll_x = replace_view.scroll.x,
+              scroll_y = replace_view.scroll.y,
+              target_scroll_x = replace_view.scroll.to.x,
+              target_scroll_y = replace_view.scroll.to.y,
+            }
+          end
+          local results = target_doc:replace(function(text)
             return fn(text, old, new)
           end)
+          if replace_view.full_replace_scroll_restore and target_doc:get_change_id() == change_id_before_replace then
+            -- 中文流程说明：本次全文替换没有产生正文变更，后续也不会触发由替换导致的光标自动可见；在当前收尾阶段清理预留状态，避免影响下一次无关的光标移动。
+            replace_view.full_replace_scroll_restore = nil
+          end
           local n = 0
           for _,v in pairs(results) do
             n = n + v
@@ -1089,7 +1106,7 @@ local function find_replace(in_selection)
     end
     local result, matches = regex.gsub(regex.compile(old, "m"), text, new)
     return result, matches
-  end)
+  end, in_selection)
 end
 
 command.add(has_unique_selection, {

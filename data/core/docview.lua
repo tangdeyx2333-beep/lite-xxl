@@ -742,6 +742,7 @@ end
 
 
 function DocView:scroll_to_make_visible(line, col)
+  local full_replace_scroll_restore = self.full_replace_scroll_restore
   local _, oy = self:get_content_offset()
   local _, ly = self:get_line_screen_position(line, col)
   local lh = self:get_line_height()
@@ -759,6 +760,15 @@ function DocView:scroll_to_make_visible(line, col)
     self.scroll.to.x = xsup - size_x
   elseif xinf < self.scroll.x then
     self.scroll.to.x = math.max(0, xinf)
+  end
+  if full_replace_scroll_restore then
+    -- 中文流程说明：上方已完成既有“确保光标可见”的消费；此处属于全文替换链路的收尾阶段，恢复替换前的阅读位置，避免内部光标回退到首行将用户视图带回顶部。
+    self.scroll.x = full_replace_scroll_restore.scroll_x
+    self.scroll.y = full_replace_scroll_restore.scroll_y
+    self.scroll.to.x = full_replace_scroll_restore.target_scroll_x
+    self.scroll.to.y = full_replace_scroll_restore.target_scroll_y
+    -- 中文流程说明：恢复值将在本次视图更新末尾继续交由既有边界限制与平滑滚动机制消费；清理临时状态，避免后续普通光标移动重复恢复旧位置。
+    self.full_replace_scroll_restore = nil
   end
 end
 
