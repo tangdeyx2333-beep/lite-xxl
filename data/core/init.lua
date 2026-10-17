@@ -244,6 +244,7 @@ local instance_snapshot_runtime = {
   last_status_message = nil,
   next_flush_at = 0,
   last_edit_at = 0,
+  clean_exit_cleanup_done = false,
 }
 
 local function get_unsaved_instances_dir()
@@ -586,6 +587,28 @@ local function cleanup_current_runtime_instance_snapshot(source)
   remove_runtime_instance_snapshot(snapshot_id, snapshot_path, source)
 end
 
+local function cleanup_current_clean_exit_recovery(source)
+  if instance_snapshot_runtime.clean_exit_cleanup_done then
+    return
+  end
+
+  -- 中文流程说明：准备阶段先按当前窗口实例身份删除 instance/ws，并枚举当前窗口持有的 WLPT 文档会话；
+  -- 只处理本实例可定位的数据，避免无痕退出时扫描全局目录误删其他窗口的恢复现场。
+  cleanup_current_runtime_instance_snapshot(source)
+  local seen_sessions = {}
+  for _, doc in ipairs(core.docs or {}) do
+    local session = doc and doc.wlpt_session
+    if session and not seen_sessions[session] then
+      seen_sessions[session] = true
+      if session.clear_recovery_state then
+        -- 中文流程说明：消费阶段复用 WLPT 会话已有的三件套清理接口，避免另造文件格式或路径规则。
+        session:clear_recovery_state()
+      end
+    end
+  end
+  instance_snapshot_runtime.clean_exit_cleanup_done = true
+end
+
 local PENDING_TREEVIEW_STATE_KEY = "pending_treeview_state"
 
 local function write_pending_treeview_state(width, visible)
@@ -645,6 +668,7 @@ local function commit_realtime_instance_snapshot(source, force)
       "实时落盘 提交跳过 阶段=%s 原因=无痕退出开启",
       tostring(source)
     )
+    cleanup_current_clean_exit_recovery(source)
     -- 中文说明：这里已经明确进入“无痕退出”分支，只需要给出一次状态提示；
     -- 不能每次定时调度都强制刷新，否则状态栏会被同一句提示反复占住，看起来像死循环。
     show_instance_snapshot_status("临时保存跳过：无痕退出已开启", false)
@@ -652,6 +676,7 @@ local function commit_realtime_instance_snapshot(source, force)
   end
 
   local now = system.get_time()
+  instance_snapshot_runtime.clean_exit_cleanup_done = false
   if not force
     and instance_snapshot_runtime.last_edit_at > 0
     and now - instance_snapshot_runtime.last_edit_at < get_instance_snapshot_autosave_after_idle()
@@ -1064,7 +1089,6 @@ local function restore_unsaved_instance_snapshots(target_snapshot_path)
     table.concat(snapshot_files, ","),
     table.concat(ws_files, ",")
   )
-
   if type(target_snapshot_path) == "string" and target_snapshot_path ~= "" then
     return restore_unsaved_instance_snapshot_file(target_snapshot_path) == true
   end
@@ -2003,19 +2027,22 @@ function core.exit(quit_fn, force)
     core.describe_view and core.describe_view(core.active_view) or tostring(core.active_view)
   )
   if force then
-    if core.should_persist_instance_state() then
+    -- 中文流程说明：强制退出时只同步并判定一次，后续快照与 session 清理复用同一结果，避免共享状态在退出中途变化造成一半保存、一半清理。
+    local should_persist_instance_state = core.should_persist_instance_state()
+    if should_persist_instance_state then
       log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.begin")
       save_unsaved_instance_snapshot()
       log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.done")
     else
       log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.skip reason=clean-exit")
+      cleanup_current_clean_exit_recovery("强制退出")
     end
     log_quit_debug("quit.exit.force delete_temp_files.begin")
     core.delete_temp_files()
     log_quit_debug("quit.exit.force delete_temp_files.done")
     while #core.projects > 0 do core.remove_project(core.projects[#core.projects], true) end
     log_quit_debug("quit.exit.force remove_projects.done remaining=%d", #core.projects)
-    if core.should_persist_instance_state() then
+    if should_persist_instance_state then
       log_quit_debug("quit.exit.force save_session.begin")
       save_session()
       log_quit_debug("quit.exit.force save_session.done")

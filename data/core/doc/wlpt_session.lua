@@ -1843,6 +1843,10 @@ function WlPtSession:close()
   if discard_requested then
     -- 中文说明：用户明确选择“不保存关闭”时，WLPT 的恢复三件套也必须丢弃，避免留下僵尸恢复文件。
     self:clear_recovery_state()
+  elseif core.should_persist_instance_state and not core.should_persist_instance_state() then
+    -- 中文流程说明：文档关闭阶段先重新按统一实例策略判定是否允许保留恢复现场；
+    -- 无痕或最后标签页退出时清理当前文档恢复文件，避免前面清理后又在 close 阶段写回。
+    self:clear_recovery_state()
   elseif self.dirty then
     wlpt_trace(
       "session.close.persist_recovery id=%s file=%s reason=dirty",
