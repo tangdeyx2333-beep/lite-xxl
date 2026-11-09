@@ -107,6 +107,9 @@ config.instance_snapshot_autosave_interval = 5
 -- 输入停止后等待多久才执行临时保存，单位秒
 config.instance_snapshot_autosave_after_idle = 10
 
+-- 退出时打开文档数不超过此值，则不保存临时实例；设为 0 可关闭此行为
+config.instance_snapshot_skip_file_count = 1
+
 -- 是否在 WLPT 模式下禁用 Markdown 渲染预览；true 表示禁用，false 表示允许
 -- 注意这个如果文件过大渲染会有明显卡顿，并且有几率无响应，无响应强制退出会有丢失数据的风险
 config.wlpt_disable_markdown_render = false 

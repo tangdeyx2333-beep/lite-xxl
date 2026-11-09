@@ -399,6 +399,12 @@ config.use_system_file_picker = system.get_sandbox() ~= "none"
 ---@type number
 config.clean_exit_global_sync_interval = 1
 
+---实例退出时，不写入临时恢复快照的最大打开文档数；设置为 0 可禁用此行为。
+---
+---默认值：1
+---@type number
+config.instance_snapshot_skip_file_count = 1
+
 -- The config specification used by settings gui generators.
 config.config_spec = {
   name = "Core",
@@ -443,6 +449,14 @@ config.config_spec = {
     type = "number",
     default = 1,
     min = 0.1
+  },
+  {
+    label = "Skip Instance Snapshot On Exit",
+    description = "Skip temporary instance recovery when exiting with this many or fewer open documents. Set to 0 to disable.",
+    path = "instance_snapshot_skip_file_count",
+    type = "number",
+    default = 1,
+    min = 0
   }
 }
 

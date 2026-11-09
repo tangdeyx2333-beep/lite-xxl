@@ -187,6 +187,27 @@ function core.is_clean_exit_enabled()
   return core.clean_exit_enabled == true
 end
 
+function core.prepare_exit_instance_policy()
+  if core.restart_in_progress then
+    return false
+  end
+  if core.skip_instance_snapshot_exit_requested then
+    return true
+  end
+  local open_doc_count = #(core.docs or {})
+  local skip_file_count = math.max(0, math.floor(tonumber(config.instance_snapshot_skip_file_count) or 1))
+  if open_doc_count > 0 and open_doc_count <= skip_file_count then
+    core.skip_instance_snapshot_exit_requested = true
+    log_quit_debug(
+      "quit.snapshot_skip_exit enabled=true docs=%d threshold=%d",
+      open_doc_count,
+      skip_file_count
+    )
+    return true
+  end
+  return false
+end
+
 -- 中文说明：关键落盘前会先强制读取一次全局无痕状态，避免别的窗口刚切换完时这里还拿着旧值。
 function core.sync_clean_exit_enabled(source, options)
   options = options or {}
@@ -207,7 +228,7 @@ end
 
 -- 中文说明：统一判断当前实例是否允许把退出现场写入磁盘，session / 实例快照 / workspace 都复用这里。
 function core.should_persist_instance_state()
-  if core.close_after_last_file_tab_requested then
+  if core.close_after_last_file_tab_requested or core.skip_instance_snapshot_exit_requested then
     return false
   end
   core.sync_clean_exit_enabled("persist-check", { suppress_message = true })
@@ -2018,6 +2039,9 @@ end
 
 
 function core.exit(quit_fn, force)
+  if core.prepare_exit_instance_policy() then
+    instance_snapshot_runtime.clean_exit_cleanup_done = false
+  end
   log_quit_debug(
     "quit.exit.begin force=%s clean=%s docs=%d projects=%d active_view=%s",
     tostring(force),
@@ -2034,8 +2058,9 @@ function core.exit(quit_fn, force)
       save_unsaved_instance_snapshot()
       log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.done")
     else
-      log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.skip reason=clean-exit")
-      cleanup_current_clean_exit_recovery("强制退出")
+      local reason = core.skip_instance_snapshot_exit_requested and "file-count-threshold" or "clean-exit"
+      log_quit_debug("quit.exit.force save_unsaved_instance_snapshot.skip reason=%s", reason)
+      cleanup_current_clean_exit_recovery(core.skip_instance_snapshot_exit_requested and "按文档数阈值退出" or "强制退出")
     end
     log_quit_debug("quit.exit.force delete_temp_files.begin")
     core.delete_temp_files()
@@ -2062,7 +2087,8 @@ function core.exit(quit_fn, force)
       save_session()
       log_quit_debug("quit.exit.normal save_session.done")
     else
-      log_quit_debug("quit.exit.normal save_session.skip reason=clean-exit")
+      local reason = core.skip_instance_snapshot_exit_requested and "file-count-threshold" or "clean-exit"
+      log_quit_debug("quit.exit.normal save_session.skip reason=%s", reason)
     end
 
     log_quit_debug("quit.exit.normal confirm_close_docs.begin")
@@ -2079,6 +2105,7 @@ end
 
 
 function core.restart()
+  core.restart_in_progress = true
   core.exit(function()
     core.restart_request = true
     core.window:_persist()

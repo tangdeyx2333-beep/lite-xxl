@@ -291,6 +291,9 @@ function core.run(...)
     end
     local exit = core.exit
     function core.exit(quit_fn, force)
+      if force and core.prepare_exit_instance_policy then
+        core.prepare_exit_instance_policy()
+      end
       if force and (not core.should_persist_instance_state or core.should_persist_instance_state()) then
         core.try(save_workspace)
       end

@@ -56,9 +56,8 @@ local function is_markdown_table_row_line(line)
   return pipe_count >= 2
 end
 
-local function render_inline(text)
+local function render_inline_plain(text)
   text = text:gsub("!%[([^%]]*)%]%(([^%)]+)%)", "🖼 %1 (%2)")
-  text = text:gsub("%[([^%]]+)%]%(([^%)]+)%)", "%1 (%2)")
   text = text:gsub("`([^`]+)`", "%1")
 
   -- strong/emphasis
@@ -82,6 +81,73 @@ local function render_inline(text)
   text = text:gsub("<[Mm][Aa][Rr][Kk]>(.-)</[Mm][Aa][Rr][Kk]>", "%1")
 
   return text
+end
+
+local function render_inline(text)
+  local output, links = {}, {}
+  local cursor = 1
+  local output_length = 0
+  while true do
+    local image_start, image_end, image_label, image_target = text:find("!%[([^%]]*)%]%(([^%)]+)%)", cursor)
+    local label_start, label_end, label, target = text:find("%[([^%]]+)%]%(([^%)]+)%)", cursor)
+    if image_start and (not label_start or image_start < label_start) then
+      local prefix = render_inline_plain(text:sub(cursor, image_start - 1))
+      output[#output + 1] = prefix
+      output_length = output_length + #prefix
+      local image_text = "🖼 " .. render_inline_plain(image_label) .. " (" .. trim(image_target) .. ")"
+      output[#output + 1] = image_text
+      output_length = output_length + #image_text
+      cursor = image_end + 1
+    elseif not label_start then
+      output[#output + 1] = render_inline_plain(text:sub(cursor))
+      break
+    else
+      local prefix = render_inline_plain(text:sub(cursor, label_start - 1))
+      output[#output + 1] = prefix
+      output_length = output_length + #prefix
+      local rendered_label = render_inline_plain(label)
+      local start_col = output_length + 1
+      output[#output + 1] = rendered_label
+      output_length = output_length + #rendered_label
+      target = trim(target)
+      if not target:match("^[%a][%w+.-]*:") and not target:match("^//") and not target:match("^#") then
+        links[#links + 1] = { start_col = start_col, end_col = start_col + #rendered_label, target = target }
+      end
+      cursor = label_end + 1
+    end
+  end
+  return table.concat(output), links
+end
+
+local function add_wrapped_links(text, lines, links)
+  local wrapped_links = {}
+  if not links or #links == 0 then return wrapped_links end
+  local source_cursor = 1
+  for line_idx, line in ipairs(lines) do
+    local local_cursor = 1
+    for word in line:gmatch("%S+") do
+      local local_start = line:find(word, local_cursor, true)
+      local source_start = text:find(word, source_cursor, true)
+      if local_start and source_start then
+        local source_end = source_start + #word
+        for _, link in ipairs(links) do
+          local overlap_start = math.max(source_start, link.start_col)
+          local overlap_end = math.min(source_end, link.end_col)
+          if overlap_start < overlap_end then
+            wrapped_links[line_idx] = wrapped_links[line_idx] or {}
+            wrapped_links[line_idx][#wrapped_links[line_idx] + 1] = {
+              start_col = local_start + overlap_start - source_start,
+              end_col = local_start + overlap_end - source_start,
+              target = link.target
+            }
+          end
+        end
+        source_cursor = source_end
+        local_cursor = local_start + #word
+      end
+    end
+  end
+  return wrapped_links
 end
 
 local function wrap_text(font, text, max_width)
@@ -194,10 +260,13 @@ end
 local function split_markdown_table_row(line)
   local normalized = trim(line or ""):gsub("^|", ""):gsub("|$", "")
   local cells = {}
+  local links = {}
   for cell in (normalized .. "|"):gmatch("(.-)|") do
-    table.insert(cells, render_inline(trim(cell)))
+    local rendered_cell, cell_links = render_inline(trim(cell))
+    table.insert(cells, rendered_cell)
+    table.insert(links, cell_links)
   end
-  return cells
+  return cells, links
 end
 
 local function parse_markdown_table_alignment(line)
@@ -344,7 +413,8 @@ local function parse_markdown(source)
       if text:find("|", 1, true) then
         append_markdown_debug_log("表格候选内容最终按普通段落处理: " .. text)
       end
-      table.insert(blocks, { type = "paragraph", text = render_inline(text) })
+      local rendered_text, links = render_inline(text)
+      table.insert(blocks, { type = "paragraph", text = rendered_text, links = links })
     end
     para = {}
   end
@@ -381,18 +451,24 @@ local function parse_markdown(source)
       push_code(block_code_lines, block_lang)
     elseif i < #lines and is_markdown_table_header_line(line) and is_markdown_table_delimiter_line(lines[i + 1]) then
       local table_rows = {}
+      local table_links = {}
       local aligns = parse_markdown_table_alignment(lines[i + 1])
       push_paragraph()
-      table.insert(table_rows, split_markdown_table_row(line))
+      local cells, cell_links = split_markdown_table_row(line)
+      table.insert(table_rows, cells)
+      table.insert(table_links, cell_links)
       i = i + 2
       while i <= #lines and is_markdown_table_row_line(lines[i]) and not lines[i]:match("^%s*$") do
-        table.insert(table_rows, split_markdown_table_row(lines[i]))
+        cells, cell_links = split_markdown_table_row(lines[i])
+        table.insert(table_rows, cells)
+        table.insert(table_links, cell_links)
         i = i + 1
       end
       table.insert(blocks, {
         type = "table",
         aligns = aligns,
-        rows = table_rows
+        rows = table_rows,
+        links = table_links
       })
       i = i - 1
     else
@@ -405,34 +481,41 @@ local function parse_markdown(source)
         push_paragraph()
       elseif heading_marks then
         push_paragraph()
+        local rendered_text, links = render_inline(trim(heading_text))
         table.insert(blocks, {
           type = "heading",
           level = #heading_marks,
-          text = render_inline(trim(heading_text))
+          text = rendered_text,
+          links = links
         })
       elseif line:match("^%s*[-*_][-%s*_]*$") then
         push_paragraph()
         table.insert(blocks, { type = "hr" })
       elseif quote_text then
         push_paragraph()
-        table.insert(blocks, { type = "quote", text = render_inline(trim(quote_text)) })
+        local rendered_text, links = render_inline(trim(quote_text))
+        table.insert(blocks, { type = "quote", text = rendered_text, links = links })
       elseif ordered_n and ordered_item then
         push_paragraph()
+        local rendered_text, links = render_inline(trim(ordered_item))
         table.insert(blocks, {
           type = "list",
           ordered = true,
           marker = ordered_n .. ".",
           indent = math.floor(#leading_spaces / 2),
-          text = render_inline(trim(ordered_item))
+          text = rendered_text,
+          links = links
         })
       elseif unordered_item then
         push_paragraph()
+        local rendered_text, links = render_inline(trim(unordered_item))
         table.insert(blocks, {
           type = "list",
           ordered = false,
           marker = "•",
           indent = math.floor(#leading_spaces_u / 2),
-          text = render_inline(trim(unordered_item))
+          text = rendered_text,
+          links = links
         })
       else
         table.insert(para, line)
@@ -571,7 +654,15 @@ function MarkdownPreviewView:hit_test_text(x, y)
         distance = y - (sy + sh)
       end
       if y >= sy and y <= sy + sh and x >= sx and x <= sx + math.max(sw, 1) then
-        return { item = idx, col = get_col_at_x(item.font, item.text, x - sx) }
+        local col = get_col_at_x(item.font, item.text, x - sx)
+        local link
+        for _, candidate in ipairs(item.links or {}) do
+          if col >= candidate.start_col and col < candidate.end_col then
+            link = candidate.target
+            break
+          end
+        end
+        return { item = idx, col = col, link = link }
       end
       if x >= page_x and x <= page_x + page_w and (not best_distance or distance < best_distance) then
         best_idx, best_item, best_distance = idx, item, distance
@@ -582,6 +673,33 @@ function MarkdownPreviewView:hit_test_text(x, y)
     local sx = self:get_text_item_screen_rect(best_item)
     return { item = best_idx, col = get_col_at_x(best_item.font, best_item.text, x - sx) }
   end
+end
+
+local function open_markdown_link(view, target)
+  target = trim((target or ""):gsub("#.*$", ""))
+  if target == "" or target:match("^[%a][%w+.-]*:") or target:match("^//") then
+    return false
+  end
+  local source_filename = view._md_source_view.doc.abs_filename
+  if not source_filename or source_filename == "" then
+    core.warn("Save the Markdown file before opening relative links")
+    return true
+  end
+
+  target = target:gsub("%%(%x%x)", function(hex) return string.char(tonumber(hex, 16)) end)
+  target = target:gsub("/", PATHSEP)
+  local filename = target
+  if not common.is_absolute_path(filename) then
+    filename = (common.dirname(source_filename) or ".") .. PATHSEP .. filename
+  end
+  filename = system.absolute_path(filename)
+  local info = system.get_file_info(filename)
+  if not info or info.type ~= "file" then
+    core.warn("Markdown link target does not exist: %s", target)
+    return true
+  end
+  core.root_view:open_doc(core.open_doc(filename))
+  return true
 end
 
 function MarkdownPreviewView:normalize_selection()
@@ -648,6 +766,8 @@ function MarkdownPreviewView:on_mouse_pressed(button, x, y, clicks)
       self._selection_anchor = pos
       self._selection_cursor = { item = pos.item, col = pos.col }
       self._mouse_selecting_preview = true
+      self._pressed_link = pos.link
+      self._mouse_press_x, self._mouse_press_y = x, y
       core.redraw = true
       return true
     end
@@ -665,12 +785,26 @@ function MarkdownPreviewView:on_mouse_moved(x, y, dx, dy)
     end
     return true
   end
+  local pos = self:hit_test_text(x, y)
+  self.cursor = pos and pos.link and "hand" or "arrow"
   return MarkdownPreviewView.super.on_mouse_moved(self, x, y, dx, dy)
 end
 
 function MarkdownPreviewView:on_mouse_released(button, x, y)
   if button == "left" and self._mouse_selecting_preview then
+    local target = self._pressed_link
+    local released = self:hit_test_text(x, y)
+    local is_click = target and released and released.link == target
+      and math.abs(x - self._mouse_press_x) <= 4
+      and math.abs(y - self._mouse_press_y) <= 4
     self._mouse_selecting_preview = false
+    self._pressed_link = nil
+    self._mouse_press_x, self._mouse_press_y = nil, nil
+    if is_click then
+      self:clear_preview_selection()
+      return open_markdown_link(self, target)
+    end
+    core.redraw = true
     return true
   end
   return MarkdownPreviewView.super.on_mouse_released(self, button, x, y)
@@ -748,7 +882,7 @@ function MarkdownPreviewView:rebuild_layout()
     return count * h + (count - 1) * line_gap
   end
 
-  local function add_line(text, font, color, x, extra)
+  local function add_line(text, font, color, x, extra, links)
     table.insert(self._layout_items, {
       kind = "text",
       text = text,
@@ -757,7 +891,8 @@ function MarkdownPreviewView:rebuild_layout()
       x = x,
       y = y,
       h = font:get_height(),
-      extra = extra
+      extra = extra,
+      links = links
     })
     y = y + font:get_height() + line_gap
   end
@@ -786,9 +921,10 @@ function MarkdownPreviewView:rebuild_layout()
       local level = block.level or 1
       local font = level == 1 and self._fonts.h1 or (level == 2 and self._fonts.h2 or self._fonts.h3)
       local lines = wrap_text(font, block.text, text_w)
+      local wrapped_links = add_wrapped_links(block.text, lines, block.links)
       add_space(style.padding.y)
-      for _, line in ipairs(lines) do
-        add_line(line, font, style.text, inset)
+      for line_idx, line in ipairs(lines) do
+        add_line(line, font, style.text, inset, nil, wrapped_links[line_idx])
       end
       add_space(style.padding.y)
       table.insert(self._layout_items, {
@@ -803,8 +939,9 @@ function MarkdownPreviewView:rebuild_layout()
 
     elseif block.type == "paragraph" then
       local lines = wrap_text(self._fonts.body, block.text, text_w)
-      for _, line in ipairs(lines) do
-        add_line(line, self._fonts.body, style.text, inset)
+      local wrapped_links = add_wrapped_links(block.text, lines, block.links)
+      for line_idx, line in ipairs(lines) do
+        add_line(line, self._fonts.body, style.text, inset, nil, wrapped_links[line_idx])
       end
       add_space(style.padding.y)
 
@@ -812,6 +949,7 @@ function MarkdownPreviewView:rebuild_layout()
       local quote_x = inset + style.padding.x
       local quote_w = text_w - style.padding.x * 2
       local lines = wrap_text(self._fonts.body, block.text, quote_w)
+      local wrapped_links = add_wrapped_links(block.text, lines, block.links)
       table.insert(self._layout_items, {
         kind = "quote_line",
         x = inset,
@@ -820,8 +958,8 @@ function MarkdownPreviewView:rebuild_layout()
         h = line_block_height(self._fonts.body, #lines) + style.padding.y,
         color = style.dim
       })
-      for _, line in ipairs(lines) do
-        add_line(line, self._fonts.body, style.dim, quote_x)
+      for line_idx, line in ipairs(lines) do
+        add_line(line, self._fonts.body, style.dim, quote_x, nil, wrapped_links[line_idx])
       end
       add_space(style.padding.y)
 
@@ -831,10 +969,18 @@ function MarkdownPreviewView:rebuild_layout()
       local base_x = inset + indent
       local text_x = base_x + marker_w
       local lines = wrap_text(self._fonts.body, block.text, text_w - indent - marker_w)
+      local wrapped_links = add_wrapped_links(block.text, lines, block.links)
       if #lines > 0 then
-        add_line((block.marker or "•") .. " " .. lines[1], self._fonts.body, style.text, base_x)
+        local first_links = wrapped_links[1]
+        if first_links then
+          for _, link in ipairs(first_links) do
+            link.start_col = link.start_col + #(block.marker or "•") + 1
+            link.end_col = link.end_col + #(block.marker or "•") + 1
+          end
+        end
+        add_line((block.marker or "•") .. " " .. lines[1], self._fonts.body, style.text, base_x, nil, first_links)
         for i = 2, #lines do
-          add_line(lines[i], self._fonts.body, style.text, text_x)
+          add_line(lines[i], self._fonts.body, style.text, text_x, nil, wrapped_links[i])
         end
       end
       add_space(math.floor(style.padding.y / 2))
@@ -920,11 +1066,13 @@ function MarkdownPreviewView:rebuild_layout()
 
         for row_idx, row in ipairs(block.rows) do
           local cell_lines = {}
+          local cell_links = {}
           local row_line_count = 1
           for col = 1, col_count do
             local cell_text = row[col] or ""
             local wrapped = wrap_text(self._fonts.body, cell_text, math.max(20, col_widths[col] - table_padding_x * 2))
             cell_lines[col] = wrapped
+            cell_links[col] = add_wrapped_links(cell_text, wrapped, (block.links[row_idx] or {})[col])
             row_line_count = math.max(row_line_count, #wrapped)
           end
           local row_height = row_line_count * self._fonts.body:get_height() + (row_line_count - 1) * line_gap + table_padding_y * 2
@@ -949,7 +1097,7 @@ function MarkdownPreviewView:rebuild_layout()
             })
             local text_y = row_y + table_padding_y
             local align = (block.aligns and block.aligns[col]) or "left"
-            for _, cell_line in ipairs(cell_lines[col]) do
+            for line_idx, cell_line in ipairs(cell_lines[col]) do
               local line_width = self._fonts.body:get_width(cell_line)
               local text_x = cell_x + table_padding_x
               if align == "right" then
@@ -965,6 +1113,7 @@ function MarkdownPreviewView:rebuild_layout()
                 x = text_x,
                 y = text_y,
                 h = self._fonts.body:get_height(),
+                links = cell_links[col][line_idx],
                 extra = {
                   block = "table",
                   row = row_idx,
@@ -1041,6 +1190,29 @@ function MarkdownPreviewView:draw_preview_selection(item_idx, item, page_x, y)
   renderer.draw_rect(x1, y, math.max(1, x2 - x1), item.h, style.selection)
 end
 
+local function draw_linked_text(item, x, y)
+  local links = item.links
+  if not links or #links == 0 then
+    renderer.draw_text(item.font, item.text, x, y, item.color)
+    return
+  end
+  local col = 1
+  for _, link in ipairs(links) do
+    if link.start_col > col then
+      local prefix = item.text:sub(col, link.start_col - 1)
+      x = renderer.draw_text(item.font, prefix, x, y, item.color)
+    end
+    local linked_text = item.text:sub(link.start_col, link.end_col - 1)
+    local link_x = x
+    x = renderer.draw_text(item.font, linked_text, x, y, style.accent or item.color)
+    renderer.draw_rect(link_x, y + item.h - math.max(1, SCALE), x - link_x, math.max(1, SCALE), style.accent or item.color)
+    col = link.end_col
+  end
+  if col <= #item.text then
+    renderer.draw_text(item.font, item.text:sub(col), x, y, item.color)
+  end
+end
+
 function MarkdownPreviewView:draw()
   self:draw_background(style.background)
 
@@ -1071,7 +1243,7 @@ function MarkdownPreviewView:draw()
             tx = renderer.draw_text(font, segment.text, tx, y, color, { tab_offset = tx - start_tx })
           end
         else
-          renderer.draw_text(item.font, item.text, page_x + item.x, y, item.color)
+          draw_linked_text(item, page_x + item.x, y)
         end
       elseif item.kind == "rule" then
         renderer.draw_rect(page_x + item.x, y, item.w, item.h, item.color)
